@@ -13,6 +13,9 @@ export PYTHONPATH=~:$PYTHONPATH
 export PYTHONPATH=~/k3:$PYTHONPATH
 export PATH=~/k3:$PATH
 export PATH=~/k3/scripts:$PATH
+export PATH=~/k3/scripts/osx/:$PATH
+
+chmod -R u+x ~/k3/scripts/
 
 git config --global credential.helper "cache --timeout=86400"
 
