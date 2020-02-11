@@ -1,3 +1,4 @@
+export PYTHONSTARTUP=~/k3/utils/__init__.py
 
 alias ls='ls -alh'
 alias fixScreen='DISPLAY=:0 xrandr --output HDMI-0 --mode 1024x768'

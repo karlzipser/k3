@@ -7,3 +7,8 @@ from misc import *
 from printing import *
 from files2 import *
 from arguments import *
+
+#pys = sggo(opjk('scripts/*.py'))
+from k3.scripts.add_args import *
+
+#EOF

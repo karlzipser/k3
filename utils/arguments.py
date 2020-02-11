@@ -16,8 +16,16 @@ def args_to_Arguments(*args):
     values = []
     for e in args[0]:
         if is_even(ctr):
-            assert(e[:2] == '--')
-            keys.append(e[2:])
+            assert(len(e) != 3)
+            if len(e) == 2:
+                assert(e[0] == '-')
+                assert(e[1] != '-')
+                assert(not str_is_int(e[1]))
+                keys.append(e[1])
+            else:
+                assert(e[:2] == '--')
+                assert(e[2] != '-')
+                keys.append(e[2:])
         else:
             assert(e[:2] != '--')
             if str_is_int(e):
