@@ -17,7 +17,19 @@ def add_args(A):
     return s
 
 
+str_to_name_list = []
+
+str_to_name_list += [
+    'apple',
+    'pear',
+    'x',
+    'y',
+    'z',
+]
 
 
+str_to_name_list = sorted(list(set(str_to_name_list)))
+for s in str_to_name_list:
+    locals()[s+'_'] = s
 
 #EOF
