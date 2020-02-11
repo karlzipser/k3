@@ -1,6 +1,8 @@
 from __future__ import print_function
 from __future__ import division
 
+# git add .;git commit -m 'gacp';git push origin master
+
 import_list = ['os','os.path','shutil','scipy','scipy.io','string','glob','time','sys','datetime','random','re',
     'subprocess','threading','serial','inspect','fnmatch','h5py','socket','getpass','numbers','math']#,'importlib']
 import_from_list = [['FROM','pprint','pprint'],['FROM','termcolor','cprint']]
