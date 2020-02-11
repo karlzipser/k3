@@ -26,7 +26,7 @@ if using_osx():
 elif using_linux():
     pass #CS_('using linux')
 else:
-    print('using UNKNOWN system')
+    print('***** using UNKNOWN system *****')
 
 try:
     import rospy
@@ -49,15 +49,5 @@ try:
 except:
     HAVE_GPU = False
     #CS_('HAVE_GPU = False')
-
-#EOF
-
-
-
-
-
-
-
-#exec(identify_file_str)
 
 #EOF

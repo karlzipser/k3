@@ -1,7 +1,7 @@
 from __future__ import print_function
 from __future__ import division
 
-from basic_imports import *
+from imports import *
 
 rnd = np.random.random
 rndint = np.random.randint
