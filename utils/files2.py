@@ -83,29 +83,6 @@ def percent_disk_free(disk='/'):
 
 
 
-def stowe_Desktop(dst=False):
-    if dst==False:
-        dst = opjh('Desktops_older','Desktop_'+time_str())
-    print(dst)
-    unix('mkdir -p ' + dst)
-    _,l = dir_as_dic_and_list(opjD(''))
-    for i in l:
-        shutil.move(opjD(i),dst)
-
-def restore_Desktop(src):
-    _,l = dir_as_dic_and_list(opjD(''))
-    if len(l) > 0:
-        print('**** Cannot restore Desktop because Desktop is not empty.')
-        return False
-    _,l = dir_as_dic_and_list(src)
-    for i in l:
-        shutil.move(opjh(src,i),opjD(''))
-
-
-
-
-
-
 def sort_dir_by_ctime(dir_path):
     """
     https://www.w3resource.com/python-exercises/python-basic-exercise-71.php
