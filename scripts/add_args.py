@@ -10,7 +10,7 @@ from k3.utils import *
 def add_args(A):
     """
     e.g.,
-        python k3/temp.py --a 1 --b 2 --c 3 --d 4
+        python k3/temp.py -a 1 -b 2 --cat 3 --dog 4
     """
     s = 0
     for k in A:
