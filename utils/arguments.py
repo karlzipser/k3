@@ -4,7 +4,7 @@ from __future__ import division
 from printing import *
 from bools import *
 
-def args_to_Arguments(*args):
+def args_to_Arguments0(*args):
     if not is_even(len(args[0])):
         print("args_to_dictionary(*args)")
         print("args are:")
@@ -42,7 +42,7 @@ def args_to_Arguments(*args):
         ctr += 1
     Arguments = {}
     if len(keys) != len(values):
-        print("args_to_dictionary(*args)")
+        print("args_to_dictionary0(*args)")
         print("given keys are:")
         print(keys)
         print("given values are:")
@@ -53,7 +53,7 @@ def args_to_Arguments(*args):
     return Arguments
 
 if __name__ == '__main__':
-    Arguments = args_to_Arguments(sys.argv[1:])
+    Arguments = args_to_Arguments0(sys.argv[1:])
     print(Arguments)
     # e.g.,
     #   python k3/utils/arguments.py --a b,c,d,1 --t True --f 1 --q 0.123

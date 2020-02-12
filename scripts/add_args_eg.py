@@ -7,8 +7,8 @@ from k3.utils import *
 
 
 
-def add_args(A):
-    assign_defauts(
+def add_args_eg(A):
+    assign_defauts0(
         A,
         Required_arguments={
             'a':int,
@@ -28,8 +28,8 @@ def add_args(A):
     return s
 
 if __name__ == '__main__':
-    Arguments = args_to_Arguments(sys.argv[1:])
-    add_args(Arguments)
+    Arguments = args_to_Arguments0(sys.argv[1:])
+    add_args_eg(Arguments)
 
     
 #EOF
