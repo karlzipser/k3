@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import print_function
+from __future__ import division
 
 from k3.utils import *
 import argparse

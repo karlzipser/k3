@@ -10,13 +10,26 @@ from k3.utils import *
 def add_args(A):
     """
     e.g.,
-        python k3/temp.py -a 1 -b 2 --cat 3 --dog 4
+        k3/scripts/add_args.py -a 1 -b 2 --cat 3 --dog 4
     """
-    s = 0
+    Required_arguments = {
+        'a':int,
+        'b':int,
+        'cat':int,
+        'dog':int,
+    }
+    Default_values = {
+        'monkey':9,
+        'snake':-3,
+    }
+    valid_keys = Required_arguments.keys() + Default_values.keys()
+
     for k in A:
+        assert k in valid_keys
         a = A[k]
         assert(type(a) == int)
-        s += a
+    s = A['a'] + 2*A['b'] - 3*A['cat'] + 4*A['dog']
+    print(A)
     print('sum = '+str(s))
     return s
 
