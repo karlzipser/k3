@@ -17,19 +17,37 @@ def add_args(A):
     return s
 
 
-str_to_name_list = []
 
-str_to_name_list += [
+names = [
     'apple',
     'pear',
     'x',
     'y',
     'z',
 ]
-
-
-str_to_name_list = sorted(list(set(str_to_name_list)))
-for s in str_to_name_list:
+names = list(set(names))
+for s in names:
     locals()[s+'_'] = s
+del names
+
+
+
+def assign_defaults(Arguments,required_keys,Defaults):
+    for k in required_keys:
+        assert k in Arguments
+        assert k not in Defaults
+    for k in Defaults:
+        if k not in Arguments:
+            Arguments[k] = Defaults[k]
+
+A = {apple_:1,pear_:2}
+
+def test(A,r={}):
+    assign_defaults(A,[apple_,pear_],{z_:3},)
+    kprint(A,title='A',r=r)
+
+test(A)
+
+
 
 #EOF
