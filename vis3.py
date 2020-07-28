@@ -4,6 +4,8 @@ from k3.utils3 import *
 import matplotlib
 try:
     import cv2
+    imread = cv2.imread
+    imsave = cv2.imwrite
 except:
     cr("*** Couldn't import cv2 ***")
     if 'torch' in sys.modules:

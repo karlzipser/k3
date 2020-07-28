@@ -74,12 +74,6 @@ na = np.array
 host_name = socket.gethostname()
 home_path = os.path.expanduser("~")
 username = getpass.getuser()
-try:
-    imread = scipy.misc.imread
-    imsave = scipy.misc.imsave
-    imresize = scipy.misc.imresize
-except:
-    print("failed: imread = scipy.misc.imread, imsave = scipy.misc.imsave")
 degrees = np.degrees
 arange = np.arange
 shape = np.shape
@@ -91,8 +85,6 @@ reshape = np.reshape
 mod = np.mod
 array = np.array
 
-if (sys.version_info > (3, 0)):
-    raw_input = input
 
 from k3.utils.printing import *
 from k3.utils.have_using import *
