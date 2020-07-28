@@ -3,23 +3,23 @@
 """
 to run from command line:
 
-    ~/kzpy3/Menu/main.py
+    ~/k3/Menu/main.py
 
 this opens the menu defined by:
 
-    ~/kzpy3/Menu/defaults.py
+    ~/k3/Menu/defaults.py
 
 Other menu paths can be specified, e.g.:
 
-    ~/kzpy3/Menu/main.py --path ~/kzpy3/Grapher/
+    ~/k3/Menu/main.py --path ~/k3/Grapher/
 
 or
 
-    ~/kzpy3/Menu/main.py --path ~/kzpy3/
+    ~/k3/Menu/main.py --path ~/k3/
     
 """
 
-from kzpy3.vis3 import *
+from k3.vis3 import *
 try:
     import colored
     have_colored = True
@@ -35,7 +35,7 @@ setup_Default_Arguments(
         'menu': True,
         'read_only': False,
         'help': False,
-        'path': 'kzpy3/Menu',
+        'path': 'k3/Menu',
         #'start_keys':[],
         'load_timer_time':0.1,
     }
@@ -45,7 +45,7 @@ setup_Default_Arguments(
 
 if False:
     # example
-    import kzpy3.Menu.main as m
+    import k3.Menu.main as m
     DV = m.Default_Values
     A={'key 1':{'a':'x','b':'y'}}
     E = DV(A,opjD(),[])
@@ -178,7 +178,7 @@ def Default_Values(
             else:
                 return False
         except:
-            cr('function_load(): load failed')
+            cr('In k3/Menu/main.py, function_load(): load failed')
             return False
 
     def function_up():
@@ -648,7 +648,7 @@ def start_Dic(dic_project_path,Dics={},parent_keys=[],Arguments={}):
     if Arguments['menu']:
         Dics[dic_project_path]['menu']()
     else:
-        clp('run menu from command line:\n','`','~/kzpy3/Menu/main.py --path',dic_project_path,'`--rb')
+        clp('run menu from command line:\n','`','~/k3/Menu/main.py --path',dic_project_path,'`--rb')
 
     return Dics[dic_project_path]
 
