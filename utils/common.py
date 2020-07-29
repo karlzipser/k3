@@ -381,6 +381,7 @@ CS_(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)
 
 from k3.utils.printing2 import *
 
+identify_file_str = ''
 
 #EOF
 
