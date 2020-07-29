@@ -1,5 +1,5 @@
 from k3.vis3 import *
-import k3.Array.fit3d as fit3d
+import k3.aps.Array.fit3d as fit3d
 exec(identify_file_str)
 
 def Array(

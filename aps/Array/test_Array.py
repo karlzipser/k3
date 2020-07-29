@@ -1,7 +1,7 @@
 #,a
 from k3.vis3 import *
-import k3.Array.fit3d as fit3d
-from k3.Array.Array import Array
+import k3.aps.Array.fit3d as fit3d
+from k3.aps.Array.Array import Array
 
 def test_Array():
 
