@@ -25,12 +25,16 @@ def get_code_snippet():
         setClipboardData(code_str)
     else:
         pyperclip.copy(code_str)
-    clp('set clipboard from','`',
-        cf(pname(code_file)+'/','`--d',fname(code_file),'`--b',s1=''),
-        cf('(',len(snippet_lst),' lines)','`y-d',s0='')
-    )
+    try:
+        clp('set clipboard from','`',
+            cf(pname(code_file)+'/','`--d',fname(code_file),'`--b',s1=''),
+            cf('(',len(snippet_lst),' lines)','`y-d',s0='')
+        )
+    except:
+        clp('set clipboard from',pname(code_file)+'/',fname(code_file),'(',len(snippet_lst),' lines)')
+        
     if len(snippet_lst) == 0:
-        clp('*** No code snippet. Did you use #,a and #,b ? ***','`r-b')
+        clp('*** No code snippet. Did you use #,a and #,b ? ***','`rwb')
     #else:
     #    clp('\t',len(snippet_lst),'lines')
 

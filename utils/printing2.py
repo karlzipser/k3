@@ -152,9 +152,12 @@ def color_define_list(a):
                 B[ctr]['colors'] = (None,None,None)
                 continue
         B[ctr]['data'].append(c)
+    del_list = []
     for i in B.keys():
         if len(B[i]['data']) == 0:
-            del B[i]
+            del_list.append(i)
+    for i in del_list:
+        del B[i]
     return B
 
 

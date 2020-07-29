@@ -62,9 +62,12 @@ try:
 except:
     import pickle
 
-
-if sys.version_info >= (3,0):
+_which_python = sys.version.split(' ')[0]
+if _which_python[0] == '3':
     raw_input = input
+    using_python3 = True
+else:
+    using_python3 = False
 
 rnd = np.random.random
 rndint = np.random.randint
@@ -84,7 +87,6 @@ ones = np.ones
 reshape = np.reshape
 mod = np.mod
 array = np.array
-
 
 from k3.utils.printing import *
 from k3.utils.have_using import *
