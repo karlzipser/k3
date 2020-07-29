@@ -17,22 +17,21 @@ def kprint(
     r=0,
     p=0,
 ):
-    #'<untitled>',
+
     item_printed = False
     if type(item) in ignore_types:
         return
     if type(title) not in [str,type(None)]:
-        #print title,str(title)
+
         title = str(title)
     lst = []
     for i in range(len(space_increment)):
         lst.append('-')
     lst.append('.')
     indent_text = ''.join(lst)
-    #print item,indent_text,title
+
     n_equals = ''
-    #if type(item) == type(na([0])):
-    #    item = item.tolist()
+
     if numbering:
         if type(item) in [dict,list]:
             n_equals = cf(' (n=',len(item),')','`w-d',s0='',s1='')
@@ -94,7 +93,7 @@ function_types = [type(sorted),type(fname)]
 
 
 def color_format(*args,**Kwargs):
-    set_Defaults({'s0':' ','s1':' ','ra':False,'r':False,'p':0},Kwargs,)
+    set_Defaults({'s0':' ','s1':' ','ra':False,'r':False,'p':0,'l':0},Kwargs,)
     B = color_define_list(args)
     c = []
     for i in sorted(B.keys()):
@@ -108,11 +107,12 @@ def color_format(*args,**Kwargs):
                 )
             else:
                 c.append(colored(*B[i]['data']))
-    #print c
     s = d2s_spacer(c,spacer=Kwargs['s1'])
     if 'strip_opjh' not in Kwargs or Kwargs['strip_opjh']:
         s = s.replace(opjh(),'')
-    return s #d2s_spacer(c,spacer=Kwargs['s1'])
+    return s
+
+
 
 def color_print(*args,**Kwargs):
     """
@@ -132,6 +132,7 @@ def color_print(*args,**Kwargs):
         raw_enter()
     if 'p' in Kwargs:
         time.sleep(Kwargs['p'])
+
 
 cf = color_format
 clp = color_print
@@ -206,36 +207,6 @@ def translate_color_string(s):
             attrs = None
     return color,on_color,attrs
 
-if False:
-    kprint([12,3,3],title='aa')
-    kprint({1:2,3:4},title='aa')
-    kprint(1,title='aa')
-
-#exec(identify_file_str)
-
-
-if False:
-    function_type = type(kprint)
-    def Environment():
-        D = {}
-        D['encoder'] = 0
-        D['motor'] = 49
-        def function_step():
-            D['encoder'] += 0.1*rndn()
-            D['motor'] += 10*rndn()
-            D['encoder'] = dp(D['encoder'])
-            D['motor'] = int(D['motor'])
-            return {
-                'encoder':D['encoder'],
-                'motor':D['motor'],
-            }
-        D['step'] = function_step
-        D['collection'] = range(3)+[{'a':1,'b':2},3,{'e':{'c':{1:2,3:4},'d':{1:2,3:4},}}]
-        D['dictionary'] = {'a':1,'b':2}
-        D['Dic2'] = {'cdefghi':{1:2,3:4},'d':{1:2,3:4},'e':{'c':{1:2,3:4},'d':{1:2,3:4},}}
-        return D
-    E = Environment()
-    #kprint(E,'E',ignore_keys=[],ignore_types=[])
 
 
 # http://code.activestate.com/recipes/145297-grabbing-the-current-line-number-easily/
@@ -249,17 +220,11 @@ def fline():
     module = inspect.getmodule(frame[0])
     filename = module.__file__
     now = datetime.datetime.now()
-    return cf(inspect.currentframe().f_back.f_lineno,'`--r',
-        fname(filename),'`',
+    return cf('line',inspect.currentframe().f_back.f_lineno,'`--r',
+        fname(filename),'`--u',
         pname(filename),now.strftime('(%H:%M:%S)'),'`--d')
 
-if False:
-    COUNTER_PRINT_CTR_____ = 0
-    def counter_print(reset=False):
-        global COUNTER_PRINT_CTR_____
-        if reset:
-            COUNTER_PRINT_CTR_____ = 0
-        clp('counter_print','`',COUNTER_PRINT_CTR_____,'`--r')
-        COUNTER_PRINT_CTR_____ += 1
+fl = fline
+
 
 #EOF

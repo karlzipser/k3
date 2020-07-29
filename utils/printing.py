@@ -5,38 +5,6 @@ import numpy as np
 from termcolor import cprint
 from termcolor import colored
 
-PRINT_COMMENTS = True
-def CS_(comment,section='',s='',say_comment=False,emphasis=False,exception=False,newline=True,print_comment=True):
-
-    if print_comment and PRINT_COMMENTS:
-        stri = '#  '
-        stri = stri + comment
-        if len(s) > len(section):
-            section = s
-        if len(section) > 0:
-            stri += ' ('+section+')'
-        if not emphasis and not exception:
-            cprint(stri,attrs=[],color='white',on_color='on_grey')#cprint(stri,'red','on_green')
-        elif exception:
-            cprint(stri,attrs=['blink','bold'],color='red',on_color='on_yellow')
-        else:
-            cprint(stri,attrs=['bold','reverse'],color='white',on_color='on_grey')
-            #spd2s(comment)
-        if newline:
-            print('\n')
-    if say_comment:
-        if using_osx():
-            say(comment,rate=250,print_text=False)
-    return True
-    
-CS = CS_
-#CS_('imported k3.utils3')
-def cs(*args):
-    CS(d2s_spacer(args,spacer=' '))
-
-
-
-
 
 def __d2s_spacer(args,spacer=' '):
     lst = []
@@ -109,47 +77,13 @@ wh = '\x1b[37m'
 og = '\x1b[91m'
 underlined = '\x1b[4m'
 
-def spd2s(*args):
-    d_ = d2s(*args)
-    l_ = len(d_)
-    s_ = ""
-    for q_ in range(len(d_)+4):
-        s_ += "*"
-    cprint(s_+'\n*','yellow')
-    cprint('* '+d_,'yellow')
-    cprint('*\n'+s_,'yellow')
-def sbpd2s(*args):
-    d_ = d2s(*args)
-    l_ = len(d_)
-    s_ = ""
-    for q_ in range(len(d_)+4):
-        s_ += "*"
-    cprint(s_+'\n*','blue')
-    cprint('* '+d_,'blue')
-    cprint('*\n'+s_,'blue')
-def srpd2s(*args):
-    d_ = d2s(*args)
-    l_ = len(d_)
-    s_ = ""
-    for q_ in range(len(d_)+4):
-        s_ += "*"
-    cprint(s_+'\n*','red')
-    cprint('* '+d_,'red')
-    cprint('*\n'+s_,'red')
+
 
 
 def beep():
     print('\007')
 
-def print_stars(n=1):
-    for i in range(n):
-        print("""*************************************************""")
-def print_stars0(n=1):
-    print_stars()
-    print("*")
-def print_stars1(n=1):
-    print("*")
-    print_stars()
+
 
 
 def dp(f,n=2):
