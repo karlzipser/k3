@@ -1,32 +1,6 @@
 from k3.utils.times import *
 from k3.utils.printing2 import *
 
-"""
-def opj(*args):
-    if len(args) == 0:
-        args = ['']
-    str_args = []
-    for a in args:
-        str_args.append(str(a))
-    return os.path.join(*str_args)
-def opjh(*args):
-    return opj(home_path,opj(*args))
-def opjD(*args):
-    return opjh('Desktop',opj(*args))
-def opjk(*args):
-    return opjh('k3',opj(*args))
-def opjm(*args):
-    if not using_osx():
-        media_path = opj('/media',username)
-        return opj(media_path,opj(*args))
-    else:
-        media_path = '/Volumes'
-        return opj(media_path,opj(*args))
-"""
-
-
-
-
 
 def sort_dir_by_ctime(dir_path):
     """
@@ -113,7 +87,6 @@ def dir_as_dic_and_list( path ):
 def save_obj(obj, name,noisy=True,show_time=False,use_real_path=False):
     assert_disk_locations([pname(name)])
     name = name.replace('.pkl','')
-    #name = name + '.pkl'
     if use_real_path:
         name = os.path.realpath(name)
     with open(name + '.pkl', 'wb') as f:
@@ -128,17 +101,14 @@ def save_obj(obj, name,noisy=True,show_time=False,use_real_path=False):
         else:
             b=''
         clp(a,b)
-        #sys.stdout.flush()
+
+
 def load_obj(name,noisy=True,time=False,use_real_path=False):
     assert_disk_locations([pname(name)])
     if noisy:
         timer = Timer()
         clp('Loading','`',name,'`--rb','. . .\r'),
 
-        #sys.stdout.flush()
-    #if name.endswith('.pkl'):
-    #    name = name[:-len('.pkl')]
-    #print name
     name = name.replace('.pkl','')
     name = name + '.pkl'
     if use_real_path:
@@ -148,7 +118,6 @@ def load_obj(name,noisy=True,time=False,use_real_path=False):
         o = pickle.load(f)
         if noisy:
             clp(d2s('. . . loaded in',dp(timer.time()),'seconds.\r')),
-            #sys.stdout.flush()
         return o
         
 lo = load_obj

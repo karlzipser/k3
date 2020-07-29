@@ -1,11 +1,10 @@
 from k3.utils.files import *
-#from k3.utils.printing import *
-#,a
+
 try:
     import pyperclip
 except:
     print("Failed: import pyperclip")
-#,b
+
 def get_code_snippet():
     code_file = most_recent_py_file()
     code_lst = txt_file_to_list_of_strings(code_file)
@@ -18,7 +17,6 @@ def get_code_snippet():
             break
         if started:
             snippet_lst.append(c)
-    #print snippet_lst
 
     code_str = '\n'.join(snippet_lst)
     if using_osx():
@@ -35,8 +33,7 @@ def get_code_snippet():
         
     if len(snippet_lst) == 0:
         clp('*** No code snippet. Did you use #,a and #,b ? ***','`rwb')
-    #else:
-    #    clp('\t',len(snippet_lst),'lines')
+
 
 gsp = get_code_snippet
 
@@ -80,42 +77,6 @@ def setClipboardData(data):
 scd = setClipboardData
 
 
-def code_to_code_str(path,start='symbols'):#start=-1,stop=-1):
-    code = txt_file_to_list_of_strings(path)
 
-    if start == 'symbols':
-        for i in range(len(code)):
-            if code[i] == '#'+'#'+'#'+'start':
-                start = i+1
-                srpd2s('found start',start)
-            if code[i] == '#'+'#'+'#'+'stop':
-                stop = i+1
-                srpd2s('found stop',i)
-
-    elif (start<0):
-        start,stop = input('start,stop ')
-        for i in range(len(code)):
-            pd2s(i,')',code[i])
-    srpd2s('code_to_clipboard(code,',start,stop,')')
-    _code_to_clipboard(code,start,stop)
-
-c2cs = code_to_code_str
-
-def _code_to_clipboard(code,start,stop):
-    try:
-        import pyperclip
-    except:
-        print("Failed: import pyperclip")
-        assert False
-    code_str = '\n'.join(code[start:stop])
-    cprint(code_str,'yellow')
-    if using_osx():
-        setClipboardData(code_str)
-    else:
-        pyperclip.copy(code_str)
-    print('\nOkay, it is in the clipboard')
-
-
-#exec(identify_file_str)
 
 #EOF

@@ -205,7 +205,7 @@ def get_key_sorted_elements_of_dic(d,specific=None):
 
 def nvidia_smi_continuous(t=0.1):
     while True:                                     
-        unix('nvidia-smi',print_stdout=True)
+        os.system('nvidia-smi')
         time.sleep(t)
 
 
