@@ -7,10 +7,11 @@ try:
     imread = cv2.imread
     imsave = cv2.imwrite
 except:
-    cr("*** Couldn't import cv2 ***")
-    if 'torch' in sys.modules:
-        cr("Note, torch already imported. This can block normal cv2 import.")
-    raw_enter()
+    if False:
+        cr("*** Couldn't import cv2 ***")
+        if 'torch' in sys.modules:
+            cr("Note, torch already imported. This can block normal cv2 import.")
+        raw_enter()
 from scipy.optimize import curve_fit
 
 
@@ -253,7 +254,10 @@ def plt_square(half_width=0):
 try:
     def function_close_all_windows():
         plt.close('all')
-        cv2.destroyAllWindows()
+        try:
+            cv2.destroyAllWindows()
+        except:
+            pass
     CA = function_close_all_windows
 
     def mci(img,delay=33,title='mci',scale=1.0,color_mode=cv2.COLOR_RGB2BGR,fx=0,fy=0):
