@@ -163,6 +163,16 @@ def rlen(a):
 def atoi(text):
     return int(text) if text.isdigit() else text
 
+
+
+def dict_to_sorted_list(d):
+    l = []
+    ks = sorted(d.keys(),key=natural_keys)
+    for k in ks:
+        l.append(d[k])
+    return l
+    
+
 def natural_keys(text):
     '''
     alist.sort(key=natural_keys) sorts in human order

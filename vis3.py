@@ -1188,16 +1188,65 @@ def show_color_net_inputs(camera_input,pre_metadata_features_metadata=None,chann
             mi(c,d2s(a,'to',b))
     spause()
 
+#,a
 
-def place_img_f_in_img_g(x0,y0,f,g,bottom=False,center=False):
-    x0 = intr(x0)
-    y0 = intr(y0)
+def get_resize_scale(f_shape,f_max_width,f_max_height,f_min_width,f_min_height):
+    s = []
+    if f_shape[0] > f_max_height:
+        s.append(f_max_height/(1.0*f_shape[0]))
+    if f_shape[1] > f_max_width:
+        s.append(f_max_width/(1.0*f_shape[1]))
+    if len(s) > 0:
+        #cm(0)
+        return min(s)
+
+    #print f_shape[0],f_min_height
+    if f_shape[0] < f_min_height:
+        s.append(f_min_height/(1.0*f_shape[0]))
+    #print f_shape[1],f_min_width
+    if f_shape[1] < f_min_width:
+        s.append(f_min_width/(1.0*f_shape[1]))
+    if len(s) > 0:
+        #cm(1)
+        return max(s)
+
+    #cm(2)
+    return 1.0
+
+
+
+def get_resized_img(f,f_max_width,f_max_height,f_min_width,f_min_height):
+
+    s = get_resize_scale(shape(f),f_max_width,f_max_height,f_min_width,f_min_height)
+
+    if np.abs(s-1) < 0.00001:
+        return f
+
+    else:
+        #cy('resize')
+        return cv2.resize(f, (0,0), fx=s, fy=s, interpolation=1)
+
+
+
+#,b
+
+
+
+
+def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False):
     sf = shape(f)
     sg = shape(g)
+    if center_in_g:
+        x0 = sg[1]/2
+        y0 = sg[0]/2
+    x0 = intr(x0)
+    y0 = intr(y0)
+
     if bottom:
         y0 -= sf[0]
-    if center:
+    if f_center:
         x0 -= sf[1]/2
+        y0 -= sf[0]/2
 
     def corner(a,b_min,b_max):
         if a <= b_max:
@@ -1234,5 +1283,6 @@ def place_img_f_in_img_g(x0,y0,f,g,bottom=False,center=False):
     g0[  y0_:y1_+y0d_-y0d_,  x0_:x1_+x0d_-x0d_,:] = f.copy()[-y0d_:y1_+u,-x0d_:x1_+q,:]
 
     return g0
+#,b
 
 #EOF

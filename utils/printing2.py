@@ -5,7 +5,8 @@ from k3.utils.common import *
 
 def kprint(
     item,
-    title='', 
+    title='',
+    t='',
     spaces='',
     space_increment='    ',
     ignore_keys=[],
@@ -17,7 +18,8 @@ def kprint(
     r=0,
     p=0,
 ):
-
+    if len(t) > 0:
+        title = t
     item_printed = False
     if type(item) in ignore_types:
         return
@@ -216,13 +218,16 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 def fline():
-    frame = inspect.stack()[1]
-    module = inspect.getmodule(frame[0])
-    filename = module.__file__
-    now = datetime.datetime.now()
-    return cf('line',inspect.currentframe().f_back.f_lineno,'`--r',
-        fname(filename),'`--u',
-        pname(filename),now.strftime('(%H:%M:%S)'),'`--d')
+    try:
+        frame = inspect.stack()[1]
+        module = inspect.getmodule(frame[0])
+        filename = module.__file__
+        now = datetime.datetime.now()
+        return cf('line',inspect.currentframe().f_back.f_lineno,'`--r',
+            fname(filename),'`--u',
+            pname(filename),now.strftime('(%H:%M:%S)'),'`--d')
+    except:
+        return "fline()"
 
 fl = fline
 

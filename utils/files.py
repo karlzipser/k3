@@ -359,6 +359,34 @@ def find_files_recursively(
 
 
 
+
+def get_list_of_files_recursively(
+    src,
+    pattern,
+    FILES_ONLY=False,
+    DIRS_ONLY=False,
+    ignore_underscore=True,
+    ignore_Trash=True,
+    followlinks=True,
+):
+    D = find_files_recursively(
+        src,
+        pattern,
+        FILES_ONLY=False,
+        DIRS_ONLY=False,
+        ignore_underscore=True,
+        ignore_Trash=True,
+        followlinks=True,
+    )
+    files = []
+    for p in D['paths']:
+        for f in D['paths'][p]:
+            files.append(opj(src,p,f))
+    return files
+
+
+
+
 def assert_disk_locations(locations):
     if type(locations) == str:
         locations = [locations]
