@@ -1188,7 +1188,7 @@ def show_color_net_inputs(camera_input,pre_metadata_features_metadata=None,chann
             mi(c,d2s(a,'to',b))
     spause()
 
-#,a
+
 
 def get_resize_scale(f_shape,f_max_width,f_max_height,f_min_width,f_min_height):
     s = []
@@ -1223,15 +1223,51 @@ def get_resized_img(f,f_max_width,f_max_height,f_min_width,f_min_height):
         return f
 
     else:
-        #cy('resize')
         return cv2.resize(f, (0,0), fx=s, fy=s, interpolation=1)
 
 
 
-#,b
 
+def has_exif(path):
+    import exifread
+    with open(path,'r') as f:
+        l = len(exifread.process_file(f))
+    if l:
+        return True
+    else:
+        return False
 
+def load_image_with_orientation(filepath):
+    from PIL import Image, ExifTags
+    from numpy import asarray
+    exif_for_image = has_exif(filepath)
+    if exif_for_image:
+        image=Image.open(filepath)
+        try:
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation]=='Orientation':
+                    break
 
+            exif = dict(image._getexif().items())
+
+            if exif[orientation] == 3:
+                print(3)
+                image=image.rotate(180, expand=True)
+            elif exif[orientation] == 6:
+                print(6)
+                image=image.rotate(270, expand=True)
+            elif exif[orientation] == 8:
+                print(8)
+                image=image.rotate(90, expand=True)
+        except (AttributeError, KeyError, IndexError):
+            pass#image = imread(filepath)
+        #image = asarray(image)
+        #raw_enter(str(type(image)))
+        #raw_enter(str(shape(image)))
+    else:
+        image = imread(filepath)
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+    return na(image)[:,:,:3], exif_for_image
 
 def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False):
     sf = shape(f)
@@ -1280,9 +1316,9 @@ def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False
         u = -y0_
     else:
         u = -y0d_
-    g0[  y0_:y1_+y0d_-y0d_,  x0_:x1_+x0d_-x0d_,:] = f.copy()[-y0d_:y1_+u,-x0d_:x1_+q,:]
+    g0[  y0_:y1_+y0d_-y0d_,  x0_:x1_+x0d_-x0d_,:3] = f.copy()[-y0d_:y1_+u,-x0d_:x1_+q,:3]
 
     return g0
-#,b
+
 
 #EOF
