@@ -3,7 +3,46 @@ from k3.vis3 import *
 import argparse
 
 
+def has_exif(path):
+    import exifread
+    with open(path,'r') as f:
+        l = len(exifread.process_file(f))
+    if l:
+        return True
+    else:
+        return False
 
+def load_image_with_orientation(filepath):
+    from PIL import Image, ExifTags
+    from numpy import asarray
+    exif_for_image = has_exif(filepath)
+    if exif_for_image:
+        image=Image.open(filepath)
+        try:
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation]=='Orientation':
+                    break
+
+            exif = dict(image._getexif().items())
+
+            if exif[orientation] == 3:
+                print("180")
+                image=image.rotate(180, expand=True)
+            elif exif[orientation] == 6:
+                print("270")
+                image=image.rotate(270, expand=True)
+            elif exif[orientation] == 8:
+                print("90")
+                image=image.rotate(90, expand=True)
+        except (AttributeError, KeyError, IndexError):
+            pass#image = imread(filepath)
+        #image = asarray(image)
+        #raw_enter(str(type(image)))
+        #raw_enter(str(shape(image)))
+    else:
+        image = imread(filepath)
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+    return na(image)[:,:,:3], exif_for_image
 
 
 par = argparse.ArgumentParser(
@@ -86,15 +125,27 @@ args = par.parse_args()
 
 print(args)
 
-
+if False:
+    o=lo(most_recent_file_in_folder(opjh('Logs')))
+    for f in o['full_paths']:
+        if str_is_int(o['full_paths'][f][0][0]):
+            if int(o['full_paths'][f][0][0])<4:
+                img = imread(f)
+                mi(img)
+                raw_enter()
 
 try:
     os.system('mkdir -p '+opjh('Logs'))
     f = most_recent_file_in_folder(opjh('Logs'),str_elements=[fname(__file__)])
     L = lo(f)
 except:
-    L = {'full_paths':{},'filenames':{}}
+    L = {}
 
+for q in ['full_paths','filenames','sys.argv']:
+    if q not in L:
+        L[q] = []
+
+L['sys.argv'].append( (sys.argv,int(time.time()) ))
 
 
 
@@ -170,43 +221,64 @@ for p in lst:
 
         CA()
         if e in ['q','Q','quit','exit']:
-            sys.exit()
+            break#sys.exit()
 
 if not args.one and args.raw_enter:
     raw_enter()
+
 so(L,opjh('Logs',fname(__file__)+'.'+str(int(time.time()))+'.log'))
 
 
 
 
 
-import exifread
-from PIL import Image
 
-def _read_img_and_correct_exif_orientation(path):
-    im = Image.open(path)
+
+
+#,a
+def __load_image_with_orientation(path):
+    theta = read_img_and_get_orientation_correction_degrees(path)
+    if exif_for_image:
+        image = imread(filepath)
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+
+    return na(image)[:,:,:3], exif_for_image
+
+def read_img_and_get_orientation_correction_degrees(path):
+    import exifread
+    #from PIL import Image
+    """https://pypi.org/project/ExifRead/"""
+    #im = Image.open(path)
     tags = {}
     with open(path, 'rb') as f:
         tags = exifread.process_file(f, details=False)
     if "Image Orientation" in tags.keys():
         orientation = tags["Image Orientation"]
-        logging.debug("Orientation: %s (%s)", orientation, orientation.values)
+        #logging.debug("Orientation: %s (%s)", orientation, orientation.values)
         val = orientation.values
+        """
         if 5 in val:
             val += [4,8]
         if 7 in val:
             val += [4, 6]
+        """
         if 3 in val:
-            logging.debug("Rotating by 180 degrees.")
-            im = im.transpose(Image.ROTATE_180)
-        if 4 in val:
-            logging.debug("Mirroring horizontally.")
-            im = im.transpose(Image.FLIP_TOP_BOTTOM)
+            return 180
+            #logging.debug("Rotating by 180 degrees.")
+            #im = im.transpose(Image.ROTATE_180)
+        #if 4 in val:
+            #logging.debug("Mirroring horizontally.")
+            #im = im.transpose(Image.FLIP_TOP_BOTTOM)
         if 6 in val:
-            logging.debug("Rotating by 270 degrees.")
-            im = im.transpose(Image.ROTATE_270)
+            return 270
+            #logging.debug("Rotating by 270 degrees.")
+            #im = im.transpose(Image.ROTATE_270)
         if 8 in val:
-            logging.debug("Rotating by 90 degrees.")
-            im = im.transpose(Image.ROTATE_90)
+            return 90
+            #logging.debug("Rotating by 90 degrees.")
+            #im = im.transpose(Image.ROTATE_90)
+    return 0
+#,b
 
-    return im
+
+#EOF

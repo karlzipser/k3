@@ -2,7 +2,7 @@
 #,a
 from k3.utils3 import *
 
-
+Arguments = get_Arguments()
 
 save_dir = opjh('multiclip')
 

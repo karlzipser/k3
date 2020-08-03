@@ -1228,47 +1228,6 @@ def get_resized_img(f,f_max_width,f_max_height,f_min_width,f_min_height):
 
 
 
-def has_exif(path):
-    import exifread
-    with open(path,'r') as f:
-        l = len(exifread.process_file(f))
-    if l:
-        return True
-    else:
-        return False
-
-def load_image_with_orientation(filepath):
-    from PIL import Image, ExifTags
-    from numpy import asarray
-    exif_for_image = has_exif(filepath)
-    if exif_for_image:
-        image=Image.open(filepath)
-        try:
-            for orientation in ExifTags.TAGS.keys():
-                if ExifTags.TAGS[orientation]=='Orientation':
-                    break
-
-            exif = dict(image._getexif().items())
-
-            if exif[orientation] == 3:
-                print(3)
-                image=image.rotate(180, expand=True)
-            elif exif[orientation] == 6:
-                print(6)
-                image=image.rotate(270, expand=True)
-            elif exif[orientation] == 8:
-                print(8)
-                image=image.rotate(90, expand=True)
-        except (AttributeError, KeyError, IndexError):
-            pass#image = imread(filepath)
-        #image = asarray(image)
-        #raw_enter(str(type(image)))
-        #raw_enter(str(shape(image)))
-    else:
-        image = imread(filepath)
-        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-    return na(image)[:,:,:3], exif_for_image
-
 def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False):
     sf = shape(f)
     sg = shape(g)
@@ -1321,4 +1280,45 @@ def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False
     return g0
 
 
+def read_img_and_get_orientation_correction_degrees(path):
+    import exifread
+    """https://pypi.org/project/ExifRead/"""
+    tags = {}
+    with open(path, 'rb') as f:
+        tags = exifread.process_file(f, details=False)
+    if "Image Orientation" in tags.keys():
+        orientation = tags["Image Orientation"]
+        val = orientation.values
+        if 3 in val:
+            return 180
+        if 6 in val:
+            return 270
+        if 8 in val:
+            return 90
+    return 0
+
+def has_exif(path):
+    import exifread
+    with open(path,'r') as f:
+        l = len(exifread.process_file(f))
+    if l:
+        return True
+    else:
+        return False
+
+def load_image_with_orientation(filepath):
+    from PIL import Image, ExifTags
+    from numpy import asarray
+    #exif_for_image = has_exif(filepath)
+    theta = read_img_and_get_orientation_correction_degrees(filepath)
+    if theta in [90,180,270]:
+        image=Image.open(filepath)
+        print(theta)
+        image = image.rotate(theta, expand=True)
+        image = na(image)[:,:,:3]
+    else:
+        image = imread(filepath)[:,:,:3]
+        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+    return image, theta
+    
 #EOF
