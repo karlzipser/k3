@@ -12,7 +12,6 @@ def get_args():
     ); aa = par.add_argument
 
     aa(
-        '-f',
         '--files',
         nargs="+",
         default=[],
@@ -20,15 +19,21 @@ def get_args():
     )
 
     aa(
-        '-p',
         '--paths',
         nargs="+",
         default=[],
         help='space-separated list of paths',
     )
 
+
     aa(
-        '-r',
+        '--ignore_paths',
+        nargs="+",
+        default=[],
+        help='space-separated list of paths to ignore',
+    )
+
+    aa(
         '--raw_enter',
         action='store',
         type=int,
@@ -38,7 +43,6 @@ def get_args():
     )
 
     aa(
-        '-m',
         '--random',
         nargs='?',
         const=True, default=False,
@@ -80,6 +84,12 @@ def get_args():
         default=400, 
         help='max height',
     )
+
+    aa(
+        "--view_once",
+        nargs='?',
+        const=True, default=False,
+        help="don't view image if already rated")
 
     aa(
         "-o",
@@ -134,14 +144,22 @@ def main():
     g = zeros((intr(max_height*1.),intr(max_width*1.),3),np.uint8)
 
     i = 0
-
+    timer = Timer(60)
     while i < len(lst):
-
+        if args.min_rating == 0 and timer.check():
+            timer.reset()
+            so(L,opjh('Logs',fname(__file__)+'.'+str(int(time.time()))+'.log'))
         try:   
             if i < -len(lst):
                 i = -len(lst)
             clp(i,'of',len(lst))
             p = lst[i]
+
+            if args.view_once and p in L['full_paths'] and len(L['full_paths']) > 0:
+                    clp('saw',p,'skipping it')
+                    i += 1
+                    continue
+
             img0, theta = load_image_with_orientation(p)
             img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
             f = fname(p)
@@ -166,7 +184,7 @@ def main():
             if args.one:
                 e = getch()
 
-                if p not in L:
+                if p not in L['full_paths']:
                     L['full_paths'][p] = []
 
                 if str_is_int(e):
@@ -194,14 +212,15 @@ def main():
             file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print('Exception!')
             print(d2s(exc_type,file_name,exc_tb.tb_lineno))
+            i += 1
             raw_enter()
 
 
     if not args.one and args.raw_enter:
         raw_enter()
 
-
-    so(L,opjh('Logs',fname(__file__)+'.'+str(int(time.time()))+'.log'))
+    if args.min_rating == 0:
+        so(L,opjh('Logs',fname(__file__)+'.'+str(int(time.time()))+'.log'))
 
 
 
@@ -235,9 +254,13 @@ def get_list_of_files(L):
             cy(f,L['full_paths'][f])
             if len(L['full_paths'][f]) > 0:
                 try:
-                    if str_is_int(L['full_paths'][f][0][0]):
-                        if int(L['full_paths'][f][0][0]) >= args.min_rating:
-                            lst.append(f)
+                    a = 0
+                    for b in L['full_paths'][f]:
+                        a += int(b[0])
+                    r = a / (1.0*len(L['full_paths'][f]))
+                    print(dp(r))                  
+                    if r >= args.min_rating:
+                        lst.append(f)
                 except KeyboardInterrupt:
                     cr('*** KeyboardInterrupt ***')
                     sys.exit()
@@ -252,13 +275,31 @@ def get_list_of_files(L):
         lst += args.files
         lst0 = []
         for p in args.paths:
+            if False:
+                do_continue = False
+                clp(args.ignore_paths,p,r=1)
+                for a in args.ignore_paths:
+                    print(a,p)
+                    if a in p:
+                        print('ignoreing path '+p)
+                        do_continue = True
+                        break
+                if do_continue:
+                    continue
+
             if args.descend:
                 lst0 += get_list_of_files_recursively(p,'*',FILES_ONLY=True,ignore_underscore=False)
             else:
                 lst0 += sggo(p,'*')
         for l in lst0:
             try:
-                if imghdr.what(l) is not None:
+                skip = False
+                for a in args.ignore_paths:
+                    if a in l:
+                        clp('skip',a,l)
+                        skip = True
+                        break
+                if not skip and imghdr.what(l) is not None:
                     lst.append(l)
             except:
                 pass
