@@ -213,13 +213,22 @@ def main():
             print('Exception!')
             print(d2s(exc_type,file_name,exc_tb.tb_lineno))
             i += 1
-            raw_enter()
+            #raw_enter()
 
 
     if not args.one and args.raw_enter:
         raw_enter()
 
     if args.min_rating == 0:
+        """
+        M = {}
+        M['sys.argv'] = L['sys.argv']
+        M['filenames'] = L['filenames']
+        M['full_paths'] = []
+        for p in L['full_paths']:
+            if len(L['full_paths']) > 0:
+                M['full_paths']
+        """
         so(L,opjh('Logs',fname(__file__)+'.'+str(int(time.time()))+'.log'))
 
 
@@ -269,7 +278,7 @@ def get_list_of_files(L):
                     file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                     print('Exception!')
                     print(d2s(exc_type,file_name,exc_tb.tb_lineno))
-                    raw_enter()
+                    #raw_enter()
     else:
         import imghdr
         lst += args.files
