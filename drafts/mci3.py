@@ -56,6 +56,15 @@ def get_args():
     )
 
     aa(
+        '--topic',
+        action='store',
+        type=str,
+        required=False,
+        default='no_name', 
+        help='name of topic of images',
+    )
+
+    aa(
         '--min_rating',
         action='store',
         type=float,
@@ -205,7 +214,7 @@ def main():
                 i = -len(lst)
             clp(i,'of',len(lst))
             p = lst[i]
-            print(args.view_once, args.view_n)
+            #print(args.view_once, args.view_n)
             assert not(args.view_once and args.view_n)
             max_views = 0
             if args.view_once:
@@ -297,14 +306,20 @@ def main():
 
 
 def save_L(L):
-    so(L,opjh('Logs',fnamene(__file__),fname(__file__)+'.'+str(int(time.time()))+'.log'))
+    so(L,opjh('Logs',fnamene(__file__),args.topic,fname(__file__)+'.'+str(int(time.time()))+'.log'))
 
 def setup_L():
-    try:
-        os.system('mkdir -p '+opjh('Logs',fnamene(__file__)))
-        f = most_recent_file_in_folder(opjh('Logs',fnamene(__file__)),str_elements=[fname(__file__)])
+    if 1:#try:
+        os.system('mkdir -p '+opjh('Logs',fnamene(__file__),args.topic))
+        f = most_recent_file_in_folder(opjh('Logs',fnamene(__file__),args.topic),str_elements=[fname(__file__)])
         L = lo(f)
-    except:
+        del_lst = []
+        for p in L['full_paths']:
+            if len(L['full_paths'][p]) == 0:
+                del_lst.append(p)
+        for p in del_lst:
+            del L['full_paths'][p]
+    else:#except:
         L = {}
         clp("L = {}",r=1)
 
@@ -399,7 +414,10 @@ def hist_L(L):
         rs.append(r)
     figure('hist')
     hist(rs)
-    print(len(rs))
+    plt.xlabel('rating')
+    plt.ylabel('# images')
+    plt.title(d2s('rating histogram',len(rs),'images'))
+    #print(len(rs))
     raw_enter()
     CA()
 
