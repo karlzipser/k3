@@ -231,5 +231,7 @@ def fline():
 
 fl = fline
 
+def cfl(r=0):
+    clp(fl,r=r)
 
 #EOF
