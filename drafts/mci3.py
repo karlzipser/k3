@@ -420,8 +420,12 @@ def print_command_lines(L):
 probs = arange(11)
 probs = probs/10.
 probs = probs**args.probs
+#probs_start_time = time.time()
 
 def get_list_of_files(L):
+
+
+
 
     lst = []
 
