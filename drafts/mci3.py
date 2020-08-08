@@ -264,6 +264,7 @@ def main():
                     if str_is_int(e):
                         if args.change:
                             L['full_paths'][p].append((e,int(time.time())))
+                            kprint(L['full_paths'][p])
                             i += 1
                             change = True
                         else:
@@ -306,12 +307,12 @@ def main():
 
 
 def save_L(L):
-    so(L,opjh('Logs',fnamene(__file__),args.topic,fname(__file__)+'.'+str(int(time.time()))+'.log'))
+    so(L,opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log')))
 
 def setup_L():
     if 1:#try:
         os.system('mkdir -p '+opjh('Logs',fnamene(__file__),args.topic))
-        f = most_recent_file_in_folder(opjh('Logs',fnamene(__file__),args.topic),str_elements=[fname(__file__)])
+        f = most_recent_file_in_folder(opjh('Logs',fnamene(__file__),args.topic),str_elements=[fnamene(__file__)])
         L = lo(f)
         del_lst = []
         for p in L['full_paths']:
@@ -346,12 +347,12 @@ def get_list_of_files(L):
                     for b in L['full_paths'][f]:
                         a += int(b[0])
                     r = a / (1.0*len(L['full_paths'][f]))
-                    print(dp(r))                  
+                    #print(dp(r))                  
                     if r >= args.min_rating and r <= args.max_rating:
-                        clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
+                        #clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
                         lst.append(f)
                     else:
-                        clp(dp(args.min_rating),r,dp(args.max_rating),'`b')
+                        pass#clp(dp(args.min_rating),r,dp(args.max_rating),'`b')
                 except KeyboardInterrupt:
                     cr('*** KeyboardInterrupt ***')
                     sys.exit()
@@ -416,7 +417,7 @@ def hist_L(L):
     hist(rs)
     plt.xlabel('rating')
     plt.ylabel('# images')
-    plt.title(d2s('rating histogram',len(rs),'images'))
+    plt.title(d2s('rating histogram for',len(rs),'images'))
     #print(len(rs))
     raw_enter()
     CA()
