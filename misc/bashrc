@@ -69,6 +69,7 @@ alias ipy="ipython --no-banner"
 
 export PYTHONPATH=~:$PYTHONPATH
 export PYTHONPATH=~/k3:$PYTHONPATH
+export PYTHONPATH=~/k3/scripts/gen:$PYTHONPATH
 
 if [ "$(whoami)" == "nvidia" ]
   then

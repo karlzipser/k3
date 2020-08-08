@@ -50,13 +50,15 @@ days = day
 
 """
 
-def time_str(mode='FileSafe'):
+def time_str(t=0,mode='FileSafe'):
     """
     modes are:
     FileSafe, Pretty, Pretty2, TimeShort
     """
-    now = datetime.datetime.now()
-
+    if not t:
+        now = datetime.datetime.now()
+    else:
+        now = datetime.datetime.fromtimestamp(t)
     if mode=='FileSafe':
        return now.strftime('%d%b%y_%Hh%Mm%Ss')
 

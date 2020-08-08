@@ -1,6 +1,6 @@
+#!/usr/bin/env python
+
 from k3.vis3 import *
-
-
 
 def get_args():
     
@@ -66,16 +66,6 @@ def get_args():
         help='name of topic of images',
     )
 
-
-
-    aa(
-        '--probs',
-        action='store',
-        type=float,
-        required=False,
-        default=0, 
-        help='view with probability, exponent',
-    )
     aa(
         '--min_rating',
         action='store',
@@ -149,6 +139,12 @@ def get_args():
         help="don't view image if already rated",
     )
 
+    aa(
+        "--probs",
+        nargs='?',
+        const=True, default=False,
+        help="view with probability",
+    )
 
     aa(
         "--slideshow",
@@ -198,7 +194,9 @@ print(args)
 
 
 
-
+probs = arange(11)
+probs = probs/10.
+probs = probs**2
 
 
 def main():
@@ -238,18 +236,11 @@ def main():
         clp("ctrl-C to exit slideshow",'`--rb')
         time.sleep(3)
 
-    next_img0 = None
-    next_theta = None
-    next_img = None
-    load_time = 0
-    tt = time.time()
-
     while i < len(lst):
         if timer.check() and change:
             save_L(L)
             timer.reset()
-        print(dp(time.time()-tt))
-        tt = time.time()
+            
         try:   
             if i < -len(lst):
                 i = -len(lst)
@@ -269,14 +260,11 @@ def main():
                 continue
 
             if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
-                if next_img is None:
-                    img0, theta = load_image_with_orientation(p)
-                    img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
-                else:
-                    img0 = next_img0
-                    img = next_img
-                    theta = next_theta
-
+                img0, theta = load_image_with_orientation(p)
+                #if not args.one:
+                #    img = img0
+                #else:
+                img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
                 f = fname(p)
                 if theta:
                     c = '`y'
@@ -303,7 +291,7 @@ def main():
 
                 if args.slideshow:
                     s = max(args.seconds + args.seconds_std * rndn(),0.1)
-                    time.sleep(s - load_time)
+                    time.sleep(s)
                     i += 1
 
                 elif args.add_as > 0:
@@ -315,11 +303,7 @@ def main():
                         #time.sleep(0.1)
                     i += 1             
                 else:
-                    if False:#i < len(lst)-1:
-                        t0 = time.time()
-                        next_img0, next_theta = load_image_with_orientation(lst[i+1])
-                        next_img = get_resized_img(next_img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
-                        load_time = time.time() - t0
+
                     e = getch()
 
                     if p not in L['full_paths']:
@@ -417,10 +401,6 @@ def print_command_lines(L):
         ctr += 1
 
 
-probs = arange(11)
-probs = probs/10.
-probs = probs**args.probs
-
 def get_list_of_files(L):
 
     lst = []
@@ -434,87 +414,16 @@ def get_list_of_files(L):
                         a += int(b[0])
                     r = a / (1.0*len(L['full_paths'][f]))
                     if args.probs:
-                        q = probs[intr(r)]
-                        v = rnd()
-                        print(r,q,v)
-                        if v < q:
-                            lst.append(f)
-                            print(f,len(lst))
+                        for i in range(1,len(probs)):
+                            if r >= probs[i-1] and r <= probs[i]:
+                                lst.append(f)
+                                break
                     else:                
                         if r >= args.min_rating and r <= args.max_rating:
                             #clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
                             lst.append(f)
                         else:
                             pass#clp(dp(args.min_rating),r,dp(args.max_rating),'`b')
-                except KeyboardInterrupt:
-                    cr('*** KeyboardInterrupt ***')
-                    sys.exit()
-                except Exception as e:
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                    print('Exception!')
-                    print(d2s(exc_type,file_name,exc_tb.tb_lineno))
-    else:
-        import imghdr
-        lst += args.files
-        lst0 = []
-        for p in args.paths:
-            if False:
-                do_continue = False
-                clp(args.ignore_paths,p,r=1)
-                for a in args.ignore_paths:
-                    print(a,p)
-                    if a in p:
-                        print('ignoreing path '+p)
-                        do_continue = True
-                        break
-                if do_continue:
-                    continue
-
-            if args.descend:
-                lst0 += get_list_of_files_recursively(p,'*',FILES_ONLY=True,ignore_underscore=False)
-            else:
-                lst0 += sggo(p,'*')
-        for l in lst0:
-            try:
-                skip = False
-                for a in args.ignore_paths:
-                    if a in l:
-                        clp('skip',a,l)
-                        skip = True
-                        break
-                if not skip and imghdr.what(l) is not None:
-                    lst.append(l)
-            except:
-                pass
-
-
-    if args.random:
-        random.shuffle(lst)
-
-    return lst
-
-
-
-
-def _get_list_of_files(L):
-
-    lst = []
-
-    if args.min_rating > 0 or args.max_rating < 10:
-        for f in L['full_paths']:
-            if len(L['full_paths'][f]) > 0:
-                try:
-                    a = 0
-                    for b in L['full_paths'][f]:
-                        a += int(b[0])
-                    r = a / (1.0*len(L['full_paths'][f]))
-                    #print(dp(r))                  
-                    if r >= args.min_rating and r <= args.max_rating:
-                        #clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
-                        lst.append(f)
-                    else:
-                        pass#clp(dp(args.min_rating),r,dp(args.max_rating),'`b')
                 except KeyboardInterrupt:
                     cr('*** KeyboardInterrupt ***')
                     sys.exit()
