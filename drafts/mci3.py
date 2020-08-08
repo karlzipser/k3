@@ -1,5 +1,7 @@
 from k3.vis3 import *
 
+# ffmpeg -i temp.mp4 -vf fps=1/8 temp/%d.png
+
 def get_args():
     
     import argparse
