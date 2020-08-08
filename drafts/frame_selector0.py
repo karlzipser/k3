@@ -1,9 +1,35 @@
 from k3.vis3 import *
 #,a
 
+"""
+ffmpeg -i temp.mp4 -vf fps=1/8 temp/%d.png
+
+ffmpeg -i Desktop/temp/temp.flv -vf "select='between(t,30,30.5)+between(t,45,45.5)+between(t,73,73.5)" -vsync 0 Desktop/temp/temp/%d.png
+ffmpeg -i Desktop/temp/1/temp.mp4 -vf "select='between(t,90,95)" -vsync 0 Desktop/temp/1/temp/%d.png
+
+https://stackoverflow.com/questions/21420296/how-to-extract-time-accurate-video-segments-with-ffmpeg
+ffmpeg -i Desktop/temp/1/temp.mp4 -force_key_frames 90,100,120,130 Desktop/temp/1/temp_key.mp4
+ffmpeg -ss 90 -i Desktop/temp/1/temp_key.mp4 -t 10 -vcodec copy -acodec copy -y Desktop/temp/1/temp_final.mp4
+ffmpeg -ss 120 -i Desktop/temp/1/temp_key.mp4 -t 10 -vcodec copy -acodec copy -y Desktop/temp/1/temp_final2.mp4
+
+"""
 
 CA()
 
+l = []
+s3s = []
+duration = unix('ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 Desktop/temp/1/temp.mp4')
+duration = int(float(duration[0]))
+for i in range(0,duration-2,10):
+	l.append(str(i))
+	l.append(str(i+2))
+	s3s.append(d2s('ffmpeg -ss',i,'-i Desktop/temp/1/temp_key.mp4 -t',2,'-vcodec copy -acodec copy -y Desktop/temp/1/samples/'+str(i)+'.mp4'))
+s0 = 'rm Desktop/temp/1/temp_key.mp4'
+s1 = d2s('ffmpeg -i Desktop/temp/1/temp.mp4 -force_key_frames',','.join(l),'Desktop/temp/1/temp_key.mp4')
+s2 = 'rm -r Desktop/temp/1/samples; mkdir -p Desktop/temp/1/samples'
+cmds = [s2,s0,s1] + s3s + [s0]
+for c in cmds:
+	os.system(c)
 
 def corner_spot():
 	#cv2.circle(D['images'],(shape(D['images'])[1] - 25,shape(D['images'])[0] - 25),2,(0,255,0),2)

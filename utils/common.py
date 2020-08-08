@@ -386,7 +386,18 @@ CS_(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)
 
 
 
-
+def unix(command_line_str, print_stdout=False, print_stderr=False,print_cmd=False):
+    command_line_str = command_line_str.replace('~',home_path)
+    p = subprocess.Popen(command_line_str.split(), stdout=subprocess.PIPE)
+    stdout,stderr = p.communicate()
+    if print_cmd:
+        print(command_line_str)
+    if print_stdout:
+        print(stdout)
+    if print_stderr:
+        print(stderr)
+#    return stdout,stderr
+    return stdout.split('\n')
 
 
 from k3.utils.printing2 import *
