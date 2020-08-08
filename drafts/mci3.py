@@ -73,6 +73,14 @@ def get_args():
         help='minmum rating (1-9) to display',
     )
 
+    aa(
+        '--add_as',
+        action='store',
+        type=float,
+        required=False,
+        default=0, 
+        help='add images as rating given ',
+    )
 
     aa(
         '--max_rating',
@@ -212,7 +220,7 @@ def main():
         try:   
             if i < -len(lst):
                 i = -len(lst)
-            clp(i,'of',len(lst))
+            clp(i+1,'of',len(lst))
             p = lst[i]
             #print(args.view_once, args.view_n)
             assert not(args.view_once and args.view_n)
@@ -227,26 +235,33 @@ def main():
                 i += 1
                 continue
 
-            img0, theta = load_image_with_orientation(p)
-            img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
-            f = fname(p)
-            if theta:
-                c = '`y'
-            else:
-                c = '`'
-            part1 = cf(fname(p),'`',pname(p),'`--du')
-            if shape(img0) == shape(img):
-                part2 = cf(shape(img0)[:2],c)
-            else:
-                part2 = cf(shape(img0)[:2],c,'-->',shape(img)[:2],'`r-b')
-            clp(part1,part2)
+            if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
+                img0, theta = load_image_with_orientation(p)
+                #if not args.one:
+                #    img = img0
+                #else:
+                img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
+                f = fname(p)
+                if theta:
+                    c = '`y'
+                else:
+                    c = '`'
+                part1 = cf(fname(p),'`',pname(p),'`--du')
 
-            g *= 0
-            img = place_img_f_in_img_g(0,0,img,g,f_center=True,center_in_g=True)
-            cv2.namedWindow(f)
-            cv2.moveWindow(f,int((screen_sz[0]-max_width)/2),0)
+                if args.one:
+                    if shape(img0) == shape(img):
+                        part2 = cf(shape(img0)[:2],c)
+                    else:
+                        part2 = cf(shape(img0)[:2],c,'-->',shape(img)[:2],'`r-b')
+                    clp(part1,part2)
 
-            k = mci(img,title=f)
+                g *= 0
+                if args.one:
+                    img = place_img_f_in_img_g(0,0,img,g,f_center=True,center_in_g=True)
+                cv2.namedWindow(f)
+                cv2.moveWindow(f,int((screen_sz[0]-max_width)/2),0)
+
+                k = mci(img,title=f)
 
             if args.one:
 
@@ -254,6 +269,15 @@ def main():
                     s = max(args.seconds + args.seconds_std * rndn(),0.1)
                     time.sleep(s)
                     i += 1
+
+                elif args.add_as > 0:
+                    if p not in L['full_paths']:
+                        L['full_paths'][p] = []
+                        L['full_paths'][p].append((args.add_as,int(time.time())))
+                        kprint(L['full_paths'][p])
+                        change = True
+                        #time.sleep(0.1)
+                    i += 1             
                 else:
 
                     e = getch()
@@ -283,6 +307,8 @@ def main():
                     else:
                         clp("unused key",'`rwb')
                 CA()
+            else:
+                i += 1
 
         except KeyboardInterrupt:
             cr('*** KeyboardInterrupt ***')
@@ -310,7 +336,7 @@ def save_L(L):
     so(L,opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log')))
 
 def setup_L():
-    if 1:#try:
+    try:
         os.system('mkdir -p '+opjh('Logs',fnamene(__file__),args.topic))
         f = most_recent_file_in_folder(opjh('Logs',fnamene(__file__),args.topic),str_elements=[fnamene(__file__)])
         L = lo(f)
@@ -320,7 +346,7 @@ def setup_L():
                 del_lst.append(p)
         for p in del_lst:
             del L['full_paths'][p]
-    else:#except:
+    except:
         L = {}
         clp("L = {}",r=1)
 
