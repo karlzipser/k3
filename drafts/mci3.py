@@ -15,6 +15,7 @@ def get_args():
 
     aa(
         '--files',
+        '-f',
         nargs="+",
         default=[],
         help='space-separated list of image files to show',
@@ -22,6 +23,7 @@ def get_args():
 
     aa(
         '--paths',
+        '-p',
         nargs="+",
         default=[],
         help='space-separated list of paths',
@@ -29,6 +31,7 @@ def get_args():
 
     aa(
         '--ignore_paths',
+        '-ip',
         nargs="+",
         default=[],
         help='space-separated list of paths to ignore',
@@ -36,6 +39,7 @@ def get_args():
 
     aa(
         '--change',
+        '-c',
         nargs='?',
         const=True, default=False,
         help="allow change",
@@ -43,6 +47,7 @@ def get_args():
 
     aa(
         '--random',
+        '-r',
         nargs='?',
         const=True, default=False,
         help="randomize display order",
@@ -50,6 +55,7 @@ def get_args():
 
     aa(
         '--screen_pro',
+        '-sp',
         action='store',
         type=float,
         required=False,
@@ -59,6 +65,7 @@ def get_args():
 
     aa(
         '--topic',
+        '-tp',
         action='store',
         type=str,
         required=False,
@@ -69,22 +76,14 @@ def get_args():
 
     aa(
         '--progressive_range',
+        '-pr',
         action='store',
         type=float,
         required=False,
         default=0, 
-        help='view with probability, exponent',
+        help='view with progressive rating range',
     )
     
-
-    aa(
-        '--min_rating',
-        action='store',
-        type=float,
-        required=False,
-        default=0, 
-        help='minmum rating (1-9) to display',
-    )
 
     aa(
         '--add_as',
@@ -96,7 +95,18 @@ def get_args():
     )
 
     aa(
+        '--min_rating',
+        '-mn',
+        action='store',
+        type=float,
+        required=False,
+        default=0, 
+        help='minmum rating (1-9) to display',
+    )
+
+    aa(
         '--max_rating',
+        '-mx',
         action='store',
         type=float,
         required=False,
@@ -145,6 +155,7 @@ def get_args():
 
     aa(
         "--view_once",
+        "-vo",
         nargs='?',
         const=True, default=False,
         help="don't view image if already rated",
@@ -153,6 +164,7 @@ def get_args():
 
     aa(
         "--slideshow",
+        "-s",
         nargs='?',
         const=True, default=False,
         help="slideshow mode",
@@ -160,6 +172,7 @@ def get_args():
 
     aa(
         '--seconds',
+        '-sc',
         action='store',
         type=float,
         required=False,
@@ -169,6 +182,7 @@ def get_args():
 
     aa(
         '--seconds_std',
+        '-sd',
         action='store',
         type=float,
         required=False,
@@ -178,12 +192,14 @@ def get_args():
 
     aa(
         "--one",
+        "-o",
         nargs='?',
         const=True, default=False,
         help="one image at a time")
 
     aa(
         "--descend",
+        "-d",
         nargs='?',
         const=True, default=False,
         help="descend directories collecting images")
@@ -255,14 +271,13 @@ def main():
         if slideshow_timer.check():
             lst = get_list_of_files(L)
             slideshow_timer.reset()
-        print(dp(time.time()-tt))
+        #print(dp(time.time()-tt))
         tt = time.time()
         try:   
             if i < -len(lst):
                 i = -len(lst)
             clp(i+1,'of',len(lst))
             p = lst[i]
-            #print(args.view_once, args.view_n)
             assert not(args.view_once and args.view_n)
             max_views = 0
             if args.view_once:
@@ -297,6 +312,7 @@ def main():
                     else:
                         part2 = cf(shape(img0)[:2],c,'-->',shape(img)[:2],'`r-b')
                     clp(part1,part2)
+                cm('r =',dp(L['ratings'][p]))
 
                 g *= 0
                 if args.one:
@@ -367,8 +383,6 @@ def main():
             print(d2s(exc_type,file_name,exc_tb.tb_lineno))
             i += 1
             
-
-
     if not args.one:
         raw_enter()
 
@@ -377,10 +391,9 @@ def main():
 
         
 
-
-
 def save_L(L):
     so(L,opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log')))
+
 
 def setup_L():
     try:
@@ -400,63 +413,68 @@ def setup_L():
     for q in ['filenames','sys.argv']:
         if q not in L:
             L[q] = []
-    q = 'full_paths'
-    if q not in L:
-        L[q] = {}
+    for q in ['full_paths','ratings']:
+        if q not in L:
+            L[q] = {}
     L['sys.argv'].append( (sys.argv,int(time.time()) ))
     return L
 
+
 def print_command_lines(L):
-    # cmd_lines
     ctr = 0
     for l in L['sys.argv']:
         if is_even(ctr):
             c = '`---'
         else:
             c = '`---'
-        #print(l[0][1:])
         for i in range(1,len(l[0])):
             if "/" in l[0][i]:
-                #print i,l[0][i]
-                #l[0][i] = l[0][i].replace(' ','\\ ')
                 l[0][i] = '\"' + l[0][i] + '\"'
         clp(' '.join(l[0]),c,time_str(l[1],mode='Pretty2'),'`--d')
         ctr += 1
 
 
+def skip_f(f):
+    skip = False
+    try:
+        for a in args.ignore_paths:
+            if a in f:
+                #clp('skip',a,f)
+                skip = True
+                break
+        if skip:
+            return True
 
+        for a in args.paths:
+            if a not in f:
+                #clp('skip',a,f)
+                skip = True
+                break
+        if skip:
+            return True
+    except:
+        pass
+    return skip
 
 def get_list_of_files(L):
-
-    if False:#args.probs:
-        probs = arange(11)
-        probs = probs/10.
-        e = min(8,start_timer.time()/args.probs)
-        probs = probs**(e)#args.probs
-
-        #kprint(probs,r=1)
-        figure(2);plot(probs)#;raw_enter()
-        cy(dp(e))
 
     lst = []
 
     if args.min_rating > 0 or args.max_rating < 10 or args.progressive_range:
+
         for f in L['full_paths']:
+
+            if skip_f(f):
+                continue
+
             if len(L['full_paths'][f]) > 0:
                 try:
                     a = 0
                     for b in L['full_paths'][f]:
                         a += int(b[0])
                     r = a / (1.0*len(L['full_paths'][f]))
-
-                    if False:#args.probs:
-                        q = probs[intr(r)]
-                        v = rnd()
-                        #print(r,q,v)
-                        if v < q:
-                            lst.append(f)
-                            #print(f,len(lst))
-                    elif args.progressive_range:
+                    L['ratings'][f] = r
+                    if args.progressive_range:
                         if start_timer.time() < 30:
                             if r >= 4 and r <= 5:
                                 #cb(1)
@@ -496,110 +514,27 @@ def get_list_of_files(L):
         lst += args.files
         lst0 = []
         for p in args.paths:
-            if False:
-                do_continue = False
-                clp(args.ignore_paths,p,r=1)
-                for a in args.ignore_paths:
-                    print(a,p)
-                    if a in p:
-                        print('ignoreing path '+p)
-                        do_continue = True
-                        break
-                if do_continue:
-                    continue
-
             if args.descend:
                 lst0 += get_list_of_files_recursively(p,'*',FILES_ONLY=True,ignore_underscore=False)
             else:
                 lst0 += sggo(p,'*')
         for l in lst0:
             try:
-                skip = False
-                for a in args.ignore_paths:
-                    if a in l:
-                        clp('skip',a,l)
-                        skip = True
-                        break
+                skip = skip_f(l)
                 if not skip and imghdr.what(l) is not None:
                     lst.append(l)
             except:
                 pass
 
-
     if args.random:
         random.shuffle(lst)
-    cg(len(lst))
+    cg("len(lst) =",len(lst))
     return lst
 
 
 
 
-def _get_list_of_files(L):
 
-    lst = []
-
-    if args.min_rating > 0 or args.max_rating < 10:
-        for f in L['full_paths']:
-            if len(L['full_paths'][f]) > 0:
-                try:
-                    a = 0
-                    for b in L['full_paths'][f]:
-                        a += int(b[0])
-                    r = a / (1.0*len(L['full_paths'][f]))
-                    #print(dp(r))                  
-                    if r >= args.min_rating and r <= args.max_rating:
-                        #clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
-                        lst.append(f)
-                    else:
-                        pass#clp(dp(args.min_rating),r,dp(args.max_rating),'`b')
-                except KeyboardInterrupt:
-                    cr('*** KeyboardInterrupt ***')
-                    sys.exit()
-                except Exception as e:
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                    print('Exception!')
-                    print(d2s(exc_type,file_name,exc_tb.tb_lineno))
-
-    else:
-        import imghdr
-        lst += args.files
-        lst0 = []
-        for p in args.paths:
-            if False:
-                do_continue = False
-                clp(args.ignore_paths,p,r=1)
-                for a in args.ignore_paths:
-                    print(a,p)
-                    if a in p:
-                        print('ignoreing path '+p)
-                        do_continue = True
-                        break
-                if do_continue:
-                    continue
-
-            if args.descend:
-                lst0 += get_list_of_files_recursively(p,'*',FILES_ONLY=True,ignore_underscore=False)
-            else:
-                lst0 += sggo(p,'*')
-        for l in lst0:
-            try:
-                skip = False
-                for a in args.ignore_paths:
-                    if a in l:
-                        clp('skip',a,l)
-                        skip = True
-                        break
-                if not skip and imghdr.what(l) is not None:
-                    lst.append(l)
-            except:
-                pass
-
-
-    if args.random:
-        random.shuffle(lst)
-
-    return lst
 
 
 def hist_L(L):
