@@ -198,7 +198,7 @@ print(args)
 
 
 
-
+start_timer = Timer()
 
 
 def main():
@@ -212,7 +212,6 @@ def main():
     if args.hist:
         hist_L(L)
 
-    lst = get_list_of_files(L)
 
     if using_osx:
         def screen_size():
@@ -243,11 +242,18 @@ def main():
     next_img = None
     load_time = 0
     tt = time.time()
+    
+    lst = get_list_of_files(L)
+
+    slideshow_timer = Timer(10)
 
     while i < len(lst):
         if timer.check() and change:
             save_L(L)
             timer.reset()
+        if False:#slideshow_timer.check():
+            lst = get_list_of_files(L)
+            slideshow_timer.reset()
         print(dp(time.time()-tt))
         tt = time.time()
         try:   
@@ -417,15 +423,19 @@ def print_command_lines(L):
         ctr += 1
 
 
-probs = arange(11)
-probs = probs/10.
-probs = probs**args.probs
-#probs_start_time = time.time()
+
 
 def get_list_of_files(L):
 
+    if args.probs:
+        probs = arange(11)
+        probs = probs/10.
+        e = min(8,start_timer.time()/args.probs)
+        probs = probs**(e)#args.probs
 
-
+        #kprint(probs,r=1)
+        figure(2);plot(probs)#;raw_enter()
+        cy(dp(e))
 
     lst = []
 
@@ -440,10 +450,10 @@ def get_list_of_files(L):
                     if args.probs:
                         q = probs[intr(r)]
                         v = rnd()
-                        print(r,q,v)
+                        #print(r,q,v)
                         if v < q:
                             lst.append(f)
-                            print(f,len(lst))
+                            #print(f,len(lst))
                     else:                
                         if r >= args.min_rating and r <= args.max_rating:
                             #clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
@@ -495,7 +505,7 @@ def get_list_of_files(L):
 
     if args.random:
         random.shuffle(lst)
-
+    cg(len(lst))
     return lst
 
 
