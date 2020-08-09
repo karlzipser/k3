@@ -67,15 +67,16 @@ def get_args():
     )
 
 
-
     aa(
-        '--probs',
+        '--progressive_range',
         action='store',
         type=float,
         required=False,
         default=0, 
         help='view with probability, exponent',
     )
+    
+
     aa(
         '--min_rating',
         action='store',
@@ -251,7 +252,7 @@ def main():
         if timer.check() and change:
             save_L(L)
             timer.reset()
-        if False:#slideshow_timer.check():
+        if slideshow_timer.check():
             lst = get_list_of_files(L)
             slideshow_timer.reset()
         print(dp(time.time()-tt))
@@ -427,7 +428,7 @@ def print_command_lines(L):
 
 def get_list_of_files(L):
 
-    if args.probs:
+    if False:#args.probs:
         probs = arange(11)
         probs = probs/10.
         e = min(8,start_timer.time()/args.probs)
@@ -439,7 +440,7 @@ def get_list_of_files(L):
 
     lst = []
 
-    if args.min_rating > 0 or args.max_rating < 10 or args.probs:
+    if args.min_rating > 0 or args.max_rating < 10 or args.progressive_range:
         for f in L['full_paths']:
             if len(L['full_paths'][f]) > 0:
                 try:
@@ -447,13 +448,35 @@ def get_list_of_files(L):
                     for b in L['full_paths'][f]:
                         a += int(b[0])
                     r = a / (1.0*len(L['full_paths'][f]))
-                    if args.probs:
+
+                    if False:#args.probs:
                         q = probs[intr(r)]
                         v = rnd()
                         #print(r,q,v)
                         if v < q:
                             lst.append(f)
                             #print(f,len(lst))
+                    elif args.progressive_range:
+                        if start_timer.time() < 30:
+                            if r >= 4 and r <= 5:
+                                #cb(1)
+                                lst.append(f)
+                        elif start_timer.time() < 60:
+                            if r >= 4 and r <= 6:
+                                #cg(2)
+                                lst.append(f)
+                        elif start_timer.time() < 90:
+                            if r >= 5 and r <= 7:
+                                lst.append(f)
+                                #cy(3)
+                        elif start_timer.time() < 120:
+                            if r >= 6 and r <= 8:
+                                lst.append(f)
+                                #cm(4)
+                        else:# start_timer.time() < 120:
+                            if r >=7 and r < 10:
+                                lst.append(f)
+                                #cr(5)  
                     else:                
                         if r >= args.min_rating and r <= args.max_rating:
                             #clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
