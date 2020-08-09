@@ -74,13 +74,21 @@ def get_args():
     )
 
 
+    if False:
+        aa(
+            '--progressive_range',
+            '-pr',
+            action='store',
+            type=float,
+            required=False,
+            default=0, 
+            help='view with progressive rating range',
+        )
     aa(
         '--progressive_range',
         '-pr',
-        action='store',
-        type=float,
-        required=False,
-        default=0, 
+        nargs='?',
+        const=True, default=False,
         help='view with progressive rating range',
     )
     
@@ -460,7 +468,7 @@ def get_list_of_files(L):
 
     lst = []
 
-    if args.min_rating > 0 or args.max_rating < 10 or args.progressive_range:
+    if args.slideshow or args.min_rating > 0 or args.max_rating < 10 or args.progressive_range:
 
         for f in L['full_paths']:
 
