@@ -260,6 +260,29 @@ def process_getch(p,i,change):
 
 
 
+if False:
+    q="Pictures/Photos Library.photoslibrary/Masters/2020"
+    heics=get_list_of_files_recursively(q,'*.HEIC',FILES_ONLY=True,ignore_underscore=False)
+    jpgs=get_list_of_files_recursively(q,'*.JPG',FILES_ONLY=True,ignore_underscore=False)
+    js,hs = [],[]
+    for j in jpgs:
+        js.append(fnamene(j))
+    for j in heics:
+        hs.append(fnamene(j))
+    n = 0
+    for j in js:
+        if j not in hs:
+            n += 1
+            cg(j,n,int(n/(1.0*len(js))*100),'%')
+    raw_enter()
+    n = 0
+    for j in hs:
+        if j not in js:
+            n += 1
+            cg(j,n,int(n/(1.0*len(js))*100),'%')
+
+
+
 def save_L(L):
     so(L,opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log')))
 
