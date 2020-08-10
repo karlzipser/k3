@@ -200,65 +200,179 @@ def get_args():
 
 
 
-def load_and_display_img(p,g):
-    img0, theta = load_image_with_orientation(p)
-    img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
+args = get_args()
+print(args)
 
-    f = fname(p)
-    if theta:
-        c = '`y'
+
+start_timer = Timer()
+
+
+def main():
+
+    L = setup_L()
+    save_L(L)
+
+    if args.cmd_lines:
+        print_command_lines(L)
+        sys.exit()
+
+    if args.hist:
+        hist_L(L)
+
+    if using_osx:
+        def screen_size():
+            from Quartz import CGDisplayBounds
+            from Quartz import CGMainDisplayID
+            mainMonitor = CGDisplayBounds(CGMainDisplayID())
+            return (mainMonitor.size.width, mainMonitor.size.height) 
+        screen_sz = screen_size()
     else:
-        c = '`'
-    part1 = cf(fname(p),'`',pname(p),'`--du')
+        screen_sz = (800,800)
 
-    if args.one:
-        if shape(img0) == shape(img):
-            part2 = cf(shape(img0)[:2],c)
-        else:
-            part2 = cf(shape(img0)[:2],c,'-->',shape(img)[:2],'`r-b')
-        clp(part1,part2)
+    max_width,max_height = screen_sz[0]*args.screen_pro,screen_sz[1]*args.screen_pro
+    min_width,min_height = min(max_width,args.mwidth),min(max_height,args.mheight)
 
+    g = zeros((intr(max_height*1.),intr(max_width*1.),3),np.uint8)
+
+    i = 0
+
+    save_timer = Timer(60)
+
+    change = False
+
+    if args.slideshow:
+        clp("ctrl-C to exit slideshow",'`--rb')
+        time.sleep(3)
+
+    next_img0 = None
+    next_theta = None
+    next_img = None
+    load_time = 0
     
-    if args.one:
-        img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
-    cv2.namedWindow(f)
-    cv2.moveWindow(f,int((screen_sz[0]-max_width)/2),0)
+    lst = get_list_of_files(L)
 
-    k = mci(img,title=f)
+    slideshow_timer = Timer(10)
 
+    while i < len(lst):
+        if save_timer.check() and change:
+            save_L(L)
+            save_timer.reset()
+        if slideshow_timer.check():
+            lst = get_list_of_files(L)
+            slideshow_timer.reset()
+        tt = time.time()
+        try:   
+            if i < -len(lst):
+                i = -len(lst)
+            clp(i+1,'of',len(lst))
+            p = lst[i]
+            assert not(args.view_once and args.view_n)
+            max_views = 0
+            if args.view_once:
+                max_views = 0
+            elif args.view_n:
+                max_views = args.view_n-1
 
+            if (args.view_once or args.view_n) and p in L['full_paths'] and len(L['full_paths'][p]) > max_views:
+                #clp('saw',p,len(L['full_paths'][p]),'times, skipping it')
+                i += 1
+                continue
 
-def process_getch(p,i):
-    e = getch()
+            if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
+                if next_img is None:
+                    img0, theta = load_image_with_orientation(p)
+                    img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
+                else:
+                    img0 = next_img0
+                    img = next_img
+                    theta = next_theta
 
-    if p not in L['full_paths']:
-        L['full_paths'][p] = []
+                f = fname(p)
+                if theta:
+                    c = '`y'
+                else:
+                    c = '`'
+                part1 = cf(fname(p),'`',pname(p),'`--du')
 
-    if str_is_int(e):
-        if args.change:
-            L['full_paths'][p].append((e,int(time.time())))
-            kprint(L['full_paths'][p])
+                if args.one:
+                    if shape(img0) == shape(img):
+                        part2 = cf(shape(img0)[:2],c)
+                    else:
+                        part2 = cf(shape(img0)[:2],c,'-->',shape(img)[:2],'`r-b')
+                    clp(part1,part2)
+
+                g *= 0
+                if args.one:
+                    img = place_img_f_in_img_g(0,0,img,g,f_center=True,center_in_g=True)
+                cv2.namedWindow(f)
+                cv2.moveWindow(f,int((screen_sz[0]-max_width)/2),0)
+
+                k = mci(img,title=f)
+
+            if args.one:
+
+                if args.slideshow:
+                    s = max(args.seconds + args.seconds_std * rndn(),0.1)
+                    time.sleep(s - load_time)
+                    i += 1
+
+                elif args.add_as > 0:
+                    if p not in L['full_paths']:
+                        L['full_paths'][p] = []
+                        L['full_paths'][p].append((args.add_as,int(time.time())))
+                        kprint(L['full_paths'][p])
+                        change = True
+                        #time.sleep(0.1)
+                    i += 1             
+                else:
+
+                    e = getch()
+
+                    if p not in L['full_paths']:
+                        L['full_paths'][p] = []
+
+                    if str_is_int(e):
+                        if args.change:
+                            L['full_paths'][p].append((e,int(time.time())))
+                            kprint(L['full_paths'][p])
+                            i += 1
+                            change = True
+                        else:
+                            raw_enter('change not allowed')
+
+                    elif e == 'p':
+                        print('back',i)
+                        i -= 1
+
+                    elif e == ' ':
+                        i += 1
+                
+                    elif e in ['q']:
+                        break
+
+                    else:
+                        clp("unused key",'`rwb')
+                CA()
+            else:
+                i += 1
+
+        except KeyboardInterrupt:
+            cr('*** KeyboardInterrupt ***')
+            sys.exit()
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print('Exception!')
+            print(d2s(exc_type,file_name,exc_tb.tb_lineno))
             i += 1
-            change = True
-        else:
-            raw_enter('change not allowed')
+            
+    if not args.one:
+        raw_enter()
 
-    elif e == 'p':
-        print('back',i)
-        i -= 1
+    if change:
+        save_L(L)
 
-    elif e == ' ':
-        i += 1
-
-    elif e in ['q']:
-        return 'quit'
-
-    else:
-        clp("unused key",'`rwb')
-
-    return i
-
-
+        
 
 def save_L(L):
     so(L,opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log')))
@@ -279,16 +393,14 @@ def setup_L():
         L = {}
         clp("L = {}",r=1)
 
-    for q in ['filenames','sys.argv','Args']:
+    for q in ['filenames','sys.argv']:
         if q not in L:
             L[q] = []
     for q in ['full_paths','ratings']:
         if q not in L:
             L[q] = {}
     L['sys.argv'].append( (sys.argv,int(time.time()) ))
-    L['Args'].append( (vars(args),int(time.time()) ))
     return L
-
 
 
 def print_command_lines(L):
@@ -303,7 +415,6 @@ def print_command_lines(L):
                 l[0][i] = '\"' + l[0][i] + '\"'
         clp(' '.join(l[0]),c,time_str(l[1],mode='Pretty2'),'`--d')
         ctr += 1
-
 
 
 def skip_f(f):
@@ -327,8 +438,6 @@ def skip_f(f):
     except:
         pass
     return skip
-
-
 
 def get_list_of_files(L):
 
@@ -426,158 +535,12 @@ def hist_L(L):
     plt.xlabel('rating')
     plt.ylabel('# images')
     plt.title(d2s('rating histogram for',len(rs),'images'))
+    #print(len(rs))
     raw_enter()
     CA()
 
 
+if __name__ == '__main__':
+    main()
 
-
-
-
-###########
-#
-args = get_args()
-print(args.slideshow,type(args.slideshow))
-kprint(vars(args),r=0)
-
-if using_osx:
-    def screen_size():
-        from Quartz import CGDisplayBounds
-        from Quartz import CGMainDisplayID
-        mainMonitor = CGDisplayBounds(CGMainDisplayID())
-        return (mainMonitor.size.width, mainMonitor.size.height) 
-    screen_sz = screen_size()
-else:
-    screen_sz = (800,800)
-
-max_width,max_height = screen_sz[0]*args.screen_pro,screen_sz[1]*args.screen_pro
-min_width,min_height = min(max_width,args.mwidth),min(max_height,args.mheight)
-
-save_timer = Timer(60)
-slideshow_timer = Timer(10)
-start_timer = Timer()
-L = setup_L()
-save_L(L)
-
-
-if args.cmd_lines:
-    print_command_lines(L)
-    sys.exit()
-
-if args.hist:
-    hist_L(L)
-
-g = zeros((intr(max_height*1.),intr(max_width*1.),3),np.uint8)
-
-
-change = False
-
-if args.slideshow:
-    clp("ctrl-C to exit slideshow",'`--rb')
-    time.sleep(3)
-
-lst = get_list_of_files(L)
-
-i = 0
-
-while i < len(lst):
-
-    if save_timer.check() and change:
-        save_L(L)
-        save_timer.reset()
-
-    if slideshow_timer.check():
-        lst = get_list_of_files(L)
-        slideshow_timer.reset()
-
-    try:   
-        if i < -len(lst):
-            i = -len(lst)
-        clp(i+1,'of',len(lst))
-        p = lst[i]
-        assert not(args.view_once and args.view_n)
-        max_views = 0
-        if args.view_once:
-            max_views = 0
-        elif args.view_n:
-            max_views = args.view_n-1
-
-        if (args.view_once or args.view_n) and p in L['full_paths'] and len(L['full_paths'][p]) > max_views:
-            i += 1
-            continue
-
-        if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
-            load_and_display_img(p,g)
-
-        if args.one:
-
-            if args.slideshow:
-                s = max(args.seconds + args.seconds_std * rndn(),0.1)
-                time.sleep(s)
-                i += 1
-
-            elif args.add_as > 0:
-                if p not in L['full_paths']:
-                    L['full_paths'][p] = []
-                    L['full_paths'][p].append((args.add_as,int(time.time())))
-                    kprint(L['full_paths'][p])
-                    change = True
-                i += 1
-
-            else:
-                i = process_getch(p,i)
-                if i == 'quit':
-                    break
-
-            CA()
-
-        else:
-            i += 1
-
-    except KeyboardInterrupt:
-        cr('*** KeyboardInterrupt ***')
-        sys.exit()
-    except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print('Exception!')
-        print(d2s(exc_type,file_name,exc_tb.tb_lineno))
-        i += 1
-        
-if not args.one:
-    raw_enter()
-
-if change:
-    save_L(L)
-   
 #EOF
-
-if False:
-    class Cdat:
-        def __init__(self,title=''):
-            self._title=title
-        def add(self, name, val):
-            self.__dict__[name] = val
-        def kprint(self):
-            kprint(vars(self),title=self._title)
-
-    G = Cdat('G')
-    G.add('value_1', 'Just me.')
-    G.add('value_2', 1)
-    G.add('value_3', {'a':'Just me.',2:'adfadsf'})
-    G.kprint()
-
-"""
-class Struct:
-    def __init__(self, **entries):
-        self.__dict__.update(entries)
-
->>> args = {'a': 1, 'b': 2}
->>> s = Struct(**args)
->>> s
-<__main__.Struct instance at 0x01D6A738>
->>> s.a
-1
->>> s.b
-2
-"""
