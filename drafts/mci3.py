@@ -228,7 +228,7 @@ def load_and_display_img(p,g):
 
 
 
-def process_getch(p,i):
+def process_getch(p,i,change):
     e = getch()
 
     if p not in L['full_paths']:
@@ -237,7 +237,7 @@ def process_getch(p,i):
     if str_is_int(e):
         if args.change:
             L['full_paths'][p].append((e,int(time.time())))
-            kprint(L['full_paths'][p])
+            cg(p,L['full_paths'][p],"len(L['full_paths']) =",len(L['full_paths']))
             i += 1
             change = True
         else:
@@ -251,17 +251,18 @@ def process_getch(p,i):
         i += 1
 
     elif e in ['q']:
-        return 'quit'
+        return 'quit',change
 
     else:
         clp("unused key",'`rwb')
 
-    return i
+    return i,change
 
 
 
 def save_L(L):
     so(L,opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log')))
+
 
 
 def setup_L():
@@ -306,12 +307,12 @@ def print_command_lines(L):
 
 
 
-def skip_f(f):
+def skip_f(f,verbose=True):
     skip = False
     try:
         for a in args.ignore_paths:
             if a in f:
-                #clp('skip',a,f)
+                if verbose: clp('ignore_paths: skip',a,f)
                 skip = True
                 break
         if skip:
@@ -319,7 +320,7 @@ def skip_f(f):
 
         for a in args.paths:
             if a not in f:
-                #clp('skip',a,f)
+                if verbose: clp('skip',a,f)
                 skip = True
                 break
         if skip:
@@ -336,6 +337,11 @@ def get_list_of_files(L):
 
     if args.slideshow or args.min_rating > 0 or args.max_rating < 10 or args.progressive_range:
 
+        if len(L['full_paths']) == 0:
+            clp("warning, len(L['full_paths']) == 0",
+                "with args.slideshow or args.min_rating > 0 or args.max_rating < 10",
+                "or args.progressive_range True",'`wrb')
+
         for f in L['full_paths']:
 
             if skip_f(f):
@@ -351,30 +357,24 @@ def get_list_of_files(L):
                     if args.progressive_range:
                         if start_timer.time() < 30:
                             if r >= 4 and r <= 5:
-                                #cb(1)
                                 lst.append(f)
                         elif start_timer.time() < 60:
                             if r >= 4 and r <= 6:
-                                #cg(2)
                                 lst.append(f)
                         elif start_timer.time() < 90:
                             if r >= 5 and r <= 7:
                                 lst.append(f)
-                                #cy(3)
                         elif start_timer.time() < 120:
                             if r >= 6 and r <= 8:
                                 lst.append(f)
-                                #cm(4)
-                        else:# start_timer.time() < 120:
+                        else:
                             if r >=7 and r < 10:
                                 lst.append(f)
-                                #cr(5)  
                     else:                
                         if r >= args.min_rating and r <= args.max_rating:
-                            #clp(dp(args.min_rating),r,dp(args.max_rating),'`y')
                             lst.append(f)
                         else:
-                            pass#clp(dp(args.min_rating),r,dp(args.max_rating),'`b')
+                            pass
                 except KeyboardInterrupt:
                     cr('*** KeyboardInterrupt ***')
                     sys.exit()
@@ -384,18 +384,38 @@ def get_list_of_files(L):
                     print('Exception!')
                     print(d2s(exc_type,file_name,exc_tb.tb_lineno))
     else:
+        #c
         import imghdr
         lst += args.files
         lst0 = []
         for p in args.paths:
+            #cy(p,r=1)
             if args.descend:
-                lst0 += get_list_of_files_recursively(p,'*',FILES_ONLY=True,ignore_underscore=False)
+                #cg('here!',r=1)
+                q = get_list_of_files_recursively(p,'*',FILES_ONLY=True,ignore_underscore=False)
+                u = []
+                for v in q:
+                    #cm(v)
+                    if p not in v:
+                        if v[0] == '/':
+                            v = v[1:]
+                        u.append(opj(p,v))
+                        #cy(p,v,opj(p,v))
+                        #cm('a')
+                    else:
+                        #cm('b')
+                        u.append(v)
+                #cm(0,r=1)
+                lst0 += u
             else:
                 lst0 += sggo(p,'*')
+        #kprint(lst0,r=1,t='lst0')
         for l in lst0:
             try:
                 skip = skip_f(l)
+                #cr(l)
                 if not skip and imghdr.what(l) is not None:
+                    #cb(l)
                     lst.append(l)
             except:
                 pass
@@ -486,7 +506,7 @@ while i < len(lst):
         save_L(L)
         save_timer.reset()
 
-    if slideshow_timer.check():
+    if args.slideshow and slideshow_timer.check():
         lst = get_list_of_files(L)
         slideshow_timer.reset()
 
@@ -520,13 +540,15 @@ while i < len(lst):
                 if p not in L['full_paths']:
                     L['full_paths'][p] = []
                     L['full_paths'][p].append((args.add_as,int(time.time())))
-                    kprint(L['full_paths'][p])
+                    cg(L['full_paths'][p],cg("len(L['full_paths']) =",len(L['full_paths'])))
                     change = True
                 i += 1
 
             else:
-                i = process_getch(p,i)
+                i,change = process_getch(p,i,change)
+
                 if i == 'quit':
+                    
                     break
 
             CA()
@@ -534,6 +556,7 @@ while i < len(lst):
         else:
             i += 1
 
+    
     except KeyboardInterrupt:
         cr('*** KeyboardInterrupt ***')
         sys.exit()
@@ -543,12 +566,15 @@ while i < len(lst):
         print('Exception!')
         print(d2s(exc_type,file_name,exc_tb.tb_lineno))
         i += 1
+    
         
 if not args.one:
     raw_enter()
 
+
 if change:
     save_L(L)
+    
    
 #EOF
 
