@@ -1335,7 +1335,7 @@ def load_image_with_orientation(filepath):
     theta = read_img_and_get_orientation_correction_degrees(filepath)
     if theta in [90,180,270]:
         image=Image.open(filepath)
-        print(theta)
+        #print(theta)
         image = image.rotate(theta, expand=True)
         image = na(image)[:,:,:3]
     else:

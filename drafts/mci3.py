@@ -2,6 +2,51 @@ from k3.vis3 import *
 
 
 
+#,a
+IMAGE_DIC = {}
+
+def read_image_to_IMAGE_DIC(IMAGE_DIC):
+    #cr(IMAGE_DIC['lst'][:10])
+
+    ctr = 0
+
+    while ctr < len(IMAGE_DIC['lst']):
+
+        if IMAGE_DIC['del_lst'] is None:
+            IMAGE_DIC = 0
+            break
+
+        #cg("len(IMAGE_DIC) =",len(IMAGE_DIC))
+
+        if len(IMAGE_DIC) <= 1000 - len(IMAGE_DIC['del_lst']):
+
+            p = IMAGE_DIC['lst'][ctr]
+            ctr += 1
+            
+            #print(IMAGE_DIC.keys())
+            
+
+
+            img0, theta = load_image_with_orientation(p)
+            img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
+            IMAGE_DIC[p] = img,shape(img0),theta
+
+            while False:
+                #cg("len(IMAGE_DIC) =",len(IMAGE_DIC))
+                if len(IMAGE_DIC) <= 20 and len(IMAGE_DIC['del_lst']) < 5:
+                    break
+                time.sleep(0.1)
+        else:
+            time.sleep(0.1)
+            
+    print("exiting read_image_to_IMAGE_DIC")
+
+    
+
+
+#,b
+
+
 def get_args():
     
     import argparse
@@ -216,7 +261,65 @@ def get_args():
 
 
 
-def load_and_display_img(p,g):
+
+def load_and_display_img(p,g,IMAGE_DIC):
+
+    if p not in IMAGE_DIC:
+        cb(fname(p),"not in IMAGE_DIC, loadiing.")
+        img0, theta = load_image_with_orientation(p)
+        img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
+        IMAGE_DIC[p] = img,shape(img0),theta
+        img0_shape = shape(img0)
+    else:
+        img,img0_shape,theta = IMAGE_DIC[p]
+
+    if p not in IMAGE_DIC['del_lst']:
+        IMAGE_DIC['del_lst'].append(p)
+
+    #del IMAGE_DIC[p]
+    #IMAGE_DIC['lst'].remove(p)
+
+
+    f = fname(p)
+    if theta:
+        c = '`y'
+    else:
+        c = '`'
+    part1 = cf(fname(p),'`',pname(p),'`--du')
+
+    if args.one:
+        if img0_shape == shape(img):
+            part2 = cf(img0_shape[:2],c)
+        else:
+            part2 = cf(img0_shape[:2],c,'-->',shape(img)[:2],'`r-b')
+        clp(part1,part2)
+
+    if args.one:
+        #clp(shape(img),shape(g))
+        img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
+
+    if not args.one:
+        w = f
+    else:
+        w = 'images'
+    cv2.namedWindow(w)
+    if args.window_x < 0:
+        wx = int((SCREEN_RESOLUTION[0]-max_width)/2)
+    else:
+        wx = args.window_x
+    if args.window_y < 0:
+        wy = 0
+    else:
+        wy = args.window_y
+    cv2.moveWindow(w,wx,wy)
+
+    k = mci(img,title=w)
+    if p in L['ratings']:
+        clp('rating =',dp(L['ratings'][p]),'`m')
+
+
+
+def __load_and_display_img(p,g):
     img0, theta = load_image_with_orientation(p)
     img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
 
@@ -257,7 +360,6 @@ def load_and_display_img(p,g):
     k = mci(img,title=w)
     if p in L['ratings']:
         clp('rating =',dp(L['ratings'][p]),'`m')
-
 
 
 def process_getch(p,i,change):
@@ -542,13 +644,15 @@ if args.slideshow:
     clp("ctrl-C to exit slideshow",'`--rb')
     time.sleep(0)#3)
 
-lst = get_list_of_files(L)
-
+IMAGE_DIC['lst'] = get_list_of_files(L)
+IMAGE_DIC['del_lst'] = []
+threading.Thread(target=read_image_to_IMAGE_DIC,args=(IMAGE_DIC,)).start()
 i = 0
 
 
 
-def loop_body(i,lst,change):
+def loop_body(i,change,IMAGE_DIC):
+    lst = IMAGE_DIC['lst']
     if i < -len(lst):
         i = -len(lst)
     clp(i+1,'of',len(lst))
@@ -565,7 +669,15 @@ def loop_body(i,lst,change):
         return i,change
 
     if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
-        load_and_display_img(p,g)
+        #if p not in IMAGE_DIC:
+        #    cr(p,"not in IMAGE_DIC")
+        load_and_display_img(p,g,IMAGE_DIC)
+        cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']))
+        if len(IMAGE_DIC['del_lst']) > 200:
+            del IMAGE_DIC[IMAGE_DIC['del_lst'].pop(0)]
+
+
+
 
     if args.one:
 
@@ -592,21 +704,21 @@ def loop_body(i,lst,change):
     return i,change
 
 
-while i < len(lst):
+while i < len(IMAGE_DIC['lst']):
 
     if save_timer.check() and change:
         save_L(L)
         save_timer.reset()
 
-    if args.slideshow and slideshow_timer.check():
-        lst = get_list_of_files(L)
-        slideshow_timer.reset()
+    #if args.slideshow and slideshow_timer.check():
+    #    IMAGE_DIC['lst'] = get_list_of_files(L)
+    #    slideshow_timer.reset()
 
     use_exceptions = False
     if use_exceptions:
         try:   
 
-            i,change = loop_body(i,lst,change)
+            i,change = loop_body(i,change,IMAGE_DIC)
         except KeyboardInterrupt:
             cr('*** KeyboardInterrupt ***')
             sys.exit()
@@ -618,8 +730,9 @@ while i < len(lst):
             i += 1
             raw_enter()
     else:
-        i,change = loop_body(i,lst,change)
+        i,change = loop_body(i,change,IMAGE_DIC)
         if i == 'quit':
+            IMAGE_DIC['del_lst'] = None
             break
     
     
@@ -630,8 +743,14 @@ if not args.one:
 
 if change:
     save_L(L)
-    
    
+time.sleep(0.1) 
+"""
+IMAGE_DIC = None
+while IMAGE_DIC is None:
+    time.sleep(0.1)
+"""
+cg('Done.')
 #EOF
 
 if False:
