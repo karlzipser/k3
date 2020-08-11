@@ -1,12 +1,7 @@
 from k3.vis3 import *
 
 
-
-#,a
-IMAGE_DIC = {}
-
 def read_image_to_IMAGE_DIC(IMAGE_DIC):
-    #cr(IMAGE_DIC['lst'][:10])
 
     ctr = 0
 
@@ -16,17 +11,10 @@ def read_image_to_IMAGE_DIC(IMAGE_DIC):
             IMAGE_DIC = 0
             break
 
-        #cg("len(IMAGE_DIC) =",len(IMAGE_DIC))
-
         if len(IMAGE_DIC) <= 1000 - len(IMAGE_DIC['del_lst']):
 
             p = IMAGE_DIC['lst'][ctr]
             ctr += 1
-            
-            #print(IMAGE_DIC.keys())
-            
-
-
             img0, theta = load_image_with_orientation(p)
             img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
             IMAGE_DIC[p] = img,shape(img0),theta
@@ -264,6 +252,8 @@ def load_and_display_img(p,g,IMAGE_DIC):
         img0_shape = shape(img0)
     else:
         img,img0_shape,theta = IMAGE_DIC[p]
+
+    IMAGE_DIC['viewed_in_this_session'].append(p)
 
     if p not in IMAGE_DIC['del_lst']:
         IMAGE_DIC['del_lst'].append(p)
@@ -603,9 +593,14 @@ if args.slideshow:
     clp("ctrl-C to exit slideshow",'`--rb')
     time.sleep(0)#3)
 
-IMAGE_DIC['lst'] = get_list_of_files(L)
-IMAGE_DIC['del_lst'] = []
+IMAGE_DIC = {
+    'lst':get_list_of_files(L),
+    'del_lst':[],
+    'viewed_in_this_session':[],
+}
+
 threading.Thread(target=read_image_to_IMAGE_DIC,args=(IMAGE_DIC,)).start()
+
 i = 0
 
 
@@ -626,7 +621,10 @@ def loop_body(i,change,IMAGE_DIC):
     elif args.view_n:
         max_views = args.view_n-1
 
-    if (args.view_once or args.view_n) and p in L['full_paths'] and len(L['full_paths'][p]) > max_views:
+    if p in IMAGE_DIC['viewed_in_this_session']:
+        pass
+    
+    elif (args.view_once or args.view_n) and p in L['full_paths'] and len(L['full_paths'][p]) > max_views:
         i += 1
         return i,change
 
