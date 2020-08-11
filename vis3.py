@@ -3,6 +3,7 @@ from k3.utils3 import *
 
 import matplotlib
 try:
+    # pip install opencv-python==4.1.2.30
     import cv2
     imread = cv2.imread
     imsave = cv2.imwrite
@@ -27,7 +28,26 @@ if username == 'nvidia':
     matplotlib.use(u'TkAgg')
 
 
-#spd2s('imported',__file__)
+
+try:
+    r = txt_file_to_list_of_strings(opjh('.screen_resolution'))
+    SCREEN_RESOLUTION = (int(r[0]),int(r[1]))
+except:
+    clp("Didn't find or get data from",opjh('.screen_resolution'),'`wrb')
+    try:
+    #if using_osx:
+        def screen_size():
+            from Quartz import CGDisplayBounds
+            from Quartz import CGMainDisplayID
+            mainMonitor = CGDisplayBounds(CGMainDisplayID())
+            return (mainMonitor.size.width, mainMonitor.size.height) 
+        SCREEN_RESOLUTION = screen_size()
+    #else:
+    except:
+        SCREEN_RESOLUTION = (800,800)
+
+
+
 ###########
 '''
 e.g.
@@ -1276,7 +1296,7 @@ def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False
     else:
         u = -y0d_
 
-    clp(y0_,y1_+y0d_-y0d_,x0_,x1_+x0d_-x0d_,-y0d_,y1_+u,-x0d_,x1_+q)
+    #clp(y0_,y1_+y0d_-y0d_,x0_,x1_+x0d_-x0d_,-y0d_,y1_+u,-x0d_,x1_+q)
     g0[  int(y0_):int(y1_+y0d_-y0d_),  int(x0_):int(x1_+x0d_-x0d_),:3] = f.copy()[int(-y0d_):int(y1_+u),int(-x0d_):int(x1_+q),:3]
 
     return g0

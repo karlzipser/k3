@@ -160,6 +160,22 @@ def get_args():
         help='min width',
     )
     aa(
+        '--window_x',
+        action='store',
+        type=int,
+        required=False,
+        default=-1, 
+        help='window x upper left corner',
+    )
+    aa(
+        '--window_y',
+        action='store',
+        type=int,
+        required=False,
+        default=-1, 
+        help='window y upper left corner',
+    )
+    aa(
         '--view_n',
         action='store',
         type=int,
@@ -220,7 +236,7 @@ def load_and_display_img(p,g):
 
     
     if args.one:
-        clp(shape(img),shape(g))
+        #clp(shape(img),shape(g))
         img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
 
     if not args.one:
@@ -228,9 +244,19 @@ def load_and_display_img(p,g):
     else:
         w = 'images'
     cv2.namedWindow(w)
-    cv2.moveWindow(w,int((screen_sz[0]-max_width)/2),0)
+    if args.window_x < 0:
+        wx = int((SCREEN_RESOLUTION[0]-max_width)/2)
+    else:
+        wx = args.window_x
+    if args.window_y < 0:
+        wy = 0
+    else:
+        wy = args.window_y
+    cv2.moveWindow(w,wx,wy)
 
     k = mci(img,title=w)
+    if p in L['ratings']:
+        clp('rating =',dp(L['ratings'][p]),'`m')
 
 
 
@@ -490,24 +516,7 @@ print(args.slideshow,type(args.slideshow))
 kprint(vars(args),r=0)
 
 
-try:
-    r = txt_file_to_list_of_strings(opjh('.screen_resolution'))
-    screen_sz = (int(r[0]),int(r[1]))
-except:
-    clp("Didn't find opjh('.screen_resolution')",'`wrb')
-    try:
-    #if using_osx:
-        def screen_size():
-            from Quartz import CGDisplayBounds
-            from Quartz import CGMainDisplayID
-            mainMonitor = CGDisplayBounds(CGMainDisplayID())
-            return (mainMonitor.size.width, mainMonitor.size.height) 
-        screen_sz = screen_size()
-    #else:
-    except:
-        screen_sz = (800,800)
-
-max_width,max_height = screen_sz[0]*args.screen_pro,screen_sz[1]*args.screen_pro
+max_width,max_height = SCREEN_RESOLUTION[0]*args.screen_pro,SCREEN_RESOLUTION[1]*args.screen_pro
 min_width,min_height = min(max_width,args.mwidth),min(max_height,args.mheight)
 
 save_timer = Timer(60)
@@ -537,6 +546,52 @@ lst = get_list_of_files(L)
 
 i = 0
 
+
+
+def loop_body(i,lst,change):
+    if i < -len(lst):
+        i = -len(lst)
+    clp(i+1,'of',len(lst))
+    p = lst[i]
+    assert not(args.view_once and args.view_n)
+    max_views = 0
+    if args.view_once:
+        max_views = 0
+    elif args.view_n:
+        max_views = args.view_n-1
+
+    if (args.view_once or args.view_n) and p in L['full_paths'] and len(L['full_paths'][p]) > max_views:
+        i += 1
+        return i,change
+
+    if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
+        load_and_display_img(p,g)
+
+    if args.one:
+
+        if args.slideshow:
+            s = max(args.seconds + args.seconds_std * rndn(),0.1)
+            time.sleep(s)
+            i += 1
+
+        elif args.add_as > 0:
+            if p not in L['full_paths']:
+                L['full_paths'][p] = []
+                L['full_paths'][p].append((args.add_as,int(time.time())))
+                cg(L['full_paths'][p],cg("len(L['full_paths']) =",len(L['full_paths'])))
+                change = True
+            i += 1
+
+        else:
+            i,change = process_getch(p,i,change)
+
+            if i == 'quit':
+                return i,change
+    else:
+        i += 1
+    return i,change
+
+
 while i < len(lst):
 
     if save_timer.check() and change:
@@ -547,63 +602,26 @@ while i < len(lst):
         lst = get_list_of_files(L)
         slideshow_timer.reset()
 
-    if True:#try:   
-        if i < -len(lst):
-            i = -len(lst)
-        clp(i+1,'of',len(lst))
-        p = lst[i]
-        assert not(args.view_once and args.view_n)
-        max_views = 0
-        if args.view_once:
-            max_views = 0
-        elif args.view_n:
-            max_views = args.view_n-1
+    use_exceptions = False
+    if use_exceptions:
+        try:   
 
-        if (args.view_once or args.view_n) and p in L['full_paths'] and len(L['full_paths'][p]) > max_views:
+            i,change = loop_body(i,lst,change)
+        except KeyboardInterrupt:
+            cr('*** KeyboardInterrupt ***')
+            sys.exit()
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print('Exception!')
+            print(d2s(exc_type,file_name,exc_tb.tb_lineno))
             i += 1
-            continue
-
-        if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
-            load_and_display_img(p,g)
-
-        if args.one:
-
-            if args.slideshow:
-                s = max(args.seconds + args.seconds_std * rndn(),0.1)
-                time.sleep(s)
-                i += 1
-
-            elif args.add_as > 0:
-                if p not in L['full_paths']:
-                    L['full_paths'][p] = []
-                    L['full_paths'][p].append((args.add_as,int(time.time())))
-                    cg(L['full_paths'][p],cg("len(L['full_paths']) =",len(L['full_paths'])))
-                    change = True
-                i += 1
-
-            else:
-                i,change = process_getch(p,i,change)
-
-                if i == 'quit':
-                    
-                    break
-
-            #CA()
-
-        else:
-            i += 1
-
-    """
-    except KeyboardInterrupt:
-        cr('*** KeyboardInterrupt ***')
-        sys.exit()
-    except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print('Exception!')
-        print(d2s(exc_type,file_name,exc_tb.tb_lineno))
-        i += 1
-    """
+            raw_enter()
+    else:
+        i,change = loop_body(i,lst,change)
+        if i == 'quit':
+            break
+    
     
         
 if not args.one:
