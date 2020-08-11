@@ -42,7 +42,7 @@ except:
 while True:
     try:
         clear_screen()
-        print 
+        print('') 
         sorted_H_keys = sorted(H.keys())
         line_list = []
         command_hide = []
@@ -162,7 +162,7 @@ while True:
         n = int(b)
         a = line_list[n]
         if len(a[1]) > 2:
-            print a[1]
+            print(a[1])
         if a[1] == '-':
             Open[a[0]] = False
         elif a[1] == '+':

@@ -1275,7 +1275,9 @@ def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False
         u = -y0_
     else:
         u = -y0d_
-    g0[  y0_:y1_+y0d_-y0d_,  x0_:x1_+x0d_-x0d_,:3] = f.copy()[-y0d_:y1_+u,-x0d_:x1_+q,:3]
+
+    clp(y0_,y1_+y0d_-y0d_,x0_,x1_+x0d_-x0d_,-y0d_,y1_+u,-x0d_,x1_+q)
+    g0[  int(y0_):int(y1_+y0d_-y0d_),  int(x0_):int(x1_+x0d_-x0d_),:3] = f.copy()[int(-y0d_):int(y1_+u),int(-x0d_):int(x1_+q),:3]
 
     return g0
 

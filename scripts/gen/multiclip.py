@@ -6,7 +6,7 @@ Arguments = get_Arguments()
 
 save_dir = opjh('multiclip')
 
-os.system('mkdir -p' + save_dir)
+os.system('mkdir -p ' + save_dir)
 
 try:
 	save_file = opj(save_dir,'multiclip.pkl')
@@ -103,7 +103,7 @@ threading.Thread(target=clipthread).start()
 while True:
 	if False:#not E['thread_sleeping']:
 		continue
-	try:
+	if True:#try:
 		istr =  '--> '
 
 		if use_prefix_and_suffix:
@@ -144,6 +144,9 @@ while True:
 				if '.pkl' in files[i]:
 					clp(i,')',fname(files[i]))
 			j = input('==>> ')
+			assert(str_is_int(j))
+			j = int(j)
+			print(files[j])
 			E['lst'] = lo(files[j])
 			print_lst()
 		elif r[0] == 'x':
@@ -155,6 +158,7 @@ while True:
 		elif r[0] == 'p':
 			E['pause_thread'] = not E['pause_thread']
 
+	"""
 	except KeyboardInterrupt:
 	    cr('*** KeyboardInterrupt ***')
 	    E['Command'] = 'quit'
@@ -163,19 +167,9 @@ while True:
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-		CS_('Exception!',emphasis=True)
-		CS_(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)		
-
-if False:
-	a = [44,47,53,47,43,55,44,48,47,48,47,44,55,46,36,45,47,44,48,47,45,46,53,45,44]
-	mx = 51
-	mn = 38
-	c = []
-	for d in a:
-		if d <= mx and d >= mn:
-			c.append(d)
-	hist(c)
-	print np.median(c),np.mean(c)
+		clp('Exception!','`wrb')
+		clp(d2s(exc_type,file_name,exc_tb.tb_lineno),'`wr-')		
+	"""
 
 #,b
 #EOF

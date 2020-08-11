@@ -220,11 +220,17 @@ def load_and_display_img(p,g):
 
     
     if args.one:
+        clp(shape(img),shape(g))
         img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
-    cv2.namedWindow(f)
-    cv2.moveWindow(f,int((screen_sz[0]-max_width)/2),0)
 
-    k = mci(img,title=f)
+    if not args.one:
+        w = f
+    else:
+        w = 'images'
+    cv2.namedWindow(w)
+    cv2.moveWindow(w,int((screen_sz[0]-max_width)/2),0)
+
+    k = mci(img,title=w)
 
 
 
@@ -325,7 +331,7 @@ def print_command_lines(L):
         for i in range(1,len(l[0])):
             if "/" in l[0][i]:
                 l[0][i] = '\"' + l[0][i] + '\"'
-        clp(' '.join(l[0]),c,time_str(l[1],mode='Pretty2'),'`--d')
+        clp(' '.join(l[0]),c,time_str(t=l[1],mode='Pretty2'),'`--d')
         ctr += 1
 
 
@@ -483,15 +489,23 @@ args = get_args()
 print(args.slideshow,type(args.slideshow))
 kprint(vars(args),r=0)
 
-if using_osx:
-    def screen_size():
-        from Quartz import CGDisplayBounds
-        from Quartz import CGMainDisplayID
-        mainMonitor = CGDisplayBounds(CGMainDisplayID())
-        return (mainMonitor.size.width, mainMonitor.size.height) 
-    screen_sz = screen_size()
-else:
-    screen_sz = (800,800)
+
+try:
+    r = txt_file_to_list_of_strings(opjh('.screen_resolution'))
+    screen_sz = (int(r[0]),int(r[1]))
+except:
+    clp("Didn't find opjh('.screen_resolution')",'`wrb')
+    try:
+    #if using_osx:
+        def screen_size():
+            from Quartz import CGDisplayBounds
+            from Quartz import CGMainDisplayID
+            mainMonitor = CGDisplayBounds(CGMainDisplayID())
+            return (mainMonitor.size.width, mainMonitor.size.height) 
+        screen_sz = screen_size()
+    #else:
+    except:
+        screen_sz = (800,800)
 
 max_width,max_height = screen_sz[0]*args.screen_pro,screen_sz[1]*args.screen_pro
 min_width,min_height = min(max_width,args.mwidth),min(max_height,args.mheight)
@@ -517,7 +531,7 @@ change = False
 
 if args.slideshow:
     clp("ctrl-C to exit slideshow",'`--rb')
-    time.sleep(3)
+    time.sleep(0)#3)
 
 lst = get_list_of_files(L)
 
@@ -533,7 +547,7 @@ while i < len(lst):
         lst = get_list_of_files(L)
         slideshow_timer.reset()
 
-    try:   
+    if True:#try:   
         if i < -len(lst):
             i = -len(lst)
         clp(i+1,'of',len(lst))
@@ -574,12 +588,12 @@ while i < len(lst):
                     
                     break
 
-            CA()
+            #CA()
 
         else:
             i += 1
 
-    
+    """
     except KeyboardInterrupt:
         cr('*** KeyboardInterrupt ***')
         sys.exit()
@@ -589,6 +603,7 @@ while i < len(lst):
         print('Exception!')
         print(d2s(exc_type,file_name,exc_tb.tb_lineno))
         i += 1
+    """
     
         
 if not args.one:

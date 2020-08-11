@@ -50,7 +50,7 @@ days = day
 
 """
 
-def time_str(t=0,mode='FileSafe'):
+def time_str(mode='FileSafe',t=0):
     """
     modes are:
     FileSafe, Pretty, Pretty2, TimeShort
