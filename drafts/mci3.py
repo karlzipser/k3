@@ -255,13 +255,14 @@ def load_and_display_img(p,g,IMAGE_DIC):
         c = '`y'
     else:
         c = '`'
-    part1 = cf(fname(p),'`',pname(p),'`--du')
+    part1 = cf(fname(p),'`',fname(pname(p)),'`--d')
 
     if img0_shape == shape(img):
         part2 = cf(img0_shape[:2],c)
     else:
-        part2 = cf(img0_shape[:2],c,'-->',shape(img)[:2],'`r-b')
-    clp(part1,part2)
+        part2 = cf(img0_shape[:2],c,'-->',shape(img)[:2],'`m',s0='')
+    
+    h = cf(part1,part2)
 
     img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
 
@@ -279,7 +280,7 @@ def load_and_display_img(p,g,IMAGE_DIC):
 
     k = mci(img,title=w)
 
-
+    return h
 
 
 
@@ -595,7 +596,9 @@ def loop_body(i,change,IMAGE_DIC):
     lst = IMAGE_DIC['lst']
     if i < -len(lst):
         i = -len(lst)
-    clp(i+1,'of',len(lst))
+
+    out_strs = []
+    out_strs.append(cf(i+1,'of',len(lst),'`--d'))
 
 
                     
@@ -617,8 +620,9 @@ def loop_body(i,change,IMAGE_DIC):
     if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
         if p not in L['full_paths']:
             L['full_paths'][p] = []
-        load_and_display_img(p,g,IMAGE_DIC)
-        cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']),len(IMAGE_DIC['lst']),len(IMAGE_DIC['images']),IMAGE_DIC['ctr'])
+        h = load_and_display_img(p,g,IMAGE_DIC)
+        out_strs.append(h)
+        #cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']),len(IMAGE_DIC['lst']),len(IMAGE_DIC['images']),IMAGE_DIC['ctr'])
         if len(IMAGE_DIC['del_lst']) > 20:
             del IMAGE_DIC['images'][IMAGE_DIC['del_lst'].pop(0)]
 
@@ -627,7 +631,7 @@ def loop_body(i,change,IMAGE_DIC):
         L['full_paths'][p] = []
     
     rating = None
-    rating_str = '['
+    rating_str = ''
     if len(L['full_paths'][p]) > 0:
         a = 0
         for b in L['full_paths'][p]:
@@ -637,9 +641,10 @@ def loop_body(i,change,IMAGE_DIC):
             rating_str += '*'
     #cm('rating =',rating)
     
+    out_strs.insert(0,cf(rating_str,'`y-b'))
 
-
-    cy(rating_str)
+    print(' '.join(out_strs))
+    #cy(rating_str)
 
     if args.slideshow:
         s = max(args.seconds + args.seconds_std * rndn(),0.1)
