@@ -136,14 +136,6 @@ def get_args():
         help="slideshow mode",
     )
     aa(
-        "--one",
-        "-o",
-        nargs='?',
-        const=True,
-        default=False,
-        help="one image at a time"
-    )
-    aa(
         "--descend",
         "-d",
         nargs='?',
@@ -280,48 +272,8 @@ def load_and_display_img(p,g,IMAGE_DIC):
     #IMAGE_DIC['lst'].remove(p)
 
 
-    f = fname(p)
-    if theta:
-        c = '`y'
-    else:
-        c = '`'
-    part1 = cf(fname(p),'`',pname(p),'`--du')
-
-    if args.one:
-        if img0_shape == shape(img):
-            part2 = cf(img0_shape[:2],c)
-        else:
-            part2 = cf(img0_shape[:2],c,'-->',shape(img)[:2],'`r-b')
-        clp(part1,part2)
-
-    if args.one:
-        #clp(shape(img),shape(g))
-        img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
-
-    if not args.one:
-        w = f
-    else:
-        w = 'images'
-    cv2.namedWindow(w)
-    if args.window_x < 0:
-        wx = int((SCREEN_RESOLUTION[0]-max_width)/2)
-    else:
-        wx = args.window_x
-    if args.window_y < 0:
-        wy = 0
-    else:
-        wy = args.window_y
-    cv2.moveWindow(w,wx,wy)
-
-    k = mci(img,title=w)
-    if p in L['ratings']:
-        clp('rating =',dp(L['ratings'][p]),'`m')
 
 
-
-def __load_and_display_img(p,g):
-    img0, theta = load_image_with_orientation(p)
-    img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
 
     f = fname(p)
     if theta:
@@ -329,23 +281,17 @@ def __load_and_display_img(p,g):
     else:
         c = '`'
     part1 = cf(fname(p),'`',pname(p),'`--du')
-
-    if args.one:
-        if shape(img0) == shape(img):
-            part2 = cf(shape(img0)[:2],c)
-        else:
-            part2 = cf(shape(img0)[:2],c,'-->',shape(img)[:2],'`r-b')
-        clp(part1,part2)
 
     
-    if args.one:
-        #clp(shape(img),shape(g))
-        img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
-
-    if not args.one:
-        w = f
+    if img0_shape == shape(img):
+        part2 = cf(img0_shape[:2],c)
     else:
-        w = 'images'
+        part2 = cf(img0_shape[:2],c,'-->',shape(img)[:2],'`r-b')
+    clp(part1,part2)
+
+    img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
+
+    w = 'images'
     cv2.namedWindow(w)
     if args.window_x < 0:
         wx = int((SCREEN_RESOLUTION[0]-max_width)/2)
@@ -358,24 +304,32 @@ def __load_and_display_img(p,g):
     cv2.moveWindow(w,wx,wy)
 
     k = mci(img,title=w)
-    if p in L['ratings']:
-        clp('rating =',dp(L['ratings'][p]),'`m')
+
+
+
+
 
 
 def process_getch(p,i,change):
     e = getch()
 
-    if p not in L['full_paths']:
-        L['full_paths'][p] = []
+
 
     if str_is_int(e):
         if args.change:
             L['full_paths'][p].append((e,int(time.time())))
+            kprint(L['full_paths'][p])
             cg(p,L['full_paths'][p],"len(L['full_paths']) =",len(L['full_paths']))
             i += 1
             change = True
         else:
             raw_enter('change not allowed')
+
+    elif e == 'c':
+        if args.change:
+            L['full_paths'][p] = []
+            clp('Cleared',fname(p),'`ybb')
+        #i += 1
 
     elif e == 'p':
         print('back',i)
@@ -394,7 +348,7 @@ def process_getch(p,i,change):
 
 
 
-if False:
+if False: ##### KEEP!!!!
     q="Pictures/Photos Library.photoslibrary/Masters/2020"
     heics=get_list_of_files_recursively(q,'*.HEIC',FILES_ONLY=True,ignore_underscore=False)
     jpgs=get_list_of_files_recursively(q,'*.JPG',FILES_ONLY=True,ignore_underscore=False)
@@ -437,10 +391,10 @@ def setup_L():
         L = {}
         clp("L = {}",r=1)
 
-    for q in ['filenames','sys.argv','Args']:
+    for q in ['sys.argv','Args']:
         if q not in L:
             L[q] = []
-    for q in ['full_paths','ratings']:
+    for q in ['full_paths']:
         if q not in L:
             L[q] = {}
     L['sys.argv'].append( (sys.argv,int(time.time()) ))
@@ -510,7 +464,7 @@ def get_list_of_files(L):
                     for b in L['full_paths'][f]:
                         a += int(b[0])
                     r = a / (1.0*len(L['full_paths'][f]))
-                    L['ratings'][f] = r
+
                     if args.progressive_range:
                         if start_timer.time() < 30:
                             if r >= 4 and r <= 5:
@@ -562,6 +516,10 @@ def get_list_of_files(L):
                     else:
                         #cm('b')
                         u.append(v)
+
+
+
+
                 #cm(0,r=1)
                 lst0 += u
             else:
@@ -625,6 +583,7 @@ save_timer = Timer(60)
 slideshow_timer = Timer(10)
 start_timer = Timer()
 L = setup_L()
+
 save_L(L)
 
 
@@ -656,6 +615,9 @@ def loop_body(i,change,IMAGE_DIC):
     if i < -len(lst):
         i = -len(lst)
     clp(i+1,'of',len(lst))
+
+
+                    
     p = lst[i]
     assert not(args.view_once and args.view_n)
     max_views = 0
@@ -669,39 +631,52 @@ def loop_body(i,change,IMAGE_DIC):
         return i,change
 
     if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
-        #if p not in IMAGE_DIC:
-        #    cr(p,"not in IMAGE_DIC")
+        if p not in L['full_paths']:
+            L['full_paths'][p] = []
         load_and_display_img(p,g,IMAGE_DIC)
-        cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']))
+        #cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']))
         if len(IMAGE_DIC['del_lst']) > 200:
             del IMAGE_DIC[IMAGE_DIC['del_lst'].pop(0)]
 
 
+    if p not in L['full_paths']:
+        L['full_paths'][p] = []
+    
+    rating = None
+    if len(L['full_paths'][p]) > 0:
+        a = 0
+        for b in L['full_paths'][p]:
+            a += int(b[0])
+        rating = a / (1.0*len(L['full_paths'][p]))
+    cm('rating =',rating)
 
 
-    if args.one:
-
-        if args.slideshow:
-            s = max(args.seconds + args.seconds_std * rndn(),0.1)
-            time.sleep(s)
-            i += 1
-
-        elif args.add_as > 0:
-            if p not in L['full_paths']:
-                L['full_paths'][p] = []
-                L['full_paths'][p].append((args.add_as,int(time.time())))
-                cg(L['full_paths'][p],cg("len(L['full_paths']) =",len(L['full_paths'])))
-                change = True
-            i += 1
-
-        else:
-            i,change = process_getch(p,i,change)
-
-            if i == 'quit':
-                return i,change
-    else:
+    if args.slideshow:
+        s = max(args.seconds + args.seconds_std * rndn(),0.1)
+        time.sleep(s)
         i += 1
+
+    elif args.add_as > 0:
+        if p not in L['full_paths']:
+            L['full_paths'][p] = []
+            L['full_paths'][p].append((args.add_as,int(time.time())))
+            cg(L['full_paths'][p],cg("len(L['full_paths']) =",len(L['full_paths'])))
+            change = True
+        i += 1
+
+    else:
+        i,change = process_getch(p,i,change)
+
+        if i == 'quit':
+            return i,change
+
     return i,change
+
+
+
+
+
+
 
 
 while i < len(IMAGE_DIC['lst']):
@@ -721,6 +696,8 @@ while i < len(IMAGE_DIC['lst']):
             i,change = loop_body(i,change,IMAGE_DIC)
         except KeyboardInterrupt:
             cr('*** KeyboardInterrupt ***')
+            IMAGE_DIC['del_lst'] = None
+            time.sleep(0.1)
             sys.exit()
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -737,21 +714,25 @@ while i < len(IMAGE_DIC['lst']):
     
     
         
-if not args.one:
-    raw_enter()
+
 
 
 if change:
     save_L(L)
    
 time.sleep(0.1) 
-"""
-IMAGE_DIC = None
-while IMAGE_DIC is None:
-    time.sleep(0.1)
-"""
+
+
+
 cg('Done.')
+
+
+
+
 #EOF
+
+
+
 
 if False:
     class Cdat:
