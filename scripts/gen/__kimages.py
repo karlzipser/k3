@@ -1,21 +1,31 @@
+#!/usr/local/bin/ipython
+
 from k3.vis3 import *
 
 
 def read_image_to_IMAGE_DIC(IMAGE_DIC):
 
-    while True:
+    ctr = 0
+
+    while ctr < len(IMAGE_DIC['lst']):
 
         if IMAGE_DIC['del_lst'] is None:
+            IMAGE_DIC = 0
             break
 
-        if len(IMAGE_DIC['images']) <= 100 - len(IMAGE_DIC['del_lst']):
+        if len(IMAGE_DIC) <= 1000 - len(IMAGE_DIC['del_lst']):
 
-            p = IMAGE_DIC['lst'][ IMAGE_DIC['ctr'] ]
-            IMAGE_DIC['ctr'] += 1
+            p = IMAGE_DIC['lst'][ctr]
+            ctr += 1
             img0, theta = load_image_with_orientation(p)
             img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
-            IMAGE_DIC['images'][p] = img,shape(img0),theta
+            IMAGE_DIC[p] = img,shape(img0),theta
 
+            while False:
+                #cg("len(IMAGE_DIC) =",len(IMAGE_DIC))
+                if len(IMAGE_DIC) <= 20 and len(IMAGE_DIC['del_lst']) < 5:
+                    break
+                time.sleep(0.1)
         else:
             time.sleep(0.1)
             
@@ -24,7 +34,7 @@ def read_image_to_IMAGE_DIC(IMAGE_DIC):
     
 
 
-
+#,b
 
 
 def get_args():
@@ -236,19 +246,26 @@ def get_args():
 
 def load_and_display_img(p,g,IMAGE_DIC):
 
-    if p not in IMAGE_DIC['images']:
+    if p not in IMAGE_DIC:
         cb(fname(p),"not in IMAGE_DIC, loadiing.")
         img0, theta = load_image_with_orientation(p)
         img = get_resized_img(img0,max_width*0.9,max_height*0.9,min_width*0.9,min_height*0.9)
-        IMAGE_DIC['images'][p] = img,shape(img0),theta
+        IMAGE_DIC[p] = img,shape(img0),theta
         img0_shape = shape(img0)
     else:
-        img,img0_shape,theta = IMAGE_DIC['images'][p]
+        img,img0_shape,theta = IMAGE_DIC[p]
 
     IMAGE_DIC['viewed_in_this_session'].append(p)
 
     if p not in IMAGE_DIC['del_lst']:
         IMAGE_DIC['del_lst'].append(p)
+
+    #del IMAGE_DIC[p]
+    #IMAGE_DIC['lst'].remove(p)
+
+
+
+
 
     f = fname(p)
     if theta:
@@ -257,6 +274,7 @@ def load_and_display_img(p,g,IMAGE_DIC):
         c = '`'
     part1 = cf(fname(p),'`',pname(p),'`--du')
 
+    
     if img0_shape == shape(img):
         part2 = cf(img0_shape[:2],c)
     else:
@@ -322,12 +340,28 @@ def process_getch(p,i,change):
 
 
 
+if False: ##### KEEP!!!!
+    q="Pictures/Photos Library.photoslibrary/Masters/2020"
+    heics=get_list_of_files_recursively(q,'*.HEIC',FILES_ONLY=True,ignore_underscore=False)
+    jpgs=get_list_of_files_recursively(q,'*.JPG',FILES_ONLY=True,ignore_underscore=False)
+    js,hs = [],[]
+    for j in jpgs:
+        js.append(fnamene(j))
+    for j in heics:
+        hs.append(fnamene(j))
+    n = 0
+    for j in js:
+        if j not in hs:
+            n += 1
+            cg(j,n,int(n/(1.0*len(js))*100),'%')
+    raw_enter()
+    n = 0
+    for j in hs:
+        if j not in js:
+            n += 1
+            cg(j,n,int(n/(1.0*len(js))*100),'%')
 
 
-
-
-def __save_L(L):
-    so(L,opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log')))
 
 def save_L(L):
     file_path = opjh('Logs',fnamene(__file__),args.topic,d2p(fnamene(__file__),args.topic,str(int(time.time())),'log'))
@@ -335,6 +369,7 @@ def save_L(L):
     so(L,file_path)
     os.system(d2s('rm',latest_path))
     os.system(d2s('ln -s',file_path,latest_path))
+
 
 
 def setup_L():
@@ -526,16 +561,6 @@ def hist_L(L):
     CA()
 
 
-def reset_IMAGE_DIC(IMAGE_DIC,L):
-    IMAGE_DIC['lst'] = get_list_of_files(L)
-    IMAGE_DIC['del_lst'] = []
-    IMAGE_DIC['images'] = {}
-    IMAGE_DIC['viewed_in_this_session'] = []
-    IMAGE_DIC['ctr'] = 0
-
-
-
-
 
 
 
@@ -574,16 +599,11 @@ if args.slideshow:
     clp("ctrl-C to exit slideshow",'`--rb')
     time.sleep(0)#3)
 
-IMAGE_DIC = {}
-reset_IMAGE_DIC(IMAGE_DIC,L)
-"""
-    'images':{},
+IMAGE_DIC = {
     'lst':get_list_of_files(L),
     'del_lst':[],
     'viewed_in_this_session':[],
-    'ctr':0,
 }
-"""
 
 threading.Thread(target=read_image_to_IMAGE_DIC,args=(IMAGE_DIC,)).start()
 
@@ -618,28 +638,22 @@ def loop_body(i,change,IMAGE_DIC):
         if p not in L['full_paths']:
             L['full_paths'][p] = []
         load_and_display_img(p,g,IMAGE_DIC)
-        cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']),len(IMAGE_DIC['lst']),len(IMAGE_DIC['images']),IMAGE_DIC['ctr'])
-        if len(IMAGE_DIC['del_lst']) > 20:
-            del IMAGE_DIC['images'][IMAGE_DIC['del_lst'].pop(0)]
+        #cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']))
+        if len(IMAGE_DIC['del_lst']) > 200:
+            del IMAGE_DIC[IMAGE_DIC['del_lst'].pop(0)]
 
 
     if p not in L['full_paths']:
         L['full_paths'][p] = []
     
     rating = None
-    rating_str = '['
     if len(L['full_paths'][p]) > 0:
         a = 0
         for b in L['full_paths'][p]:
             a += int(b[0])
         rating = a / (1.0*len(L['full_paths'][p]))
-        for i_ in range(intr(rating)):
-            rating_str += '*'
-    #cm('rating =',rating)
-    
+    cm('rating =',rating)
 
-
-    cy(rating_str)
 
     if args.slideshow:
         s = max(args.seconds + args.seconds_std * rndn(),0.1)
@@ -650,7 +664,7 @@ def loop_body(i,change,IMAGE_DIC):
         if p not in L['full_paths']:
             L['full_paths'][p] = []
             L['full_paths'][p].append((args.add_as,int(time.time())))
-            #cg(L['full_paths'][p],cg("len(L['full_paths']) =",len(L['full_paths'])))
+            cg(L['full_paths'][p],cg("len(L['full_paths']) =",len(L['full_paths'])))
             change = True
         i += 1
 
@@ -669,22 +683,21 @@ def loop_body(i,change,IMAGE_DIC):
 
 
 
-while IMAGE_DIC['ctr'] < len(IMAGE_DIC['lst']):
+while i < len(IMAGE_DIC['lst']):
 
     if save_timer.check() and change:
         save_L(L)
         save_timer.reset()
 
-    if args.slideshow and slideshow_timer.check():
-        reset_IMAGE_DIC(IMAGE_DIC,L)
-        i = 0
-        slideshow_timer.reset()
+    #if args.slideshow and slideshow_timer.check():
+    #    IMAGE_DIC['lst'] = get_list_of_files(L)
+    #    slideshow_timer.reset()
 
     use_exceptions = False
     if use_exceptions:
         try:   
 
-            IMAGE_DIC['ctr'],change = loop_body(IMAGE_DIC['ctr'],change,IMAGE_DIC)
+            i,change = loop_body(i,change,IMAGE_DIC)
         except KeyboardInterrupt:
             cr('*** KeyboardInterrupt ***')
             IMAGE_DIC['del_lst'] = None
@@ -695,11 +708,11 @@ while IMAGE_DIC['ctr'] < len(IMAGE_DIC['lst']):
             file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print('Exception!')
             print(d2s(exc_type,file_name,exc_tb.tb_lineno))
-            IMAGE_DIC['ctr'] += 1
-            #raw_enter()
+            i += 1
+            raw_enter()
     else:
-        IMAGE_DIC['ctr'],change = loop_body(IMAGE_DIC['ctr'],change,IMAGE_DIC)
-        if IMAGE_DIC['ctr'] == 'quit':
+        i,change = loop_body(i,change,IMAGE_DIC)
+        if i == 'quit':
             IMAGE_DIC['del_lst'] = None
             break
     
@@ -724,27 +737,6 @@ cg('Done.')
 
 
 
-if False: ##### KEEP!!!!
-    q="Pictures/Photos Library.photoslibrary/Masters/2020"
-    heics=get_list_of_files_recursively(q,'*.HEIC',FILES_ONLY=True,ignore_underscore=False)
-    jpgs=get_list_of_files_recursively(q,'*.JPG',FILES_ONLY=True,ignore_underscore=False)
-    js,hs = [],[]
-    for j in jpgs:
-        js.append(fnamene(j))
-    for j in heics:
-        hs.append(fnamene(j))
-    n = 0
-    for j in js:
-        if j not in hs:
-            n += 1
-            cg(j,n,int(n/(1.0*len(js))*100),'%')
-    raw_enter()
-    n = 0
-    for j in hs:
-        if j not in js:
-            n += 1
-            cg(j,n,int(n/(1.0*len(js))*100),'%')
-
 
 if False:
     class Cdat:
@@ -761,3 +753,17 @@ if False:
     G.add('value_3', {'a':'Just me.',2:'adfadsf'})
     G.kprint()
 
+"""
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+
+>>> args = {'a': 1, 'b': 2}
+>>> s = Struct(**args)
+>>> s
+<__main__.Struct instance at 0x01D6A738>
+>>> s.a
+1
+>>> s.b
+2
+"""

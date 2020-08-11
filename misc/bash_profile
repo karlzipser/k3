@@ -1,0 +1,13 @@
+# cp k3/misc/bash_profile ~/.bash_profile
+
+echo "source .bash_profile"
+
+export PYTHONPATH=~:$PYTHONPATH
+
+source ~/k3/misc/bashrc
+
+alias pip='pip3'
+
+alias python='python3'
+
+#EOF
