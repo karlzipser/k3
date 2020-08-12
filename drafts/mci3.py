@@ -285,11 +285,7 @@ def load_and_display_img(p,g,IMAGE_DIC,delay):
 def rndrect(x=200,y=100):
     return z55(rndn(y,x,3))
 
-def os_system(*args,e=0,r=0):
-    s = d2s(*args)
-    if(e):
-        clp(s,r=r)
-    os.system(s)
+
 
 def process_getch(p,i,change,e):
 

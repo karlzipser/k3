@@ -384,7 +384,11 @@ CS_(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)
 ####################################
 
 
-
+def os_system(*args,e=0,r=0):
+    s = d2s(*args)
+    if(e):
+        clp(s,r=r)
+    os.system(s)
 
 def unix(command_line_str, print_stdout=False, print_stderr=False,print_cmd=False):
     command_line_str = command_line_str.replace('~',home_path)
@@ -397,7 +401,9 @@ def unix(command_line_str, print_stdout=False, print_stderr=False,print_cmd=Fals
     if print_stderr:
         print(stderr)
 #    return stdout,stderr
-    return stdout.split('\n')
+    #return stdout.split('\n')
+    s = stdout.decode("utf-8")
+    return s.split('\n')
 
 
 from k3.utils.printing2 import *
