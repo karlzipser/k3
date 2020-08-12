@@ -1328,7 +1328,7 @@ def has_exif(path):
     else:
         return False
 
-def load_image_with_orientation(filepath):
+def load_image_with_orientation(filepath,change_rgb=True):
     from PIL import Image, ExifTags
     from numpy import asarray
     #exif_for_image = has_exif(filepath)
@@ -1340,7 +1340,8 @@ def load_image_with_orientation(filepath):
         image = na(image)[:,:,:3]
     else:
         image = imread(filepath)[:,:,:3]
-        image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+        if change_rgb:
+            image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
     return image, theta
     
 #EOF

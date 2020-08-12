@@ -4,7 +4,7 @@ from k3.vis3 import *
 def read_image_to_IMAGE_DIC(IMAGE_DIC):
 
     while True:
-
+        #print(time.time())
         if IMAGE_DIC['del_lst'] is None:
             break
 
@@ -18,7 +18,7 @@ def read_image_to_IMAGE_DIC(IMAGE_DIC):
 
         else:
             time.sleep(0.1)
-            
+                        
     print("exiting read_image_to_IMAGE_DIC")
 
     
@@ -217,15 +217,6 @@ def get_args():
         default=1.0, 
         help='slideshow display seconds',
     )
-    aa(
-        '--seconds_std',
-        '-sd',
-        action='store',
-        type=float,
-        required=False,
-        default=0., 
-        help='slideshow display seconds standard deviation',
-    )
 
     args = par.parse_args()
 
@@ -234,7 +225,7 @@ def get_args():
 
 
 
-def load_and_display_img(p,g,IMAGE_DIC):
+def load_and_display_img(p,g,IMAGE_DIC,delay):
 
     if p not in IMAGE_DIC['images']:
         cb(fname(p),"not in IMAGE_DIC, loadiing.")
@@ -250,19 +241,22 @@ def load_and_display_img(p,g,IMAGE_DIC):
     if p not in IMAGE_DIC['del_lst']:
         IMAGE_DIC['del_lst'].append(p)
 
-    f = fname(p)
-    if theta:
-        c = '`y'
-    else:
-        c = '`'
-    part1 = cf(fname(p),'`',fname(pname(p)),'`--d')
+    #f = fname(p)
+    if False:
+        if theta:
+            c = '`y'
+        else:
+            c = '`'
 
-    if img0_shape == shape(img):
-        part2 = cf(img0_shape[:2],c)
-    else:
-        part2 = cf(img0_shape[:2],c,'-->',shape(img)[:2],'`m',s0='')
     
-    h = cf(part1,part2)
+
+    if False:
+        if img0_shape == shape(img):
+            part2 = cf(img0_shape[:2],c)
+        else:
+            part2 = cf(img0_shape[:2],c,'-->',shape(img)[:2],'`m',s0='')
+    
+    #h = cf(part1,part2)
 
     img = place_img_f_in_img_g(0,0,img,0*g,f_center=True,center_in_g=True)
 
@@ -278,15 +272,27 @@ def load_and_display_img(p,g,IMAGE_DIC):
         wy = args.window_y
     cv2.moveWindow(w,wx,wy)
 
-    k = mci(img,title=w)
+    k = mci(img,title=w,delay=delay)
+    if k >= 0:
+        e = chr(k)
+        print(e)
+    else:
+        e = ''
 
-    return h
+    return e
 
 
+def rndrect(x=200,y=100):
+    return z55(rndn(y,x,3))
 
+def os_system(*args,e=0,r=0):
+    s = d2s(*args)
+    if(e):
+        clp(s,r=r)
+    os.system(s)
 
-def process_getch(p,i,change):
-    e = getch()
+def process_getch(p,i,change,e):
+    #e = getch()
 
 
 
@@ -315,6 +321,11 @@ def process_getch(p,i,change):
 
     elif e in ['q']:
         return 'quit',change
+
+    elif e in ['s']:
+        p_safe = get_safe_name(p.replace('/','__'),safe_chars=['.','-'])
+        s = d2s("cp",'\"'+p+'\"',opjD(p_safe))
+        os_system(s,e=1)
 
     else:
         clp("unused key",'`rwb')
@@ -450,6 +461,9 @@ def get_list_of_files(L):
                             pass
                 except KeyboardInterrupt:
                     cr('*** KeyboardInterrupt ***')
+                    IMAGE_DIC['del_lst'] = None
+                    if change:
+                        save_L(L)
                     sys.exit()
                 except Exception as e:
                     exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -561,6 +575,7 @@ save_L(L)
 
 if args.cmd_lines:
     print_command_lines(L)
+
     sys.exit()
 
 if args.hist:
@@ -577,14 +592,7 @@ if args.slideshow:
 
 IMAGE_DIC = {}
 reset_IMAGE_DIC(IMAGE_DIC,L)
-"""
-    'images':{},
-    'lst':get_list_of_files(L),
-    'del_lst':[],
-    'viewed_in_this_session':[],
-    'ctr':0,
-}
-"""
+
 
 threading.Thread(target=read_image_to_IMAGE_DIC,args=(IMAGE_DIC,)).start()
 
@@ -617,21 +625,11 @@ def loop_body(i,change,IMAGE_DIC):
         i += 1
         return i,change
 
-    if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
-        if p not in L['full_paths']:
-            L['full_paths'][p] = []
-        h = load_and_display_img(p,g,IMAGE_DIC)
-        out_strs.append(h)
-        #cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']),len(IMAGE_DIC['lst']),len(IMAGE_DIC['images']),IMAGE_DIC['ctr'])
-        if len(IMAGE_DIC['del_lst']) > 20:
-            del IMAGE_DIC['images'][IMAGE_DIC['del_lst'].pop(0)]
-
-
     if p not in L['full_paths']:
         L['full_paths'][p] = []
     
     rating = None
-    rating_str = ''
+    rating_str = '['
     if len(L['full_paths'][p]) > 0:
         a = 0
         for b in L['full_paths'][p]:
@@ -639,16 +637,45 @@ def loop_body(i,change,IMAGE_DIC):
         rating = a / (1.0*len(L['full_paths'][p]))
         for i_ in range(intr(rating)):
             rating_str += '*'
+
+    if (args.add_as > 0 and p not in L['full_paths']) or args.add_as == 0:
+        if p not in L['full_paths']:
+            L['full_paths'][p] = []
+        if args.slideshow:
+            delay = int(1000 * args.seconds)
+        else:
+            delay = 0
+
+        h = cf(fname(p),'`',fname(pname(p)),'`--d')
+        out_strs.append(h)
+        out_strs.insert(0,cf(rating_str,'`y-b'))
+        print(' '.join(out_strs))
+
+        e = load_and_display_img(p,g,IMAGE_DIC,delay)
+
+        if e == 'q':
+            IMAGE_DIC['del_lst'] = None
+            clp('quitting from loop_body')
+            if change:
+                save_L(L)
+            sys.exit()
+
+
+
+        #cy("len(IMAGE_DIC['del_lst']) =",len(IMAGE_DIC['del_lst']),len(IMAGE_DIC['lst']),len(IMAGE_DIC['images']),IMAGE_DIC['ctr'])
+        if len(IMAGE_DIC['del_lst']) > 20:
+            del IMAGE_DIC['images'][IMAGE_DIC['del_lst'].pop(0)]
+
+
+
     #cm('rating =',rating)
     
-    out_strs.insert(0,cf(rating_str,'`y-b'))
 
-    print(' '.join(out_strs))
     #cy(rating_str)
 
     if args.slideshow:
-        s = max(args.seconds + args.seconds_std * rndn(),0.1)
-        time.sleep(s)
+        #s = max(args.seconds + args.seconds_std * rndn(),0.1)
+        #time.sleep(s)
         i += 1
 
     elif args.add_as > 0:
@@ -660,8 +687,7 @@ def loop_body(i,change,IMAGE_DIC):
         i += 1
 
     else:
-        i,change = process_getch(p,i,change)
-
+        i,change = process_getch(p,i,change,e)
         if i == 'quit':
             return i,change
 
@@ -693,7 +719,8 @@ while IMAGE_DIC['ctr'] < len(IMAGE_DIC['lst']):
         except KeyboardInterrupt:
             cr('*** KeyboardInterrupt ***')
             IMAGE_DIC['del_lst'] = None
-            time.sleep(0.1)
+            if change:
+                save_L(L)
             sys.exit()
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
