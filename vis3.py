@@ -1296,7 +1296,6 @@ def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False
     else:
         u = -y0d_
 
-    #clp(y0_,y1_+y0d_-y0d_,x0_,x1_+x0d_-x0d_,-y0d_,y1_+u,-x0d_,x1_+q)
     g0[  int(y0_):int(y1_+y0d_-y0d_),  int(x0_):int(x1_+x0d_-x0d_),:3] = f.copy()[int(-y0d_):int(y1_+u),int(-x0d_):int(x1_+q),:3]
 
     return g0
@@ -1331,11 +1330,9 @@ def has_exif(path):
 def load_image_with_orientation(filepath,change_rgb=True):
     from PIL import Image, ExifTags
     from numpy import asarray
-    #exif_for_image = has_exif(filepath)
     theta = read_img_and_get_orientation_correction_degrees(filepath)
     if theta in [90,180,270]:
         image=Image.open(filepath)
-        #print(theta)
         image = image.rotate(theta, expand=True)
         image = na(image)[:,:,:3]
     else:
@@ -1343,5 +1340,9 @@ def load_image_with_orientation(filepath,change_rgb=True):
         if change_rgb:
             image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
     return image, theta
+
+def zimread(p):
+    return load_image_with_orientation(p)[0]
     
 #EOF
+

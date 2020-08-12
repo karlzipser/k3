@@ -292,15 +292,17 @@ def os_system(*args,e=0,r=0):
     os.system(s)
 
 def process_getch(p,i,change,e):
-    #e = getch()
 
+    if e in ['s']:
+        p_safe = get_safe_name(p.replace('/','__'),safe_chars=['.','-'])
+        s = d2s("cp",'\"'+p+'\"',opjD(p_safe))
+        os_system(s,e=1)
 
-
-    if str_is_int(e):
+    elif str_is_int(e):
         if args.change:
             L['full_paths'][p].append((e,int(time.time())))
-            kprint(L['full_paths'][p])
-            cg(p,L['full_paths'][p],"len(L['full_paths']) =",len(L['full_paths']))
+            #kprint(L['full_paths'][p])
+            #cg(p,L['full_paths'][p],"len(L['full_paths']) =",len(L['full_paths']))
             i += 1
             change = True
         else:
@@ -322,10 +324,7 @@ def process_getch(p,i,change,e):
     elif e in ['q']:
         return 'quit',change
 
-    elif e in ['s']:
-        p_safe = get_safe_name(p.replace('/','__'),safe_chars=['.','-'])
-        s = d2s("cp",'\"'+p+'\"',opjD(p_safe))
-        os_system(s,e=1)
+
 
     else:
         clp("unused key",'`rwb')
@@ -676,6 +675,7 @@ def loop_body(i,change,IMAGE_DIC):
     if args.slideshow:
         #s = max(args.seconds + args.seconds_std * rndn(),0.1)
         #time.sleep(s)
+        __,change = process_getch(p,i,change,e)
         i += 1
 
     elif args.add_as > 0:
