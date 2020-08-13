@@ -47,7 +47,10 @@ except:
         SCREEN_RESOLUTION = (800,800)
 
 
+def rndrect(x=200,y=100):
+    return z55(rndn(y,x,3))
 
+    
 ###########
 '''
 e.g.

@@ -122,6 +122,15 @@ def fnamene(path):
     """
     return fname(path).split('.')[0]
 
+def exname(path):
+    """
+    filename, no extension
+    """
+    try:
+        return fname(path).split('.')[1]
+    except:
+        return ''
+
 
 def pname(path):
     p = path.split('/')[:-1]
@@ -231,7 +240,7 @@ def get_Arguments():
             print("args are:")
             print(args)
             #raise ValueError('ERROR because: not is_even(len(args[0]))')
-            spd2s('def args_to_dictionary(*args): Warning, not is_even(len(args[0]))')
+            print('def args_to_dictionary(*args): Warning, not is_even(len(args[0]))')
             return
         ctr = 0
         keys = []
