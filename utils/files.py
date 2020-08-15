@@ -358,7 +358,30 @@ def find_files_recursively(
 
 
 
-
+def get_list_of_files_recursively2(
+    src,
+    pattern,
+    FILES_ONLY=False,
+    DIRS_ONLY=False,
+    ignore_underscore=True,
+    ignore_Trash=True,
+    followlinks=True,
+):
+    files = get_list_of_files_recursively(
+        src,
+        pattern,
+        FILES_ONLY=False,
+        DIRS_ONLY=False,
+        ignore_underscore=True,
+        ignore_Trash=True,
+        followlinks=True,
+    )
+    files2 = []
+    for f in files:
+        if f[0] == '/':
+            f = f[1:]
+        files2.append(opj(src,f))
+    return files2
 
 def get_list_of_files_recursively(
     src,
