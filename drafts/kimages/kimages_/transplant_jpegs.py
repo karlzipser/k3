@@ -27,12 +27,13 @@ args = par.parse_args()
 
 Is = {}
 
-ff = get_list_of_files_recursively2(args.src,'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
+ff = get_list_of_files_recursively(args.src,'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
 
 def qtd(a):
     return '\"'+a+'\"'
 
 for f in ff:
+    f = f[1:]
     Is[f] = jpeg.metadata(f,show=False)    
     U = jpeg.collect_essential_metadata(Is[f])
     new_name,new_dir = jpeg.new_name_dir(U)

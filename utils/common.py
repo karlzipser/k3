@@ -27,6 +27,8 @@ def opjm(*args):
         media_path = '/Volumes'
         return opj(media_path,opj(*args))
 
+def as_pct(a,b):
+    return d2n(intr(100*a/b),'%')
 
 
 for im in import_list + import_from_list + import_as_list:

@@ -72,13 +72,20 @@ for f in F['jpeg']:
     jpeg_names.append(fname(f))
 
 #,
-def as_pct(a,b):
-    return d2n(intr(100*a/b),'%')
 
 conversion_dir = opjh('Pictures/heic_to_jpeg')
+existing = sggo(conversion_dir,'*.jpeg')
 os_system('mkdir -p',conversion_dir)
 i = 0
 for f in F['heic']:
+    skip = False
+    for e in existing:
+        if fnamene(f) in e:
+            skip = True
+    if skip:
+        cm('skip',f,'because already converted to .jpeg')
+        i += 1
+        continue
     f = f.replace(' ','\ ')
     n = fnamene(f)+'.jpeg'
     if n in jpeg_names:
