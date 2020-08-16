@@ -216,7 +216,7 @@ def new_name_dir(U):
     return n,new_dir
 
 
-#EOF
+
 
 def make_thumbs(p,s=200):
     fs = sggo(p,'*')
@@ -231,11 +231,174 @@ def make_all_thumbs():
     ff = get_list_of_files_recursively(opjD('Photos'),'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
     jpeg_dirs = []
     for f in ff:
-        if len(sggo(pname(f),'.meta')) == 0:
+        if '.meta' not in f and len(sggo(pname(f),'.meta')) == 0:
             jpeg_dirs.append(pname(f))
+        else:
+            cg('.meta exists for')
     jpeg_dirs = list(set(jpeg_dirs))
     for f in jpeg_dirs:
         cg(f)
         make_thumbs(f)
+
+def get_photo_dirs():
+    ff = get_list_of_files_recursively(opjD('Photos'),'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
+    photo_dirs = []
+    for f in ff:
+        if '.meta' not in f:
+            photo_dirs.append(pname(f))
+    return list(set(photo_dirs))
+
+def verify_meta(p):
+    if len(sggo(p,'.meta')) != 1:
+        return False,"if len(sggo(p,'.meta')) != 1:"
+    if not os.path.isdir(opj(p,'.meta')):
+        return False
+    if len(sggo(p,'.meta','.meta')) > 0:
+        return False,"if len(sggo(p,'.meta','.meta')) > 0:"
+    fs = sggo(p,'.meta','*')
+    n,d = 0,0
+    for f in fs:
+        if exname(f) == '.jpeg':
+            n += 1
+        elif os.path.isdir(f):
+            d += 1
+    if n and d:
+        return False,"if n and d:"
+    return True,"Okay"
+
+def verify():
+    good = 0
+    bad = 0
+    p = get_photo_dirs()
+    for q in p:
+        r,s = verify_meta(q)
+        if not r:
+            bad += 1
+            if s == "if len(sggo(p,'.meta','.meta')) > 0:":
+                os_system('rm -r',opj(q,'.meta','.meta'),e=1)
+            else:
+                cr(q,s,r=1)
+                os_system('open',q)
+        else:
+            good += 1
+            cg(q)
+    cy('good:',good,'bad:',bad,'total:',good+bad)
+
+
+def transfer_meta_from_older_version(topic='Photos2020'):
+
+    F = lo(opjh(most_recent_file_in_folder(opj('Logs/kimages',topic))))['full_paths']
+    G = {}
+    for f in F:
+        assert f not in G
+        G[fnamene(f)] = F[f]
+    ctr = 0
+    ff = get_list_of_files_recursively(opjD('Photos'),'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
+    for f in ff:
+        if '.meta' in f:
+            if 'ratings' in f:
+                cr(f,'already rated')
+                continue
+            #if 'ratings' in f:
+            #    
+            n = f.split('/')[-1].split(' ')[-1].replace('.jpeg','')
+            p = pname(f)
+            #cg(n,n in G,r=1)
+            if n in G:
+                l = []
+                for a in G[n]:
+                    l.append(str(a[0]))
+                s = 'ratings=' + ','.join(l) + '|'
+                cb(s)
+                q = opj(p,s+f.split('/')[-1])
+                #os_system('open',pname(f))
+                os_system('mv',qtd(f),qtd(q),e=1,a=1,r=0)
+                ctr += 1
+    cg(ctr,'filenames adjusted,done.')
+
+def open_img_with_Preview(f):
+    os_system('open',f)
+
+def quit_Preview():
+    os_system(""" osascript -e 'quit app "Preview"' """)
+    return
+    if False:
+        a = unix('ps -ax')
+        for b in a:
+            if 'Preview.app' in b:
+                c = b.split(' ')
+                for d in c:
+                    if str_is_int(d):
+                        os_system('kill',d)
+                        return
+
+def rating_from_filename(f):
+    
+    if 'ratings=' not in f:
+        return None
+
+    f = f.split('|')[0]
+
+    f = f.split('ratings=')[-1]
+
+    l = f.split(',')
+
+    c = 0
+    
+    for a in l:
+        
+        c += int(a)
+
+    c /= len(l)
+
+    return c
+
+
+
+ff = get_photo_dirs()
+
+mm = sggo(f,'.meta','*')
+dirs = []
+files = []
+for m in mm:
+    if os.path.isdir(m):
+        dirs.append(m)
+    else:
+        files.append(m)
+#EOF
+
+D = {}
+years = []
+top = opjD('Photos/all')
+a = sggo(top,'*')
+for b in a:
+    years.append(b.split('/')[-1])
+for y in years:
+    D[y] = {}
+for y in years:
+    months = []
+    c = sggo(top,y,'*')
+    for d in c:
+        months.append(d.split('/')[-1])
+    for m in months:
+        D[y][m] = {}
+        days = []
+        e = sggo(top,y,m,'*')
+        for f in e:
+            days.append(f.split('/')[-1])
+        for g in days:
+            h = sggo(top,y,m,g,'.meta/*')
+            D[y][m][g] = {}
+            D[y][m][g]['<unsorted>'] = []
+            for j in h:
+                if os.path.isfile(j):
+                    D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
+                else:
+                    D[y][m][g][fname(j)] = []
+                    k = sggo(j,'*.jpeg')
+                    for u in k:
+                        D[y][m][g][fname(j)].append(u.split('/')[-1])
+kprint(D)
+
 
 

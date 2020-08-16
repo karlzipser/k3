@@ -397,11 +397,14 @@ CS_(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)
 ####################################
 
 
-def os_system(*args,e=0,r=0):
+def os_system(*args,e=0,r=0,a=1):
     s = d2s(*args)
     if(e):
         clp(s,r=r)
-    os.system(s)
+    elif r:
+        raw_enter()
+    if a:
+        os.system(s)
 
 def unix(command_line_str, print_stdout=False, print_stderr=False,print_cmd=False):
     command_line_str = command_line_str.replace('~',home_path)
