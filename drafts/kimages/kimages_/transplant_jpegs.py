@@ -29,8 +29,7 @@ Is = {}
 
 ff = get_list_of_files_recursively(args.src,'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
 
-def qtd(a):
-    return '\"'+a+'\"'
+
 
 for f in ff:
     f = f[1:]

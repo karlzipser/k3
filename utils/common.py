@@ -30,7 +30,9 @@ def opjm(*args):
 def as_pct(a,b):
     return d2n(intr(100*a/b),'%')
 
-
+def qtd(a):
+    return '\"'+a+'\"'
+    
 for im in import_list + import_from_list + import_as_list:
     if type(im) == str:
         try:

@@ -218,7 +218,24 @@ def new_name_dir(U):
 
 #EOF
 
+def make_thumbs(p,s=200):
+    fs = sggo(p,'*')
+    thumbs_path = opj(p,'.meta')
+    os_system('mkdir -p',thumbs_path)
+    s = str(s)
+    s = s + 'x' + s
+    for f in fs:
+        os_system('convert',qtd(f),'-resize',s,qtd(opj(thumbs_path,fname(f))),e=1)
 
-
+def make_all_thumbs():
+    ff = get_list_of_files_recursively(opjD('Photos'),'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
+    jpeg_dirs = []
+    for f in ff:
+        if len(sggo(pname(f),'.meta')) == 0:
+            jpeg_dirs.append(pname(f))
+    jpeg_dirs = list(set(jpeg_dirs))
+    for f in jpeg_dirs:
+        cg(f)
+        make_thumbs(f)
 
 
