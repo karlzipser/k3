@@ -440,16 +440,25 @@ def D_list(D,keylist):
     ctr = 0
     ks = D.keys()
     options = []
+    s = '/'.join(keylist)+'/'
+    if len(keylist) > 0:
+        s = '/' + s 
+    clp(s,'`g-b')
     if len(keylist) > 0:
         clp('0) <up>')
     for k in ks:
         if type(D[k]) == dict:
-            s = d2n('{}')
+            s = d2n('n=',len(D[k]))
             options.append(k)
+            c = '`wbb'
         else:
+            if type(D[k]) == list:
+                c = '`bw-'
+            else:
+                c = '`r'
             s = d2n(D[k])
         ctr += 1
-        clp(d2n(ctr,')'),'`--d',k,'`g-b',s,'`y-d')
+        clp(d2n(ctr,')'),'`',k,'`g-b',s,c)
     return options
 
 def D_go(D,keylist):
@@ -457,6 +466,13 @@ def D_go(D,keylist):
     r = raw_input('> ')
     if r == 'q':
         return 'quit'
+    elif r == 'a':
+        lst = []
+        E = D_get(D,keylist)
+        for k in E:
+            if type(E[k]) == list:
+                lst += E[k]
+        return lst
     elif r == '0':
         D_up(D,keylist)
     elif str_is_int(r):
@@ -469,10 +485,21 @@ def D_go(D,keylist):
     else:
         print('invalid: ' + r)
 
-def D_nav(D,keylist):
+def _D_nav(D,keylist):
     while D_go(D,keylist) != 'quit':
         pass
     return D_get(D,keylist)
+
+
+def D_nav(D,keylist,action):
+    while True:
+        w = D_go(D,keylist)
+        if w == 'quit':
+            return D_get(D,keylist)
+        elif type(w) == list:# and len(w) > 0:
+            action(w)
+
+
 
 P = {
     'min_rating':0,
