@@ -401,4 +401,82 @@ for y in years:
 kprint(D)
 
 
+if False:
+
+    D_ = {
+        'a':{
+            'b':{
+                'c':'d',
+            },
+        },
+        'a1':{
+            'b1':{
+                'CCC':[1,2,3],
+            },
+            'c1':{
+                'ddd':[1,1],
+            },  },
+        'a2':{
+            'b1':{
+                'c1':'d1',
+            },
+        },
+    }
+
+
+    def D_up(D=D_):
+        if 'keylist' not in D:
+            D['keylist'] = []
+        elif len(D['keylist']) > 0:
+            D['keylist'].pop()
+        #D_go(D)
+
+    def D_list(D=D_):
+        if 'keylist' not in D:
+            D['keylist'] = []
+        kl = D['keylist']
+        for k in D['keylist']:
+            D = D[k]
+            D['keylist'] = kl
+        ctr = 0
+        ks = D.keys()
+        options = []
+        if len(D['keylist']) > 0:
+            clp('0) <up>')
+        for k in ks:
+            if k != 'keylist':              
+                if type(D[k]) == dict:
+                    s = d2n('{}')
+                    options.append(k)
+                else:
+                    s = d2n(D[k])
+                ctr += 1
+                clp(d2n(ctr,')'),k,s)
+        return options
+
+    def D_go(D=D_):
+        #if 'keylist' in D:
+        #   print(D['keylist'])
+        options = D_list(D)
+        r = raw_input('> ')
+        #clp('--'+r+'--')
+        if r == 'q':
+            #print('quit now')
+            return 'quit'
+        elif r == '0':
+            D_up(D)
+        elif str_is_int(r):
+            if len(options) > 0:
+                rr = int(r)-1
+                if rr < len(options) and rr >= 0:
+                    D['keylist'].append(options[rr])
+                else:
+                    clp(rr,'out of range')
+        else:
+            print('invalid: ' + r)
+        #D_go(D)
+    while D_go() != 'quit':
+        pass
+
+
 
