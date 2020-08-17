@@ -7,8 +7,6 @@ import magic # pip install python-magic-bin==0.4.14
 
 def metadata(f,show=False):
 
-    #cg(f)
-
     if show:
         r = get_resized_img(zimread(f),500,500,100,100)
         mci(r)
@@ -183,6 +181,7 @@ def collect_essential_metadata(I):
                 U[k] = None
     return U
 
+
 def int_tuple_to_str(a,spacer='-'):
     b = ''
     for i in rlen(a):
@@ -227,6 +226,7 @@ def make_thumbs(p,s=200):
     for f in fs:
         os_system('convert',qtd(f),'-resize',s,qtd(opj(thumbs_path,fname(f))),e=1)
 
+
 def make_all_thumbs():
     ff = get_list_of_files_recursively(opjD('Photos'),'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
     jpeg_dirs = []
@@ -240,6 +240,7 @@ def make_all_thumbs():
         cg(f)
         make_thumbs(f)
 
+
 def get_photo_dirs():
     ff = get_list_of_files_recursively(opjD('Photos'),'*.jpeg',FILES_ONLY=True,ignore_underscore=False)
     photo_dirs = []
@@ -247,6 +248,7 @@ def get_photo_dirs():
         if '.meta' not in f:
             photo_dirs.append(pname(f))
     return list(set(photo_dirs))
+
 
 def verify_meta(p):
     if len(sggo(p,'.meta')) != 1:
@@ -265,6 +267,7 @@ def verify_meta(p):
     if n and d:
         return False,"if n and d:"
     return True,"Okay"
+
 
 def verify():
     good = 0
@@ -286,7 +289,6 @@ def verify():
 
 
 def transfer_meta_from_older_version(topic='Photos2020'):
-
     F = lo(opjh(most_recent_file_in_folder(opj('Logs/kimages',topic))))['full_paths']
     G = {}
     for f in F:
@@ -298,12 +300,9 @@ def transfer_meta_from_older_version(topic='Photos2020'):
         if '.meta' in f:
             if 'ratings' in f:
                 cr(f,'already rated')
-                continue
-            #if 'ratings' in f:
-            #    
+                continue  
             n = f.split('/')[-1].split(' ')[-1].replace('.jpeg','')
             p = pname(f)
-            #cg(n,n in G,r=1)
             if n in G:
                 l = []
                 for a in G[n]:
@@ -311,201 +310,16 @@ def transfer_meta_from_older_version(topic='Photos2020'):
                 s = 'ratings=' + ','.join(l) + '|'
                 cb(s)
                 q = opj(p,s+f.split('/')[-1])
-                #os_system('open',pname(f))
                 os_system('mv',qtd(f),qtd(q),e=1,a=1,r=0)
                 ctr += 1
     cg(ctr,'filenames adjusted,done.')
 
-def open_img_with_Preview(f):
-    os_system('open',f)
-
-def quit_Preview():
-    os_system(""" osascript -e 'quit app "Preview"' """)
-    return
-    if False:
-        a = unix('ps -ax')
-        for b in a:
-            if 'Preview.app' in b:
-                c = b.split(' ')
-                for d in c:
-                    if str_is_int(d):
-                        os_system('kill',d)
-                        return
-
-def rating_from_filename(f):
-    
-    if 'ratings=' not in f:
-        return None
-
-    f = f.split('|')[0]
-
-    f = f.split('ratings=')[-1]
-
-    l = f.split(',')
-
-    c = 0
-    
-    for a in l:
-        
-        c += int(a)
-
-    c /= len(l)
-
-    return c
 
 
 
-ff = get_photo_dirs()
-
-mm = sggo(f,'.meta','*')
-dirs = []
-files = []
-for m in mm:
-    if os.path.isdir(m):
-        dirs.append(m)
-    else:
-        files.append(m)
-#EOF
-
-D = {}
-years = []
-top = opjD('Photos/all')
-a = sggo(top,'*')
-for b in a:
-    years.append(b.split('/')[-1])
-for y in years:
-    D[y] = {}
-for y in years:
-    months = []
-    c = sggo(top,y,'*')
-    for d in c:
-        months.append(d.split('/')[-1])
-    for m in months:
-        D[y][m] = {}
-        days = []
-        e = sggo(top,y,m,'*')
-        for f in e:
-            days.append(f.split('/')[-1])
-        for g in days:
-            h = sggo(top,y,m,g,'.meta/*')
-            D[y][m][g] = {}
-            D[y][m][g]['<unsorted>'] = []
-            for j in h:
-                if os.path.isfile(j):
-                    D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
-                else:
-                    D[y][m][g][fname(j)] = []
-                    k = sggo(j,'*.jpeg')
-                    for u in k:
-                        D[y][m][g][fname(j)].append(u.split('/')[-1])
-kprint(D)
 
 
 
-#,a
-D = {
-    'a':{
-        'b':{
-            'c':'d',
-        },
-    },
-    'a1':{
-        'b1':{
-            'CCC':[1,2,3],
-        },
-        'c1':{
-            'ddd':[1,1],
-        },  },
-    'a2':{
-        'b1':{
-            'c1':'d1',
-        },
-    },
-}
-keylist = []
 
 
-def D_up(D,keylist):
-    if len(keylist) > 0:
-        keylist.pop()
-
-def D_get(D,keylist):
-    for k in keylist:
-        D = D[k]
-    return D
-
-def D_list(D,keylist):
-    for k in keylist:
-        D = D[k]
-    ctr = 0
-    ks = D.keys()
-    options = []
-    s = '/'.join(keylist)+'/'
-    if len(keylist) > 0:
-        s = '/' + s 
-    clp(s,'`g-b')
-    if len(keylist) > 0:
-        clp('0) <up>')
-    for k in ks:
-        if type(D[k]) == dict:
-            s = d2n('n=',len(D[k]))
-            options.append(k)
-            c = '`wbb'
-        else:
-            if type(D[k]) == list:
-                c = '`bw-'
-            else:
-                c = '`r'
-            s = d2n(D[k])
-        ctr += 1
-        clp(d2n(ctr,')'),'`',k,'`g-b',s,c)
-    return options
-
-def D_go(D,keylist):
-    options = D_list(D,keylist)
-    r = raw_input('> ')
-    if r == 'q':
-        return 'quit'
-    elif r == 'a':
-        lst = []
-        E = D_get(D,keylist)
-        for k in E:
-            if type(E[k]) == list:
-                lst += E[k]
-        return lst
-    elif r == '0':
-        D_up(D,keylist)
-    elif str_is_int(r):
-        if len(options) > 0:
-            rr = int(r)-1
-            if rr < len(options) and rr >= 0:
-                keylist.append(options[rr])
-            else:
-                clp(rr,'out of range')
-    else:
-        print('invalid: ' + r)
-
-def _D_nav(D,keylist):
-    while D_go(D,keylist) != 'quit':
-        pass
-    return D_get(D,keylist)
-
-
-def D_nav(D,keylist,action):
-    while True:
-        w = D_go(D,keylist)
-        if w == 'quit':
-            return D_get(D,keylist)
-        elif type(w) == list:# and len(w) > 0:
-            action(w)
-
-
-
-P = {
-    'min_rating':0,
-    'max_rating':10,
-}
-
-
-#,b
 

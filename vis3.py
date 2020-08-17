@@ -28,6 +28,16 @@ if username == 'nvidia':
     matplotlib.use(u'TkAgg')
 
 
+def open_imgs_with_Preview(l):
+    if type(l) is str:
+        l = [l]
+    for f in l:
+        os_system('open',qtd(f))
+
+def quit_Preview():
+    os_system(""" osascript -e 'quit app "Preview"' """)
+    return
+
 
 try:
     r = txt_file_to_list_of_strings(opjh('.screen_resolution'))

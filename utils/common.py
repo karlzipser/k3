@@ -3,8 +3,10 @@ from __future__ import division  # 1/2 == 0.5, not 0
 
 import_list = ['os','os.path','shutil','scipy','scipy.io','string','glob','time','sys','datetime','random','re',
     'subprocess','threading','serial','inspect','fnmatch','h5py','socket','getpass','numbers','math']#,'importlib']
-import_from_list = [['FROM','pprint','pprint'],['FROM','termcolor','cprint']]
+import_from_list = [['FROM','pprint','pprint'],['FROM','termcolor','cprint'],('FROM','collections','namedtuple')]
 import_as_list = [['AS','numpy','np']]#,['AS','cPickle','pickle']]
+
+
 
 def opj(*args):
     if len(args) == 0:
@@ -42,7 +44,7 @@ for im in import_list + import_from_list + import_as_list:
             pass
             print('Failed to import '+im)
     else:
-        assert(type(im)) == list
+        assert type(im) == list or type(im) == tuple
         if im[0] == 'FROM':
             try:
                 exec('from '+im[1]+' import '+im[2])
