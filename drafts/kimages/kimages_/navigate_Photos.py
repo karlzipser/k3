@@ -1,16 +1,44 @@
 from k3.vis3 import *
 
+import k3.drafts.kimages.kimages_.navigate_dic as navigate_dic
+
+top = opjD('Photos/all')
+
+
+
+
+def nav():
+
+    D = get_dictionary_of_Photos()
+
+    Q = navigate_dic.Dnav(D)
+
+    Q.nav(
+        {
+        'action':kprint,
+        'ActionArgs': {
+            'top':top,
+            'keylist':None,
+            },
+        'ListingAction':None,
+        'ListingArgs':None,
+        'end_action':None,            
+        },
+        #action=open_imgs_with_Preview_action,
+
+        #end_action=quit_Preview,
+
+        )
+
 
 def open_imgs_with_Preview_action(f,keylist=[],top=[]):
     h = []
-    kprint(f)
+    kprint(f,'open_imgs_with_Preview_action')
     for g in f:
         g = opj(pname(g),fname(g).split('|')[-1])
         h.append(opj(top,'/'.join(keylist),g))
     quit_Preview()
     open_imgs_with_Preview(h)
-    #time.sleep(5)
-    #os_system("osascript Desktop/bring_terminal_to_front.scpt",e=1)
 
 
 def rating_from_filename(f):
@@ -35,28 +63,9 @@ def rating_from_filename(f):
     return c
 
 
-if False:
-    ff = get_photo_dirs()
-
-    mm = sggo(f,'.meta','*')
-    dirs = []
-    files = []
-    for m in mm:
-        if os.path.isdir(m):
-            dirs.append(m)
-        else:
-            files.append(m)
-
-
-P = {
-    'min_rating':0,
-    'max_rating':10,
-}
-
 def get_dictionary_of_Photos():
     D = {}
     years = []
-    top = opjD('Photos/all')
     a = sggo(top,'*')
     for b in a:
         years.append(b.split('/')[-1])
@@ -85,7 +94,36 @@ def get_dictionary_of_Photos():
                         k = sggo(j,'*.jpeg')
                         for u in k:
                             D[y][m][g][fname(j)].append(u.split('/')[-1])
-    #kprint(D)
     return D
 
+
+
+
+if True:
+
+
+    def line_print_(ctr,s,k,D):
+        cm(ctr,s,k,D[k])
+   
+    if 'D' not in locals():
+        D = get_dictionary_of_Photos()
+
+    Q = navigate_dic.Dnav(
+        D,
+        A = {
+            'view_action':open_imgs_with_Preview_action,
+            'ViewActionArgs': {
+                'top':top,
+                'keylist':None,
+            },
+            'line_print_action':None,#line_print_,
+            'LinePrintArgs':None,
+            'end_action':quit_Preview,            
+        },
+    )
+
+    Q.nav()
+
+
 #EOF
+
