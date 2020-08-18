@@ -234,4 +234,8 @@ fl = fline
 def cfl(r=0):
     clp(fl,r=r)
 
+
+def errPrint(s):
+    clp(s,'`rwb')
+    
 #EOF

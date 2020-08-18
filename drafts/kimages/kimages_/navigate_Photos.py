@@ -1,6 +1,6 @@
 from k3.vis3 import *
 
-import k3.drafts.kimages.kimages_.navigate_dic as navigate_dic
+#import k3.drafts.kimages.kimages_.navigate_dic as navigate_dic
 
 top = opjD('Photos/all')
 
@@ -11,7 +11,7 @@ def nav():
 
     D = get_dictionary_of_Photos()
 
-    Q = navigate_dic.Dnav(D)
+    Q = Navigate_dictionary(D)
 
     Q.nav(
         {
@@ -127,77 +127,39 @@ if False:
         },          
     }
 
+
 t=(
     ('view',('Preview','kprint')),
     ('min',(0,10)),
     ('max',(0,10)),
-    ('show_unrated',(0,1)),
+    ('show_unrated',(True,False)),
 )
 
-def mini_menu(B,t):
-    while True:
-        error = False
-        clear_screen()
-        kprint(B,'B')
-        print('\nmini_menu:')
-        for c in rlen(t):
-            clp(c,t[c][0])
+def apply_mini_menu(B):
+    t=(
+        ('view',('Preview','kprint')),
+        ('min',(0,10)),
+        ('max',(0,10)),
+        ('show_unrated',(0,1)),
+    )
+    mini_menu(B,t)
+    
 
-        s = raw_input('> ')
+"""
+elif u[0] == 'view' and v == 'Preview':
+    A['view_action'] = open_imgs_with_Preview_action
+    A['ViewActionArgs'] = {
+        'top':top,
+        'keylist':None,
+    }
 
-        if s == 'q':
-            return
-
-        if str_is_int(s):
-            n = int(s)
-            if n < len(t) and n >= 0:
-                u = t[n]
-                h = cf(u[0]+':',d2s(*u[1]))
-                v = raw_input(h + ' > ')
-
-                if not str_is_float(v):
-                    error = True
-                    
-                else:
-                    if is_number(u[1][0]]):
-                        if str_is_float(v) and is_number(u[1][0]) and is_number(u[1][1]):
-                            if str_is_int(v):
-                                v = int(v)
-                            else:
-                                v = float(v)
-                            if v >= u[1][0] and v <= u[1][1]:
-                                cm(v)
-                                B[u[0]] = v
-                            else:
-                                error = True
-
-                    elif int(v) < len(u[1]) and int(v) >= 0:
-                        B[u[0]] = u[1][int(v)]
-
-                    else:
-                        error = True
-        else:
-            error = True
-
-        if error:
-            clp('Error with entry',qtd(str(v)),'`wrb',r=1)
-                    
-
-                    """
-                    elif u[0] == 'view' and v == 'Preview':
-                        A['view_action'] = open_imgs_with_Preview_action
-                        A['ViewActionArgs'] = {
-                            'top':top,
-                            'keylist':None,
-                        }
-
-                    elif u[0] == 'view' and v == 'kprint':
-                        A['view_action'] = kprint
-                        A['ViewActionArgs'] = {}
-                    """
+elif u[0] == 'view' and v == 'kprint':
+    A['view_action'] = kprint
+    A['ViewActionArgs'] = {}
+"""
 
 
-if True:
+if False:
 
 
     def line_print_(ctr,s,k,D):
@@ -206,7 +168,7 @@ if True:
     if 'D' not in locals():
         D = get_dictionary_of_Photos()
 
-    Q = navigate_dic.Dnav(
+    Q = Navigate_dictionary(
         D,
         A = {
             'view_action':open_imgs_with_Preview_action,
