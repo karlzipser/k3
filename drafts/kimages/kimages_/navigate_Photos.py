@@ -8,7 +8,12 @@ top = opjD('Photos/all')
 
 
 
-def open_imgs_with_Preview_action(f,keylist=[],top=[]):
+def open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
+    #kprint(Args,'Args0',r=1)
+    #kprint(MiniMenu,'B0',r=1)
+    keylist = Args['keylist']
+    top = Args['top']
+    True
     h = []
     kprint(f,'open_imgs_with_Preview_action')
     for g in f:
@@ -76,7 +81,15 @@ def get_dictionary_of_Photos():
 
 # 2020/05/06/<unsorted> n=13 (1)
 
-def ratings_filter(w,rmin=0,rmax=10,show_unrated=True):                  
+def ratings_filter(w,Args=None,MiniMenu=None):
+    #kprint(Args,'Args',r=1)
+    #kprint(MiniMenu,'MiniMenu',r=1)
+    rmin = MiniMenu['rmin']
+    rmax = MiniMenu['rmax']
+    show_unrated = MiniMenu['show_unrated']
+    True
+    kprint(MiniMenu)
+    print(rmin,rmax,show_unrated)               
     _lst = []
     for l in w:
         c = rating_from_filename(l)
@@ -121,18 +134,12 @@ if True:
             },
             'filter':{
                 'action':ratings_filter,
-                'Args':{
-                    'rmin':6,
-                    'rmax':10,
-                    'show_unrated':False,
-                },      
+                'Args':None, 
             },
             'mini_menu':{
                 'action':mini_menu,
                 'Args': {
-                    'B':{},
                     'menu_tuple':(
-                        #('view',('Preview','kprint','kprint')),
                         ('rmin',(0,10,0)),
                         ('rmax',(0,10,10)),
                         ('show_unrated',(True,False,True)),

@@ -11,7 +11,7 @@ eg_menu_tuple=(
 )
 
 def mini_menu(
-    B={},
+    MiniMenu={},
     menu_tuple=eg_menu_tuple,
     normal='`---',
     emphasis='`--u',
@@ -19,20 +19,22 @@ def mini_menu(
     cursor='`---',
     do_kprint=False,
     tb='\t\t\t',
+    init=False
 ):
-    
-    if len(B) == 0:
+    if init:
+    #if len(MiniMenu) == 0:
         for c in rlen(menu_tuple):
-            B[menu_tuple[c][0]] = menu_tuple[c][1][-1]
+            MiniMenu[menu_tuple[c][0]] = menu_tuple[c][1][-1]
+        return
 
     while True:
         error = False
         clear_screen()
         if do_kprint:
-            kprint(B)
+            kprint(MiniMenu)
         clp(tb,'mini-menu:',emphasis)
         for c in rlen(menu_tuple):
-            clp(tb,str(c)+')',menu_tuple[c][0]+':',B[menu_tuple[c][0]],normal)
+            clp(tb,str(c)+')',menu_tuple[c][0]+':',MiniMenu[menu_tuple[c][0]],normal)
 
         input0 = raw_input(cf(tb+' >> ',cursor))
 
@@ -46,10 +48,10 @@ def mini_menu(
                 menu_keyword = menu_row[0]
                 menu_choices = menu_row[1]
                 if type(menu_choices[0]) == type(True):
-                    if menu_keyword not in B:
-                        B[menu_keyword] = True
+                    if menu_keyword not in MiniMenu:
+                        MiniMenu[menu_keyword] = True
                     else:
-                        B[menu_keyword] = not B[menu_keyword]
+                        MiniMenu[menu_keyword] = not MiniMenu[menu_keyword]
                 else:
                     h = cf(menu_keyword+':')#,d2s(*menu_choices[:-2]))
                     input1 = raw_input(cf(tb + h + ' >>> ',cursor))
@@ -66,13 +68,13 @@ def mini_menu(
                                     input1 = float(input1)
                                 if input1 >= menu_choices[0] and input1 <= menu_choices[1]:
                                     cm(input1)
-                                    B[menu_keyword] = input1
+                                    MiniMenu[menu_keyword] = input1
                                 else:
                                     error = True
 
 
                         elif int(input1) < len(menu_choices) and int(input1) >= 0:
-                            B[menu_keyword] = menu_choices[int(input1)]
+                            MiniMenu[menu_keyword] = menu_choices[int(input1)]
 
                         else:
                             error = True

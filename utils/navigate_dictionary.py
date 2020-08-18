@@ -7,7 +7,7 @@ from k3.utils.mini_menu import *
 
 def Navigate_dictionary(Din,A):
 
-    B = {}
+    
 
     set_Defaults(
         {
@@ -25,30 +25,35 @@ def Navigate_dictionary(Din,A):
             },
             'filter':{
                 'action':None,
-                #'Args':None,      
+                'Args':None,      
             },
             'mini_menu':{
                 'action':mini_menu,
                 'Args':{
-                    'B':B,
-                    'menu_tuple':(('test',(True,False))),
+                    'menu_tuple':(('toggle_test',(True,False))),
                 },
-            }
+            },
+            'Commands':{
+                'up':['0'],
+                'quit':['q'],
+                'mini_menu':['m'],
+            },
         },
-        A,
+        Dst=A,
     )
 
+    MiniMenu = {}
+    A['mini_menu']['Args']['MiniMenu'] = MiniMenu
+    A['mini_menu']['action'](init=True,**A['mini_menu']['Args'])
+
+    #kprint(A,'A',r=1)
     keylist = []
 
 
-    Commands = {
-        'up':['0'],
-        'quit':['q'],
-        'mini_menu':['m'],
-    }
+
 
     def nav():
-        clear_screen()
+        #clear_screen()
 
         while True:
 
@@ -60,7 +65,7 @@ def Navigate_dictionary(Din,A):
                     if A['end']['Args'] is None:
                         A['end']['action']()
                     else:
-                        A['end']['action'](**A['end']['Args'])
+                        A['end']['action'](Args=A['end']['Args'])
 
                 return
 
@@ -74,9 +79,10 @@ def Navigate_dictionary(Din,A):
 
                 if A['filter']['action'] is not None:
                     kprint(lst)
-                    lst = A['filter']['action'](lst,**A['mini_menu']['Args']['B'])#**A['filter']['Args'])
+                    lst = A['filter']['action'](lst,Args=A['filter']['Args'],MiniMenu=A['mini_menu']['Args']['MiniMenu'])
+                    #lst = A['filter']['action'](lst,**A['filter']['Args'])
 
-                A['view']['action'](lst,**A['view']['Args'])   
+                A['view']['action'](lst,Args=A['view']['Args'],MiniMenu=A['mini_menu']['Args']['MiniMenu'])   
 
 
     def up():
@@ -132,14 +138,14 @@ def Navigate_dictionary(Din,A):
 
         clear_screen()
 
-        if r in Commands['quit']:
+        if r in A['Commands']['quit']:
             return 'quit'
 
-        elif r in Commands['up']:
+        elif r in A['Commands']['up']:
             up()
 
-        elif r in Commands['mini_menu']:
-            B = A['mini_menu']['action'](**A['mini_menu']['Args'])
+        elif r in A['Commands']['mini_menu']:
+            MiniMenu = A['mini_menu']['action'](**A['mini_menu']['Args'])
 
         elif str_is_int(r):
             if len(options) > 0:
