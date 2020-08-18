@@ -100,16 +100,15 @@ Q = Navigate_dictionary(
             'action':open_imgs_with_Preview_action,
             'Args':{
                 'top':top,
-                'keylist':None,
             },
         },
         'end':{
             'action':quit_Preview,
-            'Args':None,
+            'Args':{},
         },
         'filter':{
             'action':ratings_filter,
-            'Args':None, 
+            'Args':{}, 
         },
         'mini_menu':{
             'action':mini_menu,

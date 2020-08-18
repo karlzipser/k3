@@ -8,18 +8,18 @@ def Navigate_dictionary(Din,A):
         {
             'view':{
                 'action':kprint,
-                'Args':None,
+                'Args':{},
             },
             'line_print': {
                 'action':_line_print,
             },
             'end':{
                 'action':None,
-                'Args':None,
+                'Args':{},
             },
             'filter':{
                 'action':None,
-                'Args':None,      
+                'Args':{},      
             },
             'mini_menu':{
                 'action':mini_menu,
@@ -45,7 +45,11 @@ def Navigate_dictionary(Din,A):
 
 
 
+    def clear_screen():
+        for i in range(5):
+            print('\n')
 
+            
     def nav():
         
         clear_screen()
@@ -57,7 +61,7 @@ def Navigate_dictionary(Din,A):
             if lst == 'quit':
 
                 if A['end']['action'] is not None:
-                    if A['end']['Args'] is None:
+                    if len(A['end']['Args']) == 0:
                         A['end']['action']()
                     else:
                         A['end']['action'](Args=A['end']['Args'])
@@ -66,8 +70,7 @@ def Navigate_dictionary(Din,A):
 
             elif type(lst) == list:
 
-                if 'keylist' in A['view']['Args']:
-                    A['view']['Args']['keylist'] = keylist
+                A['view']['Args']['keylist'] = keylist
 
                 if 'D' in A['view']['Args']:
                     A['view']['Args']['D'] = get()
