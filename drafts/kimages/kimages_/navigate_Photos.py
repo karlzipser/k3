@@ -23,15 +23,11 @@ def rating_from_filename(f):
         return None
 
     f = f.split('|')[0]
-
     f = f.split('ratings=')[-1]
-
     l = f.split(',')
-
     c = 0
     
     for a in l:
-        
         c += int(a)
 
     c /= len(l)
@@ -73,7 +69,6 @@ def get_dictionary_of_Photos():
     return D
 
 
-
 def ratings_filter(w,Args=None,MiniMenu=None):
     rmin = MiniMenu['rmin']
     rmax = MiniMenu['rmax']
@@ -91,11 +86,7 @@ def ratings_filter(w,Args=None,MiniMenu=None):
     return _lst
                 
 
-
-
-def line_print_(ctr,s,k,D):
-    cm(ctr,s,k,D[k])
-
+############################
 
 
 if 'D' not in locals():

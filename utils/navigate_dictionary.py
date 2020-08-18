@@ -2,9 +2,6 @@
 from k3.utils.mini_menu import *
 
 
-
-
-
 def Navigate_dictionary(Din,A):
 
     set_Defaults(
