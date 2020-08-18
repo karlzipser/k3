@@ -33,7 +33,7 @@ def mini_menu(
             n = int(s)
             if n < len(t) and n >= 0:
                 u = t[n]
-                cb(u[1][0])
+
                 if type(u[1][0]) == type(True):
                     if u[0] not in B:
                         B[u[0]] = True
