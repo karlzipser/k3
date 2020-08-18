@@ -1,16 +1,10 @@
 from k3.vis3 import *
 
-#import k3.drafts.kimages.kimages_.navigate_dic as navigate_dic
 
 top = opjD('Photos/all')
 
 
-
-
-
 def open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
-    #kprint(Args,'Args0',r=1)
-    #kprint(MiniMenu,'B0',r=1)
     keylist = Args['keylist']
     top = Args['top']
     True
@@ -79,11 +73,8 @@ def get_dictionary_of_Photos():
     return D
 
 
-# 2020/05/06/<unsorted> n=13 (1)
 
 def ratings_filter(w,Args=None,MiniMenu=None):
-    #kprint(Args,'Args',r=1)
-    #kprint(MiniMenu,'MiniMenu',r=1)
     rmin = MiniMenu['rmin']
     rmax = MiniMenu['rmax']
     show_unrated = MiniMenu['show_unrated']
@@ -93,7 +84,6 @@ def ratings_filter(w,Args=None,MiniMenu=None):
     _lst = []
     for l in w:
         c = rating_from_filename(l)
-        #cm( l,c,c is None , show_unrated,c >= rmin and c <= rmax)
         if c is None and not show_unrated:
             continue
         if (c is None and show_unrated) or (c >= rmin and c <= rmax):
@@ -103,53 +93,50 @@ def ratings_filter(w,Args=None,MiniMenu=None):
 
 
 
+def line_print_(ctr,s,k,D):
+    cm(ctr,s,k,D[k])
 
 
 
+if 'D' not in locals():
+    D = get_dictionary_of_Photos()
 
 
-
-if True:
-
-
-    def line_print_(ctr,s,k,D):
-        cm(ctr,s,k,D[k])
-   
-    if 'D' not in locals():
-        D = get_dictionary_of_Photos()
-
-    Q = Navigate_dictionary(
-        D,
-        A = {
-            'view':{
-                'action':open_imgs_with_Preview_action,
-                'Args':{
-                    'top':top,
-                    'keylist':None,
-                },
-            },
-            'end':{
-                'action':quit_Preview,
-                'Args':None,
-            },
-            'filter':{
-                'action':ratings_filter,
-                'Args':None, 
-            },
-            'mini_menu':{
-                'action':mini_menu,
-                'Args': {
-                    'menu_tuple':(
-                        ('rmin',(0,10,0)),
-                        ('rmax',(0,10,10)),
-                        ('show_unrated',(True,False,True)),
-                    ),
-                },
+Q = Navigate_dictionary(
+    Din = D,
+    A = {
+        'view':{
+            'action':open_imgs_with_Preview_action,
+            'Args':{
+                'top':top,
+                'keylist':None,
             },
         },
-    )
+        'end':{
+            'action':quit_Preview,
+            'Args':None,
+        },
+        'filter':{
+            'action':ratings_filter,
+            'Args':None, 
+        },
+        'mini_menu':{
+            'action':mini_menu,
+            'Args': {
+                'menu_tuple':(
+                    ('rmin',(0,10,0)),
+                    ('rmax',(0,10,10)),
+                    ('show_unrated',(True,False,True)),
+                ),
+            },
+        },
+    },
+)
 
-    Q.nav()
+Q.nav()
+
+
+
 
 
 #EOF

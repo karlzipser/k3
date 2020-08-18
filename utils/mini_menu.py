@@ -52,7 +52,7 @@ def mini_menu(
                     else:
                         MiniMenu[menu_keyword] = not MiniMenu[menu_keyword]
                 else:
-                    h = cf(menu_keyword+':')#,d2s(*menu_choices[:-2]))
+                    h = cf(menu_keyword+':')
                     input1 = raw_input(cf(tb + h + ' >>> ',cursor))
 
                     if not str_is_float(input1):

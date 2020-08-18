@@ -7,8 +7,6 @@ from k3.utils.mini_menu import *
 
 def Navigate_dictionary(Din,A):
 
-    
-
     set_Defaults(
         {
             'view':{
@@ -17,7 +15,6 @@ def Navigate_dictionary(Din,A):
             },
             'line_print': {
                 'action':_line_print,
-                #'Args':None,
             },
             'end':{
                 'action':None,
@@ -39,6 +36,7 @@ def Navigate_dictionary(Din,A):
                 'mini_menu':['m'],
             },
         },
+
         Dst=A,
     )
 
@@ -80,7 +78,6 @@ def Navigate_dictionary(Din,A):
                 if A['filter']['action'] is not None:
                     kprint(lst)
                     lst = A['filter']['action'](lst,Args=A['filter']['Args'],MiniMenu=A['mini_menu']['Args']['MiniMenu'])
-                    #lst = A['filter']['action'](lst,**A['filter']['Args'])
 
                 A['view']['action'](lst,Args=A['view']['Args'],MiniMenu=A['mini_menu']['Args']['MiniMenu'])   
 
