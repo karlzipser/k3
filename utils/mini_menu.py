@@ -19,12 +19,11 @@ def mini_menu(
     cursor='`---',
     do_kprint=False,
     tb='\t\t\t',
-    init=False
 ):
-    if init:
-    #if len(MiniMenu) == 0:
+    if len(MiniMenu) == 0:
         for c in rlen(menu_tuple):
             MiniMenu[menu_tuple[c][0]] = menu_tuple[c][1][-1]
+        cy('initalizing MiniMenu and returning.')
         return
 
     while True:

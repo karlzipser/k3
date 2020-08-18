@@ -42,18 +42,18 @@ def Navigate_dictionary(Din,A):
         Dst=A,
     )
 
-    MiniMenu = {}
-    A['mini_menu']['Args']['MiniMenu'] = MiniMenu
-    A['mini_menu']['action'](init=True,**A['mini_menu']['Args'])
 
-    #kprint(A,'A',r=1)
+    A['mini_menu']['Args']['MiniMenu'] = {}
+    A['mini_menu']['action'](**A['mini_menu']['Args'])
+
     keylist = []
 
 
 
 
     def nav():
-        #clear_screen()
+        
+        clear_screen()
 
         while True:
 
