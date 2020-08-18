@@ -17,7 +17,9 @@ def Dnav(Din,A):
         'ViewActionArgs':None,
         'line_print_action':None,
         'LinePrintArgs':None,
-        'end_action':None,            
+        'end_action':None,
+        'filter_action':None,
+        'FilterArgs':None,       
         },
         A
     )
@@ -41,6 +43,10 @@ def Dnav(Din,A):
                     A['ViewActionArgs']['keylist'] = keylist
                 if 'D' in A['ViewActionArgs']:
                     A['ViewActionArgs']['D'] = get()
+
+                if A['filter_action'] is not None:
+                    w = A['filter_action'](w,A['FilterArgs'])
+
                 A['view_action'](w,**A['ViewActionArgs'])       
 
 
@@ -88,17 +94,14 @@ def Dnav(Din,A):
             ctr += 1
             s = d2n('n=',len(D[k]))
             options.append(k)
-
-
             A['line_print_action'](ctr,s,k,D)
-
 
         return options,None
 
 
     def go():
 
-        options,action_list = listing()#A['line_print_action'](A['LinePrintArgs'])
+        options,action_list = listing()
 
         if action_list is not None:
             keylist.pop()
@@ -111,14 +114,6 @@ def Dnav(Din,A):
         if r == 'q':
             return 'quit'
 
-        elif r == 'a':
-            lst = []
-            E = get()
-
-            for k in E:
-                if type(E[k]) == list:
-                    lst += E[k]
-            return lst
 
         elif r == '0':
             up()
@@ -140,43 +135,43 @@ def Dnav(Din,A):
 
 
 
+######################################
 
 
-
-
-top = opjD('Photos/all')
-def get_dictionary_of_Photos():
-    D = {}
-    years = []
-    a = sggo(top,'*')
-    for b in a:
-        years.append(b.split('/')[-1])
-    for y in years:
-        D[y] = {}
-    for y in years:
-        months = []
-        c = sggo(top,y,'*')
-        for d in c:
-            months.append(d.split('/')[-1])
-        for m in months:
-            D[y][m] = {}
-            days = []
-            e = sggo(top,y,m,'*')
-            for f in e:
-                days.append(f.split('/')[-1])
-            for g in days:
-                h = sggo(top,y,m,g,'.meta/*')
-                D[y][m][g] = {}
-                D[y][m][g]['<unsorted>'] = []
-                for j in h:
-                    if os.path.isfile(j):
-                        D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
-                    else:
-                        D[y][m][g][fname(j)] = []
-                        k = sggo(j,'*.jpeg')
-                        for u in k:
-                            D[y][m][g][fname(j)].append(u.split('/')[-1])
-    return D
+if False:
+    top = opjD('Photos/all')
+    def get_dictionary_of_Photos():
+        D = {}
+        years = []
+        a = sggo(top,'*')
+        for b in a:
+            years.append(b.split('/')[-1])
+        for y in years:
+            D[y] = {}
+        for y in years:
+            months = []
+            c = sggo(top,y,'*')
+            for d in c:
+                months.append(d.split('/')[-1])
+            for m in months:
+                D[y][m] = {}
+                days = []
+                e = sggo(top,y,m,'*')
+                for f in e:
+                    days.append(f.split('/')[-1])
+                for g in days:
+                    h = sggo(top,y,m,g,'.meta/*')
+                    D[y][m][g] = {}
+                    D[y][m][g]['<unsorted>'] = []
+                    for j in h:
+                        if os.path.isfile(j):
+                            D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
+                        else:
+                            D[y][m][g][fname(j)] = []
+                            k = sggo(j,'*.jpeg')
+                            for u in k:
+                                D[y][m][g][fname(j)].append(u.split('/')[-1])
+        return D
 
 
 if False:
