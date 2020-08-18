@@ -7,29 +7,6 @@ top = opjD('Photos/all')
 
 
 
-def nav():
-
-    D = get_dictionary_of_Photos()
-
-    Q = Navigate_dictionary(D)
-
-    Q.nav(
-        {
-        'action':kprint,
-        'ActionArgs': {
-            'top':top,
-            'keylist':None,
-            },
-        'ListingAction':None,
-        'ListingArgs':None,
-        'end_action':None,            
-        },
-        #action=open_imgs_with_Preview_action,
-
-        #end_action=quit_Preview,
-
-        )
-
 
 def open_imgs_with_Preview_action(f,keylist=[],top=[]):
     h = []
@@ -97,69 +74,29 @@ def get_dictionary_of_Photos():
     return D
 
 
+# 2020/05/06/<unsorted> n=13 (1)
 
-def ratings_filter(w,FilterArgs=None):                  
+def ratings_filter(w,rmin=0,rmax=10,show_unrated=True):                  
     _lst = []
     for l in w:
         c = rating_from_filename(l)
-        if c is not None:
-            cm(c)
-            if c >= FilterArgs['min'] and c <= FilterArgs['max']:
-                _lst.append(l)
+        #cm( l,c,c is None , show_unrated,c >= rmin and c <= rmax)
+        if c is None and not show_unrated:
+            continue
+        if (c is None and show_unrated) or (c >= rmin and c <= rmax):
+            _lst.append(l)
     return _lst
                 
 
-if False:
-    A = {
-        'view_action':None,#open_imgs_with_Preview_action,
-        'ViewActionArgs': {
-            'top':None,#top,
-            'keylist':None,
-        },
-        'line_print_action':None,#line_print_,
-        'LinePrintArgs':None,
-        'end_action':None,#quit_Preview,
-        'filter_action':None,#ratings_filter,
-        'FilterArgs':{
-            'min':0,
-            'max':10,
-        'show_unrated':1,
-        },          
-    }
 
 
-t=(
-    ('view',('Preview','kprint')),
-    ('min',(0,10)),
-    ('max',(0,10)),
-    ('show_unrated',(True,False)),
-)
-
-def apply_mini_menu(B):
-    t=(
-        ('view',('Preview','kprint')),
-        ('min',(0,10)),
-        ('max',(0,10)),
-        ('show_unrated',(0,1)),
-    )
-    mini_menu(B,t)
-    
-
-"""
-elif u[0] == 'view' and v == 'Preview':
-    A['view_action'] = open_imgs_with_Preview_action
-    A['ViewActionArgs'] = {
-        'top':top,
-        'keylist':None,
-    }
-
-elif u[0] == 'view' and v == 'kprint':
-    A['view_action'] = kprint
-    A['ViewActionArgs'] = {}
-"""
 
 
-if False:
+
+
+
+
+if True:
 
 
     def line_print_(ctr,s,k,D):
@@ -171,19 +108,37 @@ if False:
     Q = Navigate_dictionary(
         D,
         A = {
-            'view_action':open_imgs_with_Preview_action,
-            'ViewActionArgs': {
-                'top':top,
-                'keylist':None,
+            'view':{
+                'action':open_imgs_with_Preview_action,
+                'Args':{
+                    'top':top,
+                    'keylist':None,
+                },
             },
-            'line_print_action':None,#line_print_,
-            'LinePrintArgs':None,
-            'end_action':quit_Preview,
-            'filter_action':ratings_filter,
-            'FilterArgs':{
-                'min':0,
-                'max':10,
-            },          
+            'end':{
+                'action':quit_Preview,
+                'Args':None,
+            },
+            'filter':{
+                'action':ratings_filter,
+                'Args':{
+                    'rmin':6,
+                    'rmax':10,
+                    'show_unrated':False,
+                },      
+            },
+            'mini_menu':{
+                'action':mini_menu,
+                'Args': {
+                    'B':{},
+                    'menu_tuple':(
+                        #('view',('Preview','kprint','kprint')),
+                        ('rmin',(0,10,0)),
+                        ('rmax',(0,10,10)),
+                        ('show_unrated',(True,False,True)),
+                    ),
+                },
+            },
         },
     )
 
@@ -191,4 +146,13 @@ if False:
 
 
 #EOF
+
+
+
+
+
+
+
+
+
 

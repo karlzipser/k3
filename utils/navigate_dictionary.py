@@ -1,42 +1,82 @@
 
 from k3.utils.mini_menu import *
 
+
+
+
+
 def Navigate_dictionary(Din,A):
+
+    B = {}
+
     set_Defaults(
         {
-        'view_action':kprint,
-        'ViewActionArgs':None,
-        'line_print_action':None,
-        'LinePrintArgs':None,
-        'end_action':None,
-        'filter_action':None,
-        'FilterArgs':None,       
+            'view':{
+                'action':kprint,
+                'Args':None,
+            },
+            'line_print': {
+                'action':_line_print,
+                #'Args':None,
+            },
+            'end':{
+                'action':None,
+                'Args':None,
+            },
+            'filter':{
+                'action':None,
+                #'Args':None,      
+            },
+            'mini_menu':{
+                'action':mini_menu,
+                'Args':{
+                    'B':B,
+                    'menu_tuple':(('test',(True,False))),
+                },
+            }
         },
-        A
+        A,
     )
 
     keylist = []
 
+
+    Commands = {
+        'up':['0'],
+        'quit':['q'],
+        'mini_menu':['m'],
+    }
+
     def nav():
         clear_screen()
-        if A['line_print_action']==None:
-            A['line_print_action'] = line_print
+
         while True:
-            w = go()
-            if w == 'quit':
-                if A['end_action'] is not None:
-                    A['end_action']()
+
+            lst = go()
+
+            if lst == 'quit':
+
+                if A['end']['action'] is not None:
+                    if A['end']['Args'] is None:
+                        A['end']['action']()
+                    else:
+                        A['end']['action'](**A['end']['Args'])
+
                 return
-            elif type(w) == list:
-                if 'keylist' in A['ViewActionArgs']:
-                    A['ViewActionArgs']['keylist'] = keylist
-                if 'D' in A['ViewActionArgs']:
-                    A['ViewActionArgs']['D'] = get()
 
-                if A['filter_action'] is not None:
-                    w = A['filter_action'](w,A['FilterArgs'])
+            elif type(lst) == list:
 
-                A['view_action'](w,**A['ViewActionArgs'])       
+                if 'keylist' in A['view']['Args']:
+                    A['view']['Args']['keylist'] = keylist
+
+                if 'D' in A['view']['Args']:
+                    A['view']['Args']['D'] = get()
+
+                if A['filter']['action'] is not None:
+                    kprint(lst)
+                    lst = A['filter']['action'](lst,**A['mini_menu']['Args']['B'])#**A['filter']['Args'])
+
+                A['view']['action'](lst,**A['view']['Args'])   
 
 
     def up():
@@ -52,15 +92,7 @@ def Navigate_dictionary(Din,A):
             D = D[k]
         return D
 
-    def line_print(ctr,s,k,D):
-        if type(D[k]) == dict:
-            c = '`wbb'
-        else:
-            if type(D[k]) == list:
-                c = '`bw-'
-            else:
-                c = '`r'
-        clp( '/'.join(keylist+[k]), '`g-b', s, c, d2n('(',ctr,')') )
+
 
 
     def listing():
@@ -83,7 +115,7 @@ def Navigate_dictionary(Din,A):
             ctr += 1
             s = d2n('n=',len(D[k]))
             options.append(k)
-            A['line_print_action'](ctr,s,k,D)
+            A['line_print']['action'](ctr,s,k,D,keylist)
 
         return options,None
 
@@ -100,12 +132,14 @@ def Navigate_dictionary(Din,A):
 
         clear_screen()
 
-        if r == 'q':
+        if r in Commands['quit']:
             return 'quit'
 
-
-        elif r == '0':
+        elif r in Commands['up']:
             up()
+
+        elif r in Commands['mini_menu']:
+            B = A['mini_menu']['action'](**A['mini_menu']['Args'])
 
         elif str_is_int(r):
             if len(options) > 0:
@@ -122,6 +156,16 @@ def Navigate_dictionary(Din,A):
     
     return namedtuple('Dnav_object', 'D keylist nav')(Din,keylist,nav)
 
+
+def _line_print(ctr,s,k,D,keylist):
+    if type(D[k]) == dict:
+        c = '`wbb'
+    else:
+        if type(D[k]) == list:
+            c = '`bw-'
+        else:
+            c = '`r'
+    clp( '/'.join(keylist+[k]), '`g-b', s, c, d2n('(',ctr,')') )
 
 
 #EOF

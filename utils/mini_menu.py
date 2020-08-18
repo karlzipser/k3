@@ -3,65 +3,76 @@ from k3.utils.strings import *
 from k3.utils.array_stuff import *
 
 
-
+eg_menu_tuple=(
+    ('view',('Preview','kprint')),
+    ('min',(0,10)),
+    ('max',(0,10)),
+    ('show_unrated',(True,False)),
+)
 
 def mini_menu(
-    B,
-    tup,
+    B={},
+    menu_tuple=eg_menu_tuple,
     normal='`---',
     emphasis='`--u',
     err='`wrb',
     cursor='`---',
-    do_kprint=True
+    do_kprint=False,
+    tb='\t\t\t',
 ):
-    t = tup
+    
+    if len(B) == 0:
+        for c in rlen(menu_tuple):
+            B[menu_tuple[c][0]] = menu_tuple[c][1][-1]
+
     while True:
         error = False
         clear_screen()
         if do_kprint:
             kprint(B)
-        clp('mini-menu:',emphasis)
-        for c in rlen(t):
-            clp(c,t[c][0],normal)
+        clp(tb,'mini-menu:',emphasis)
+        for c in rlen(menu_tuple):
+            clp(tb,str(c)+')',menu_tuple[c][0]+':',B[menu_tuple[c][0]],normal)
 
-        s = raw_input(cf('> ',cursor))
+        input0 = raw_input(cf(tb+' >> ',cursor))
 
-        if s == 'q':
+        if input0 == 'q':
             return
 
-        if str_is_int(s):
-            n = int(s)
-            if n < len(t) and n >= 0:
-                u = t[n]
-
-                if type(u[1][0]) == type(True):
-                    if u[0] not in B:
-                        B[u[0]] = True
+        if str_is_int(input0):
+            n = int(input0)
+            if n < len(menu_tuple) and n >= 0:
+                menu_row = menu_tuple[n]
+                menu_keyword = menu_row[0]
+                menu_choices = menu_row[1]
+                if type(menu_choices[0]) == type(True):
+                    if menu_keyword not in B:
+                        B[menu_keyword] = True
                     else:
-                        B[u[0]] = not B[u[0]]
+                        B[menu_keyword] = not B[menu_keyword]
                 else:
-                    h = cf(u[0]+':',d2s(*u[1]))
-                    v = raw_input(cf(h + ' > ',cursor))
+                    h = cf(menu_keyword+':')#,d2s(*menu_choices[:-2]))
+                    input1 = raw_input(cf(tb + h + ' >>> ',cursor))
 
-                    if not str_is_float(v):
+                    if not str_is_float(input1):
                         error = True
                         
                     else:
-                        if is_number(u[1][0]):
-                            if str_is_float(v) and is_number(u[1][0]) and is_number(u[1][1]):
-                                if str_is_int(v):
-                                    v = int(v)
+                        if is_number(menu_choices[0]):
+                            if str_is_float(input1) and is_number(menu_choices[0]) and is_number(menu_choices[1]):
+                                if str_is_int(input1):
+                                    input1 = int(input1)
                                 else:
-                                    v = float(v)
-                                if v >= u[1][0] and v <= u[1][1]:
-                                    cm(v)
-                                    B[u[0]] = v
+                                    input1 = float(input1)
+                                if input1 >= menu_choices[0] and input1 <= menu_choices[1]:
+                                    cm(input1)
+                                    B[menu_keyword] = input1
                                 else:
                                     error = True
 
 
-                        elif int(v) < len(u[1]) and int(v) >= 0:
-                            B[u[0]] = u[1][int(v)]
+                        elif int(input1) < len(menu_choices) and int(input1) >= 0:
+                            B[menu_keyword] = menu_choices[int(input1)]
 
                         else:
                             error = True
@@ -69,7 +80,7 @@ def mini_menu(
             error = True
 
         if error:
-            clp('Error with entry',qtd(str(v)),err,r=1)
+            clp(tb,'Error with entry',qtd(str(input1)),err,r=1)
                     
 
 
