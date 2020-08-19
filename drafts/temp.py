@@ -1,12 +1,7 @@
 from k3.vis3 import *
 from facenet_pytorch import MTCNN, InceptionResnetV1
 import torch
-#from torch.utils.data import DataLoader
-#from torchvision import datasets
 import pandas as pd
-
-
-#workers = 0 if os.name == 'nt' else 4
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print('Running on device: {}'.format(device))
@@ -30,10 +25,12 @@ for f in files:
 	aligned.append(x_aligned)
 
 
-
+print('resnet')
 embeddings = resnet(
 	torch.stack(aligned).to(device)
 ).detach().cpu()
+
+so(opjD('data'),(aligned,embeddings))
 
 la = len(aligned)
 q = zeros((la,la))
