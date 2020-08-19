@@ -29,6 +29,9 @@ def opjm(*args):
         media_path = '/Volumes'
         return opj(media_path,opj(*args))
 
+def intr(n):
+    return np.int(np.round(n))
+
 def as_pct(a,b):
     return d2n(intr(100*a/b),'%')
 
@@ -73,6 +76,9 @@ if _which_python[0] == '3':
 else:
     using_python3 = False
 
+
+os.environ['PYTHONUNBUFFERED'] = '1'
+
 rnd = np.random.random
 rndint = np.random.randint
 rndn = np.random.randn
@@ -94,6 +100,7 @@ array = np.array
 sqrt = np.sqrt
 sin = np.sin
 cos = np.cos
+sleep = time.sleep
 
 from k3.utils.printing import *
 from k3.utils.have_using import *
@@ -237,115 +244,6 @@ def nvidia_smi_continuous(t=0.1):
 
 
 
-#####################################################
-#
-def get_Arguments(Defaults={}):
-    def args_to_dictionary(*args):
-        if not is_even(len(args[0])):
-            print("args_to_dictionary(*args)")
-            print("args are:")
-            print(args)
-            #raise ValueError('ERROR because: not is_even(len(args[0]))')
-            print('def args_to_dictionary(*args): Warning, not is_even(len(args[0]))')
-            return
-        ctr = 0
-        keys = []
-        values = []
-        for e in args[0]:
-            if is_even(ctr):
-                keys.append(e)
-            else:
-                values.append(e)
-            ctr += 1
-        d = {}
-        if len(keys) != len(values):
-            print("args_to_dictionary(*args)")
-            print("given keys are:")
-            print(keys)
-            print("given values are:")
-            print(values)
-            raise ValueError('ERROR because: len(keys) != len(values)')
-        for k,v in zip(keys,values):
-            d[k] = v
-        return d
-
-    temp = args_to_dictionary(sys.argv[1:])
-
-    Arguments = {}
-
-    if temp != None:
-        Args = {}
-        for k in temp.keys():
-            Args[k] = temp[k]
-
-        del temp
-
-        
-
-        for a in Args.keys():
-            
-            ar = Args[a]
-
-            if a[0] == '-':
-                if len(a) == 2:
-                    a = a[1]
-                    assert(a.islower() or not a.isalpha())
-                elif len(a) > 2:
-                    a = a[2:]
-                else:
-                    assert(False)
-            else:
-                print(Args)
-                cr(
-                    '*** Warning, argument',
-                    "'"+k+"'",
-                    'not proceeded by -- on command line ***',
-                    ra=1
-                )
-
-            if str_is_int(ar):
-                Arguments[a] = int(ar)
-            elif str_is_float(ar):
-                Arguments[a] = float(ar)
-            elif ',' in ar:
-                Arguments[a] = ar.split(',')
-            elif ar == 'True':
-                Arguments[a] = True
-            elif ar == 'False':
-                Arguments[a] = False        
-            else:
-                Arguments[a] = ar
-
-
-    set_Defaults(Defaults,Arguments)
-
-    return Arguments
-
-if False:
-    Arguments = get_Arguments()
-
-
-
-
-
-
-
-            
-
-def set_Defaults(Defaults,Dst,required=[]):
-    for k in required:
-        if k not in Dst:
-            cr("*** Error, argument",k,"was required ***",ra=1)
-            sys.exit()
-    for k in Dst.keys():
-        if k not in Defaults.keys() and k not in required:
-            cr("**** Warning, argument '"+k+"' not in expected Dst:\n\t",Defaults.keys(),ra=1)
-    for k in Defaults.keys():
-        if k not in Dst.keys():
-            Dst[k] = Defaults[k]
-
-dargs = set_Defaults
-
 
 
 
@@ -430,9 +328,65 @@ def unix(command_line_str, print_stdout=False, print_stderr=False,print_cmd=Fals
     return s.split('\n')
 
 
-from k3.utils.printing2 import *
+def print_dic_simple(D,title=''):
+    print(title)
+    if type(D) is not dict:
+        print(D)
+    else:
+        for k in D:
+            pd2s('   ',k+':',D[k])
 
-identify_file_str = ''
+
+REQUIRED = '__REQUIRED__'
+
+def set_Defaults(Defaults,Dst,required=[]):
+    for k in required:
+        if k not in Dst:
+            cr("*** Error, argument",k,"was required ***",ra=1)
+            os.sys.exit()
+    for k in Dst.keys():
+        if k not in Defaults.keys() and k not in required:
+            cr("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()),ra=1)
+
+    for k in Defaults.keys():
+        if k not in Dst.keys():
+            if Defaults[k] is REQUIRED:
+                cprint('*** Error. '+qtd('--'+k)+' is a required cmd line arg. ***','white','on_red')
+                print_dic_simple(Defaults,'Defaults')
+                os.sys.exit()
+            else:
+                Dst[k] = Defaults[k]
+
+
+
+def Percent(title='',prefix='',end_prefix=None):
+    D = {
+        'first':True,
+        'prefix':prefix
+    }
+    def show(a=None,b=None):
+        end = '\r'
+        flush = True
+        if a is None and b is None:
+            a,b = 100,100
+            end = '\n'
+            flush = False
+            if end_prefix is not None:
+                D['prefix'] = end_prefix
+        if D['first']:
+            D['first'] = False
+            try:
+                clp(title,'`wbb')
+            except:
+                print(title)
+        print(D['prefix']+' '+as_pct(a,b),end=end,flush=flush)
+    return namedtuple(
+        '_',
+        'show')(
+        show
+    )
+
+
 
 #EOF
 

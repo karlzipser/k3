@@ -1,38 +1,18 @@
 #,a
 
+"""
+pip install mmcv
+
+https://github.com/timesler/facenet-pytorch
+pip install facenet-pytorch
+
+"""
+
 from k3.vis3 import *
-
-Arguments = get_Arguments(
-    Defaults={
-        'src':opjD("temp/1/temp.mp4"),
-        'start_percent':0,
-        'end_percent':100,
-        'scale_divider':1,
-    }
-); kprint(Arguments)
-
-
-if 'frames' not in locals():
-    from PIL import Image
-    import mmcv
-    video = mmcv.VideoReader(Arguments['src'])
-    l = len(video)
-    a = int(l*Arguments['start_percent']/100)
-    b = int(l*Arguments['end_percent']/100)
-    frames = []
-    for i in range(a,b):
-        frame = Image.fromarray(cv2.cvtColor(video[i], cv2.COLOR_BGR2RGB))
-        if Arguments['scale_divider'] != 1:
-            frame = frame.resize(
-                ( na([shape(frame)[1],shape(frame)[0]]) / Arguments['scale_divider'] ).astype(int)
-            )
-        frames.append(frame)
 
 
 def Facenet():
-    """
-    https://github.com/timesler/facenet-pytorch
-    """
+
     from facenet_pytorch import MTCNN
     import torch
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -63,12 +43,61 @@ def Facenet():
 
 
 if __name__ == '__main__':
-    
+
+    Arguments = get_Arguments(
+        Defaults={
+            'src':REQUIRED,
+            'start_percent':0,
+            'end_percent':100,
+            'scale_divider':1,
+        }
+    )
+
+    kprint(Arguments,'main')
+
+    if 'frames' not in locals():
+
+        from PIL import Image
+        import mmcv
+        video = mmcv.VideoReader(Arguments['src'])
+        l = len(video)
+        a = int(l*Arguments['start_percent']/100)
+        b = int(l*Arguments['end_percent']/100)
+        clp('frame range =',a,'to',b,'within',l,'`wbb')
+        frames = []
+
+        P = Percent(
+            d2s('initial frame shape =',shape(video[0])),
+            '\tloading:',
+            '\tloaded:'
+        )
+
+        for i in range(a,b):
+            P.show(i-a,b-a)
+            frame = Image.fromarray(cv2.cvtColor(video[i], cv2.COLOR_BGR2RGB))
+
+            if Arguments['scale_divider'] != 1:
+                frame = frame.resize(
+                    ( na([shape(frame)[1],shape(frame)[0]]) / Arguments['scale_divider'] ).astype(int)
+                )
+            frames.append(frame)
+        P.show()
+
+
     N = Facenet()
 
     skip = 1
     rng = list(range(0,len(frames),skip))
 
+    clp('resized frame shape =',shape(frames[0]),'`wbb')
+
+
+    P = Percent(
+        'Detecting faces...',
+        '\tdisplaying:',
+        '\tdisplayed:'
+    )
+    
     for i in rng:
 
         frame = frames[i]
@@ -78,6 +107,15 @@ if __name__ == '__main__':
         frame_with_boxes = N.draw_boxes( frame, boxes )
 
         mci( frame_with_boxes, delay=1 )
+
+        P.show(i,len(rng))
+
+    P.show()
+
+
+
+
+
 
 
 #,b

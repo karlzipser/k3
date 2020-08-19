@@ -1,7 +1,6 @@
 from k3.utils.common import *
 
-def intr(n):
-    return np.int(np.round(n))
+
     
 def zeroToOneRange(m):
     min_n = 1.0*np.min(m)

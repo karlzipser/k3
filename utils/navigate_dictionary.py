@@ -1,52 +1,43 @@
 
-from k3.utils.mini_menu import *
+from k3.utils3 import *
 
 def EXAMPLE_of_using_Navigate_dictionary():
-    pass
 
-
-
-def Navigate_dictionary(Din,A):
-
-    set_Defaults(
-        {
-            'view':{
-                'action':kprint,
-                'Args':{},
+    
+    Q = {
+        1:{
+            2:{
+                3:[5,6],
+                'a':[1,4,3],
             },
-            'line_print': {
-                'action':_line_print,
-            },
-            'end':{
-                'action':None,
-                'Args':{},
-            },
-            'filter':{
-                'action':None,
-                'Args':{},      
-            },
-            'mini_menu':{
-                'action':mini_menu,
-                'Args':{
-                    'menu_tuple':(('toggle_test',(True,False))),
-                },
-            },
-            'Commands':{
-                'up':['0'],
-                'quit':['q'],
-                'mini_menu':['m'],
-            },
+            7:{'xx':['a','v','r',[1,2,3]]}
         },
+        'qqq':'zzz',
+    }
 
-        Dst=A,
-    )
+    ND = Navigate_dictionary(Q)
+
+    while True:
+        a = raw_input("Enter 'm' or someting else or 'q' to quit $ ")
+        if a == 'm':
+            ND.nav()
+        elif a == 'q':
+            return
+        else:
+            clp(qtd(a),'is not the navigate command.')
+    
 
 
-    A['mini_menu']['Args']['MiniMenu'] = {}
-    A['mini_menu']['action'](**A['mini_menu']['Args'])
+
+def Navigate_dictionary(Din):
+
+    Commands = {
+        'up':['0'],
+        'quit':['q'],
+        'mini_menu':['m'],
+    }
 
     keylist = []
-
 
 
     def clear_screen():
@@ -60,30 +51,15 @@ def Navigate_dictionary(Din,A):
 
         while True:
 
-            lst = go()
+            leaf = go()
 
-            if lst == 'quit':
+            if type(leaf) is str and leaf == 'quit':
 
-                if A['end']['action'] is not None:
-                    if len(A['end']['Args']) == 0:
-                        A['end']['action']()
-                    else:
-                        A['end']['action'](Args=A['end']['Args'])
+                return None
 
-                return
+            elif type(leaf) is not dict:
 
-            elif type(lst) == list:
-
-                A['view']['Args']['keylist'] = keylist
-
-                if 'D' in A['view']['Args']:
-                    A['view']['Args']['D'] = get()
-
-                if A['filter']['action'] is not None:
-                    kprint(lst)
-                    lst = A['filter']['action'](lst,Args=A['filter']['Args'],MiniMenu=A['mini_menu']['Args']['MiniMenu'])
-
-                A['view']['action'](lst,Args=A['view']['Args'],MiniMenu=A['mini_menu']['Args']['MiniMenu'])   
+                return leaf
 
 
     def up():
@@ -100,6 +76,19 @@ def Navigate_dictionary(Din,A):
         return D
 
 
+    def line_print(ctr,s,k,D):
+        if type(D[k]) == dict:
+            c = '`wbb'
+        else:
+            if type(D[k]) == list:
+                c = '`bw-'
+            else:
+                c = '`r'
+        keylist_as_strs = []
+        for e in keylist:
+            keylist_as_strs.append(str(e))
+
+        clp( '/'.join(keylist_as_strs+[k]), '`g-b', s, c, d2n('(',ctr,')') )
 
 
     def listing():
@@ -122,31 +111,24 @@ def Navigate_dictionary(Din,A):
             ctr += 1
             s = d2n('n=',len(D[k]))
             options.append(k)
-            A['line_print']['action'](ctr,s,k,D,keylist)
+            line_print(ctr,s,k,D)
 
-        return options,None
+        return options
 
 
     def go():
 
-        options,action_list = listing()
-
-        if action_list is not None:
-            keylist.pop()
-            return action_list
+        options = listing()
 
         r = raw_input('> ')
 
         clear_screen()
 
-        if r in A['Commands']['quit']:
+        if r in Commands['quit']:
             return 'quit'
 
-        elif r in A['Commands']['up']:
+        elif r in Commands['up']:
             up()
-
-        elif r in A['Commands']['mini_menu']:
-            MiniMenu = A['mini_menu']['action'](**A['mini_menu']['Args'])
 
         elif str_is_int(r):
             if len(options) > 0:
@@ -165,18 +147,7 @@ def Navigate_dictionary(Din,A):
 
 
 
-
-
-
-def _line_print(ctr,s,k,D,keylist):
-    if type(D[k]) == dict:
-        c = '`wbb'
-    else:
-        if type(D[k]) == list:
-            c = '`bw-'
-        else:
-            c = '`r'
-    clp( '/'.join(keylist+[k]), '`g-b', s, c, d2n('(',ctr,')') )
-
+if __name__ == '__main__':
+    EXAMPLE_of_using_Navigate_dictionary()
 
 #EOF
