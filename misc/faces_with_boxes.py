@@ -9,8 +9,7 @@ Arguments = get_Arguments(
         'end_percent':100,
         'scale_divider':1,
     }
-)
-kprint(Arguments)
+); kprint(Arguments)
 
 
 if 'frames' not in locals():

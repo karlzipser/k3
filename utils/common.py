@@ -239,7 +239,7 @@ def nvidia_smi_continuous(t=0.1):
 
 #####################################################
 #
-def get_Arguments():
+def get_Arguments(Defaults={}):
     def args_to_dictionary(*args):
         if not is_even(len(args[0])):
             print("args_to_dictionary(*args)")
@@ -271,6 +271,8 @@ def get_Arguments():
 
     temp = args_to_dictionary(sys.argv[1:])
 
+    Arguments = {}
+
     if temp != None:
         Args = {}
         for k in temp.keys():
@@ -278,7 +280,7 @@ def get_Arguments():
 
         del temp
 
-        Arguments = {}
+        
 
         for a in Args.keys():
             
@@ -313,12 +315,16 @@ def get_Arguments():
                 Arguments[a] = False        
             else:
                 Arguments[a] = ar
+
+
+    set_Defaults(Defaults,Arguments)
+
     return Arguments
 
 if False:
     Arguments = get_Arguments()
 
-#pprint(Arguments)
+
 
 
 

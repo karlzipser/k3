@@ -161,7 +161,7 @@ def Navigate_dictionary(Din,A):
             errPrint('invalid: ' + qtd(r))
 
     
-    return namedtuple('Dnav_object', 'D keylist nav')(Din,keylist,nav)
+    return namedtuple('_', 'D keylist nav')(Din,keylist,nav)
 
 
 
