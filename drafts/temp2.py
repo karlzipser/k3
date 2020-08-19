@@ -1,5 +1,6 @@
 #,a
 
+
 from k3.vis3 import *
 from PIL import Image, ImageDraw
 
@@ -18,7 +19,7 @@ for i in rng:
     frame = frames[i].resize(na((160,120))*2)
 
     boxes = Network.process_frame( frame )
-    
+
     frame_draw = frame.copy()
     draw = ImageDraw.Draw(frame_draw)
     try:
@@ -27,7 +28,6 @@ for i in rng:
     except:
         pass
     mci(na(frame_draw),delay=1)
-
 
 #,b
 
