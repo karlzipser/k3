@@ -3,6 +3,10 @@ from facenet_pytorch import MTCNN, InceptionResnetV1
 import torch
 import pandas as pd
 
+"""
+https://github.com/timesler/facenet-pytorch/blob/master/examples/infer.ipynb
+"""
+
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print('Running on device: {}'.format(device))
 
@@ -44,8 +48,8 @@ raw_enter()
 
 for a in aligned:
 	if a is not None:
-		b = a.numpy().transpose(1,2,0)
-		mci(z55(b),delay=33,title='all')
+		b = z55(a.numpy().transpose(1,2,0))
+		mci(b,delay=33,title='all')
 
 raw_enter()
 
