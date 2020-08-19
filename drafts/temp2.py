@@ -15,7 +15,7 @@ def by_keylist(D,keylist):
 	return D
 
 
-def ND(D):
+def Navigate_Dictionary(D):
 	
 	keylist = []
 
@@ -91,7 +91,9 @@ def ND(D):
 
 
 if __name__ == '__main__':
-	print('example')
+
+	print('\nExample of using Navigate_Dictionary')
+	
 	Q = {
 	    '1':{
 	        '2':{
@@ -104,7 +106,7 @@ if __name__ == '__main__':
 	    'qqq':'zzz',
 	}
 
-	N = ND(Q)
+	N = Navigate_Dictionary(Q)
 
 	while True:
 		print('')
