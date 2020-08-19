@@ -3,6 +3,9 @@ from k3.utils.strings import *
 from k3.utils.array_stuff import *
 
 
+def EXAMPLE_of_using_mini_menu():
+    pass
+
 eg_menu_tuple=(
     ('view',('Preview','kprint')),
     ('min',(0,10)),

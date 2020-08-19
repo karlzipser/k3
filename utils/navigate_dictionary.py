@@ -1,6 +1,10 @@
 
 from k3.utils.mini_menu import *
 
+def EXAMPLE_of_using_Navigate_dictionary():
+    pass
+
+
 
 def Navigate_dictionary(Din,A):
 
@@ -158,6 +162,10 @@ def Navigate_dictionary(Din,A):
 
     
     return namedtuple('Dnav_object', 'D keylist nav')(Din,keylist,nav)
+
+
+
+
 
 
 def _line_print(ctr,s,k,D,keylist):
