@@ -50,16 +50,54 @@ def Navigate_dictionary(Din):
         clear_screen()
 
         while True:
-
+            #cm(-1)
             leaf = go()
+            cy(leaf)
 
             if type(leaf) is str and leaf == 'quit':
-
+                #cm(0)
                 return None
 
             elif type(leaf) is not dict:
+                cg(leaf)
+                #return leaf
 
-                return leaf
+
+    def go():
+
+        options,action_list = listing()
+
+        #cg(options,action_list,keylist)
+
+        if action_list is not None:
+            keylist.pop()
+            return action_list
+
+        r = raw_input('> ')
+
+        clear_screen()
+
+        if r in Commands['quit']:
+            return 'quit'
+
+        elif r in Commands['up']:
+            up()
+
+        elif str_is_int(r):
+            if len(options) > 0:
+                r_ = int(r)-1
+                if r_ < len(options) and r_ >= 0:
+                    keylist.append(options[r_])
+                    return get()
+                else:
+                    errPrint(r+' is out of range')
+            else:
+                errPrint('no options')
+        else:
+            errPrint('invalid: ' + qtd(r))
+
+    
+    
 
 
     def up():
@@ -88,7 +126,8 @@ def Navigate_dictionary(Din):
         for e in keylist:
             keylist_as_strs.append(str(e))
 
-        clp( '/'.join(keylist_as_strs+[k]), '`g-b', s, c, d2n('(',ctr,')') )
+        #clp( '/'.join(keylist_as_strs+[k]), '`g-b', s, c, d2n('(',ctr,')') )
+        print( keylist_as_strs+[k], '`g-b', s, c, d2n('(',ctr,')') )
 
 
     def listing():
@@ -113,36 +152,33 @@ def Navigate_dictionary(Din):
             options.append(k)
             line_print(ctr,s,k,D)
 
+        return options,None
+
+
+    def _listing():
+
+        ctr = 0
+
+        options = []
+
+        D = get()
+
+        if type(D) is list:
+            return None,D
+
+        if len(keylist) > 0:
+            clp('<up> (0)')
+
+        ks = D.keys()
+
+        for k in ks:
+            ctr += 1
+            s = d2n('n=',len(D[k]))
+            options.append(k)
+            line_print(ctr,s,k,D)
+
         return options
 
-
-    def go():
-
-        options = listing()
-
-        r = raw_input('> ')
-
-        clear_screen()
-
-        if r in Commands['quit']:
-            return 'quit'
-
-        elif r in Commands['up']:
-            up()
-
-        elif str_is_int(r):
-            if len(options) > 0:
-                r_ = int(r)-1
-                if r_ < len(options) and r_ >= 0:
-                    keylist.append(options[r_])
-                else:
-                    errPrint(r+' is out of range')
-            else:
-                errPrint('no options')
-        else:
-            errPrint('invalid: ' + qtd(r))
-
-    
     return namedtuple('_', 'D keylist nav')(Din,keylist,nav)
 
 
