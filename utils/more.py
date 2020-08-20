@@ -64,12 +64,9 @@ def Toggler(t=5):
         if 'toggle_value' not in D:
             D['toggle_value'] = s            
         if D['timer'].time() < t:
-            #print 'no toggle'
             return False
         D['toggle_value_prev'] = D['toggle_value']
         D['toggle_value'] = s
-        #kprint(s,'s')
-        #print D['toggle_value'],D['toggle_value_prev']
         if D['toggle_value'] != D['toggle_value_prev']:
             return True
         return False
@@ -81,8 +78,5 @@ def Toggler(t=5):
 
 
 
-
-
-#exec(identify_file_str)
 
 #EOF

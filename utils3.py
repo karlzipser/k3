@@ -10,6 +10,6 @@ from k3.utils.connect import *
 from k3.utils.mini_menu import *
 from k3.utils.navigate_dictionary import *
 from k3.utils.more import *
-
+from k3.utils.record_vars import *
 
 #EOF

@@ -1,13 +1,14 @@
 
 from k3.utils.common import *
 
-#from k3.utils.printing2 import *
-
-#####################################################
-#
-
 
 def get_Arguments(Defaults={}):
+    """
+    Examples using get_Arguments:
+        python FILE --help
+        python FILE --src Desktop/temp.dat
+        try using --help
+    """#.replace('FILE',__file__)#.replace(opjh(),'')
     def args_to_dictionary(*args):
 
         for e in args:
@@ -75,8 +76,6 @@ def get_Arguments(Defaults={}):
                     ra=1
                 )
 
-
-
             if str_is_int(ar):
                 Arguments[a] = int(ar)
             elif str_is_float(ar):
@@ -94,14 +93,30 @@ def get_Arguments(Defaults={}):
 
     return Arguments
 
-if False:
-    Arguments = get_Arguments()
 
 
+if __name__ == '__main__':
+
+    clear_screen()
+    
+    print("""
+    Examples using get_Arguments:
+        python FILE --help
+        python FILE --src Desktop/temp.dat
+        try using --help
+    """.replace('FILE',__file__).replace(opjh(),''))
+
+    Arguments = get_Arguments(
+        Defaults={
+            'src':REQUIRED,
+            'start_percent':0,
+            'end_percent':100,
+            'scale_divider':1,
+            'save_faces':True,
+        }
+    )
+
+    print_dic_simple(Arguments,'Arguments')
 
 
-
-#dargs = set_Defaults
-#
-#####################################################
 
