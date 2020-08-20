@@ -34,6 +34,7 @@ for f in files:
 
 	if x_aligned is None:
 		x_aligned = 0*aligned[0]
+	print(type(x_aligned),x_aligned.size())
 	aligned.append(x_aligned)
 
 

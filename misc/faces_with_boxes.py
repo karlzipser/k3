@@ -44,6 +44,9 @@ def Facenet():
 
 
 if __name__ == '__main__':
+    import torch
+    from facenet_pytorch import InceptionResnetV1
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
     Arguments = get_Arguments(
         Defaults={
@@ -51,6 +54,7 @@ if __name__ == '__main__':
             'start_percent':0,
             'end_percent':100,
             'scale_divider':1,
+            'save_faces':True,
         }
     )
 
@@ -99,41 +103,82 @@ if __name__ == '__main__':
         '\tdisplayed:'
     )
     
+    frame_size = shape(frames[0])
+    width = frame_size[1]
+    height = frame_size[0]
+    larger_frame = zeros((frame_size[0]*2,width*2,3),np.uint8) + 127
+
+    resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
+    
+    data = []
+
     for i in rng:
 
-        frame = frames[i]
+        frame = na(frames[i])
 
         boxes, probs, landmarks = N.get_boxes( frame )
 
-        frame_with_boxes = N.draw_boxes( frame, boxes )
-
-        #mci( frame_with_boxes, delay=1 )
-
         P.show(i,len(rng))
 
-        figure('matplotlib')
-        mi(frame,5)
+        larger_frame[height//2:int(1.5*height),width//2:int(1.5*width),:] = frame
+
+        mci( frame, title='frame',delay=1 )
+
         if boxes is not None and landmarks is not None:
+            ctr = 0
             for box, landmark in zip(boxes, landmarks):
                 x0,x1,y0,y1 = intr(box[0]),intr(box[2]),intr(box[1]),intr(box[3])
-                
-                plot((x0,x1),(y0,y0),'r')
-                plot((x0,x1),(y1,y1),'r')
-                plot((x0,x0),(y0,y1),'r')
-                plot((x1,x1),(y0,y1),'r')
+                dx = x1 - x0
+                dy = y1 - y0
+                if False:
+                    plot((x0,x1),(y0,y0),'r')
+                    plot((x0,x1),(y1,y1),'r')
+                    plot((x0,x0),(y0,y1),'r')
+                    plot((x1,x1),(y0,y1),'r')
+                    plt.scatter(*np.meshgrid(box[[0, 2]], box[[1, 3]]))
+                    plt.scatter(landmark[:, 0], landmark[:, 1], s=8)
 
-                plt.scatter(*np.meshgrid(box[[0, 2]], box[[1, 3]]))
-                plt.scatter(landmark[:, 0], landmark[:, 1], s=8)
+                if True:
+                    face = larger_frame[height//2+y0-dy//4:height//2+y1+dy//4,width//2+x0-dx//4:width//2+x1+dx//4,:]
+                    mci(face,title=str(6+ctr),delay=1)
 
-                try:
-                    mi(z55(na(frame)[y0:y1,x0:x1,:]),6)
-                except:
+                    embeddings = [0]
+                    face_ = face.transpose(2,0,1).copy()
+                    
+                    face__ = zeros([1]+list(shape(face_)))
+                    face__[0,:,:,:] = face_
+                    face__ = torch.from_numpy(face__)
+                    print(face__.size())
+                    print(shape(a))
+                    embeddings = resnet(
+                    #    torch.stack(aligned).to(device)
+                        torch.stack([face__,face__]).to(device)
+                    #    #torch.from_numpy(face.transpose(2,0,1)).to(device)
+                    ).detach().cpu()
+
+                    data.append(
+                        {
+                            'x0':x0,
+                            'x0':x1,
+                            'y0':y0,
+                            'y1':y1,
+                            'face':face.copy(),
+                            'frame':i,
+                            'file':Arguments['src'],
+                            'landmark':landmark,
+                            'embedding':embeddings[0],
+                        }
+                    )
+                    #mi(data[-1]['face'])
+                else:
                     pass
+                ctr += 1
         spause()
-
 
     P.show()
 
+    if Arguments['save_faces']:
+        soD(data,'data')
 
 
 
