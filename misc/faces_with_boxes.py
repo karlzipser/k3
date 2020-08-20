@@ -19,8 +19,9 @@ def Facenet():
     mtcnn = MTCNN(keep_all=True, device=device)
 
     def get_boxes(frame):
-        boxes, _ = mtcnn.detect(frame)
-        return boxes
+        boxes, probs, landmarks = mtcnn.detect(frame, landmarks=True)
+        #boxes, _ = mtcnn.detect(frame)
+        return boxes, probs, landmarks
 
     def draw_boxes(frame,boxes):
         from PIL import ImageDraw
@@ -102,13 +103,34 @@ if __name__ == '__main__':
 
         frame = frames[i]
 
-        boxes = N.get_boxes( frame )
+        boxes, probs, landmarks = N.get_boxes( frame )
 
         frame_with_boxes = N.draw_boxes( frame, boxes )
 
-        mci( frame_with_boxes, delay=1 )
+        #mci( frame_with_boxes, delay=1 )
 
         P.show(i,len(rng))
+
+        figure('matplotlib')
+        mi(frame,5)
+        if boxes is not None and landmarks is not None:
+            for box, landmark in zip(boxes, landmarks):
+                x0,x1,y0,y1 = intr(box[0]),intr(box[2]),intr(box[1]),intr(box[3])
+                
+                plot((x0,x1),(y0,y0),'r')
+                plot((x0,x1),(y1,y1),'r')
+                plot((x0,x0),(y0,y1),'r')
+                plot((x1,x1),(y0,y1),'r')
+
+                plt.scatter(*np.meshgrid(box[[0, 2]], box[[1, 3]]))
+                plt.scatter(landmark[:, 0], landmark[:, 1], s=8)
+
+                try:
+                    mi(z55(na(frame)[y0:y1,x0:x1,:]),6)
+                except:
+                    pass
+        spause()
+
 
     P.show()
 

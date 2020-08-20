@@ -15,7 +15,7 @@ def by_keylist(D,keylist):
 	return D
 
 
-def Navigate_Dictionary(D):
+def Navigate_Dictionary(D,ignore_keys=['.meta']):
 	
 	keylist = []
 
@@ -31,13 +31,12 @@ def Navigate_Dictionary(D):
 				t = keylist[-1]
 			else:
 				t = 'D'
-			kprint(by_keylist(D,keylist))#,t)
+			kprint(by_keylist(D,keylist),ignore_keys=ignore_keys)
 			print('')
 			clp('choices','`--u')
 
 			current = by_keylist(D,keylist)
 			if type(current) is not dict:
-				#cr(current)
 				up()
 				return current
 
@@ -46,6 +45,11 @@ def Navigate_Dictionary(D):
 			message = None
 
 			ks = list(current.keys())
+			for ik in ignore_keys:
+				if ik in ks:
+					pd2s('ignoring',ik)
+					ks.remove(ik)
+
 			int_choices = list(range(1,len(ks)+1))
 			for i in int_choices:
 				pd2s(i,')',ks[i-1])
@@ -58,7 +62,7 @@ def Navigate_Dictionary(D):
 			elif q == '0':
 				message = up()
 
-			elif q == 'r':
+			elif q == 'e':
 				return current
 
 			elif str_is_int(q):
@@ -87,7 +91,7 @@ def Navigate_Dictionary(D):
 			return 'already at top'
 		
 	
-	return namedtuple('_', 'navigate up down')(navigate,up,down)
+	return namedtuple('_', 'navigate up down keylist')(navigate,up,down,keylist)
 
 
 if __name__ == '__main__':
@@ -97,7 +101,7 @@ if __name__ == '__main__':
 	Q = {
 	    '1':{
 	        '2':{
-	            '3':[5,6],
+	            '.meta':[5,6],
 	            'a':1,
 	        '7':{'xx':['a','v','r',[1,2,3]]},
 	        '8':'eight',
@@ -110,7 +114,7 @@ if __name__ == '__main__':
 
 	while True:
 		print('')
-		q = raw_input('n to navigate, q to quit, or anything else > ')
+		q = raw_input(d2s(qtd('n'),'to navigate,',qtd('e'),'to exit navigation',qtd('q'),'to quit, or anything else > '))
 		if q == 'q':
 			break
 		elif q == 'n':

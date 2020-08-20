@@ -5,6 +5,7 @@ import pandas as pd
 
 """
 https://github.com/timesler/facenet-pytorch/blob/master/examples/infer.ipynb
+https://www.kaggle.com/timesler/guide-to-mtcnn-in-facenet-pytorch
 """
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -13,8 +14,11 @@ print('Running on device: {}'.format(device))
 mtcnn = MTCNN(
     image_size=160, margin=0, min_face_size=20,
     thresholds=[0.6, 0.7, 0.7], factor=0.709, post_process=True,
-    device=device
+    device=device,
+    keep_all=True,
 )
+
+
 
 resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
@@ -24,6 +28,10 @@ for f in files:
 	print(f)
 	img = zimread(f)
 	x_aligned, prob = mtcnn(img, return_prob=True)
+
+	if False:
+		boxes, probs, landmarks = mtcnn.detect(frame, landmarks=True)
+
 	if x_aligned is None:
 		x_aligned = 0*aligned[0]
 	aligned.append(x_aligned)
