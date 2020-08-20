@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     N = Facenet()
 
-    skip = 1
+    skip = 4
     rng = list(range(0,len(frames),skip))
 
     clp('resized frame shape =',shape(frames[0]),'`wbb')
@@ -138,40 +138,39 @@ if __name__ == '__main__':
                     plt.scatter(*np.meshgrid(box[[0, 2]], box[[1, 3]]))
                     plt.scatter(landmark[:, 0], landmark[:, 1], s=8)
 
-                if True:
+                try:
                     face = larger_frame[height//2+y0-dy//4:height//2+y1+dy//4,width//2+x0-dx//4:width//2+x1+dx//4,:]
                     mci(face,title=str(6+ctr),delay=1)
 
                     embeddings = [0]
                     face_ = face.transpose(2,0,1).copy()
                     
-                    face__ = zeros([1]+list(shape(face_)))
-                    face__[0,:,:,:] = face_
-                    face__ = torch.from_numpy(face__)
-                    print(face__.size())
-                    print(shape(a))
-                    embeddings = resnet(
-                    #    torch.stack(aligned).to(device)
-                        torch.stack([face__,face__]).to(device)
-                    #    #torch.from_numpy(face.transpose(2,0,1)).to(device)
-                    ).detach().cpu()
+                    a = face.copy()
+                    a = a.transpose(2,0,1)
+                    b = torch.from_numpy(a).float()
+                    try:
+                        embeddings = resnet(
+                            torch.stack([b]).to(device)
+                        ).detach().cpu()
 
-                    data.append(
-                        {
-                            'x0':x0,
-                            'x0':x1,
-                            'y0':y0,
-                            'y1':y1,
-                            'face':face.copy(),
-                            'frame':i,
-                            'file':Arguments['src'],
-                            'landmark':landmark,
-                            'embedding':embeddings[0],
-                        }
-                    )
+                        data.append(
+                            {
+                                'x0':x0,
+                                'x0':x1,
+                                'y0':y0,
+                                'y1':y1,
+                                'face':face.copy(),
+                                'frame':i,
+                                'file':Arguments['src'],
+                                'landmark':landmark,
+                                'embedding':embeddings[0],
+                            }
+                        )
+                    except:
+                        cr('failure')
                     #mi(data[-1]['face'])
-                else:
-                    pass
+                except:
+                    cg('failure')
                 ctr += 1
         spause()
 
@@ -182,7 +181,20 @@ if __name__ == '__main__':
 
 
 
+if False:
+    o = loD('data')
+    for a in o:
+        mci(a['face'],delay=33)
+        figure(1);clf()
+        plot(a['embedding'])
+        spause()
 
+mi(o[100]['face'],100)
+for i in rlen(o):
+    figure(2);clf();plt_square()
+    plot(o[100]['embedding'],o[i]['embedding'],'.')
+    mi(o[i]['face'],101)
+    spause()
 
 
 #,b
