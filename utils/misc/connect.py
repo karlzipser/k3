@@ -1,4 +1,4 @@
-from k3.utils.common import *
+
 
 def date_and_time_setting_strings():
     now = datetime.datetime.now()

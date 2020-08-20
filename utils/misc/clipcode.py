@@ -1,4 +1,4 @@
-from k3.utils.files import *
+
 
 try:
     import pyperclip

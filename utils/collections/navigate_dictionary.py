@@ -1,6 +1,4 @@
-#,a
 
-from k3.utils3 import *
 
 
 def by_keylist(D,keylist):
@@ -122,6 +120,6 @@ if __name__ == '__main__':
 			pd2s('\nWe got',result,'out of navigation.')
 		else:
 			print('\nDoing something else...')
-#,b
+
 
 #EOF

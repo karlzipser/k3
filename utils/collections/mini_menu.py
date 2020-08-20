@@ -1,7 +1,5 @@
 
-from k3.utils.strings import *
-from k3.utils.array_stuff import *
-from k3.utils.printing2 import *
+
 
 def mini_menu(
     MiniMenu={},

@@ -1,16 +1,7 @@
-#from k3.utils.common import *
-# This file is used by .common, so can't import it. Therefore, imports must be
-# specified here.
-import numpy as np
+
 from termcolor import cprint
 from termcolor import colored
 
-
-def __d2s_spacer(args,spacer=' '):
-    lst = []
-    for e in args:
-        lst.append(str(e))
-    return spacer.join(lst)
 
 
 def d2s_spacer(args,spacer=' '):
@@ -39,28 +30,27 @@ def d2s(*args):
     d2f('/',1,2,3) => '1/2/3'
     '''
     return d2s_spacer(args)
+
 def d2c(*args):
     return d2s_spacer(args,spacer=',')
+
 def d2p(*args):
     return d2s_spacer(args,spacer='.')
+
 def d2n(*args):
     return d2s_spacer(args,spacer='')
+
 def d2f(*args):
     return d2s_spacer(args[1:],spacer=args[0])
+
 def pd2s(*args):
     cprint(d2s(*args))
+
 def pd2n(*args):
     print(d2n(*args))
 
-
-
-
-
 def beep():
     print('\007')
-
-
-
 
 def dp(f,n=2):
     """
@@ -72,11 +62,6 @@ def dp(f,n=2):
     f *= 10.0**n
     f = int(np.round(f))
     return f/(10.0**n)
-
-
-
-
-
 
 def clear_screen():
     print(chr(27) + "[2J")
@@ -99,8 +84,6 @@ def format_row(list_of_sym_percent_pairs):
         else:
             row_str += ' '
     return row_str
-
-
 
 
 rd = '\x1b[31m'
@@ -126,6 +109,49 @@ og = '\x1b[91m'
 underlined = '\x1b[4m'
 
 
+
+cstr = """
+def cQ(*args,**kwargs):
+    cprint(d2s_spacer(tuple(list(args)),spacer=' '),'COLOR')
+    if k_in_D('ra',kwargs) or k_in_D('r',kwargs):
+        cprint('\b  (hit Enter to continue)','COLOR')
+        raw_input()
+    if k_in_D('t',kwargs):
+        time.sleep(kwargs['t'])
+"""
+
+for color in ['red','yellow','green','blue','magenta','cyan','white','Grey']:
+    an_exec_string = cstr.replace('Q',color[0]).replace('COLOR',color).replace('Grey','grey')
+    exec(an_exec_string)
+
+
+def print_dic_simple(D,title=''):
+    print(title)
+    if type(D) is not dict:
+        print(D)
+    else:
+        for k in D:
+            pd2s('   ',k+':',D[k])
+
+def get_terminal_size():
+    rows, columns = os.popen('stty size', 'r').read().split()
+    return int(rows),int(columns)
+
+
+def et():
+    print(
+        """
+except KeyboardInterrupt:
+    cr('\n\n*** KeyboardInterrupt ***\n')
+    sys.exit()
+except Exception as e:
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    print('Exception!',emphasis=True)
+    print(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)        
+
+        """
+)
 
 
 

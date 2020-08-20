@@ -1,10 +1,12 @@
-from k3.utils.common import *
-from k3.utils.times import *
-from k3.utils.files import *
-from k3.utils.strings import *
-from k3.utils.array_stuff import *
-from k3.utils.clipcode import *
-from k3.utils.connect import *
+
+
+
+
+
+def nvidia_smi_continuous(t=0.1):
+    while True:                                     
+        os.system('nvidia-smi')
+        time.sleep(t)
 
 
 

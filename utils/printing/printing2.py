@@ -1,4 +1,3 @@
-from k3.utils.common import *
 
 
 
@@ -231,7 +230,15 @@ def fline():
 
 
 
-def errPrint(s):
-    clp(s,'`rwb')
+def errPrint(*s,**kwargs):
+    if 'f' not in kwargs or kwargs['f']:
+        kwargs['f'] = 1
+        del kwargs['f']
+        s = ['*** Error']+list(s)+['***']
+    clp(*s,'`wrb',**kwargs)
+cE = errPrint
+
+
+
     
 #EOF
