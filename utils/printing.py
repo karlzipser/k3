@@ -52,30 +52,6 @@ def pd2s(*args):
 def pd2n(*args):
     print(d2n(*args))
 
-#if False:
-#   for i in range(256):
-#       print d2n('\x1b[',i,'m',i,' test','\x1b[36m')
-rd = '\x1b[31m'
-gr = '\x1b[32m'
-yl = '\x1b[33m'
-bl = '\x1b[34m'
-mg = '\x1b[35m'
-lb = '\x1b[36m'
-wh = '\x1b[37m'
-
-wh_bk = '\x1b[40m'
-wh_rd = '\x1b[41m'
-wh_gr = '\x1b[42m'
-wh_bl = '\x1b[44m'
-wh_mg = '\x1b[45m'
-wh_lb = '\x1b[46m'
-
-mg = '\x1b[35m'
-lb = '\x1b[36m'
-wh = '\x1b[37m'
-
-og = '\x1b[91m'
-underlined = '\x1b[4m'
 
 
 
@@ -126,6 +102,28 @@ def format_row(list_of_sym_percent_pairs):
 
 
 
+
+rd = '\x1b[31m'
+gr = '\x1b[32m'
+yl = '\x1b[33m'
+bl = '\x1b[34m'
+mg = '\x1b[35m'
+lb = '\x1b[36m'
+wh = '\x1b[37m'
+
+wh_bk = '\x1b[40m'
+wh_rd = '\x1b[41m'
+wh_gr = '\x1b[42m'
+wh_bl = '\x1b[44m'
+wh_mg = '\x1b[45m'
+wh_lb = '\x1b[46m'
+
+mg = '\x1b[35m'
+lb = '\x1b[36m'
+wh = '\x1b[37m'
+
+og = '\x1b[91m'
+underlined = '\x1b[4m'
 
 
 

@@ -4,27 +4,28 @@ from k3.utils.files import *
 
 
 
-def Record_vars():
-    
-    ls = [list(globals().keys())]
+def Record_vars(global_key_list,Globals):
+    ls = [global_key_list]
 
-    def update():
-        ls.append(list(globals().keys()))
-    def get_new():
+    def update(global_key_list):
+        ls.append(global_key_list)
+    def get_new(global_key_list):
         N = {}
         for l in ls[-1]:
             if l not in ls[0]:
+                print(l)
                 if l[0] != '_':
-                    g = globals()[l]
+                    g = Globals[l]
                     try:
                         pickle.dumps(g)
                         N[l] = g
                     except:
                         errPrint(d2s('Warning, cannot pickle',qtd(l),'so skipping it.'))
+                        N[l] = '<not able to pickle>'
         return N
-    def save(f=opjD('D.pkl')):
-        update()
-        so(get_new(),f)
+    def save(global_key_list,f=opjD('D.pkl')):
+        update(global_key_list)
+        so(get_new(global_key_list),f)
 
     return namedtuple(
         '_',
@@ -32,22 +33,27 @@ def Record_vars():
          update, get_new, save
     )
 
+
+
+
 if __name__ == '__main__':
     
+    clear_screen()
+
     print('example using Record_vars.\n')
 
-    R = Record_vars()
+    R = Record_vars(list(globals().keys()),globals())
 
-    a = 1
-    b = [2,3,4]
-    c = {'a':a,'b':b}
-    d = [a,b,c]
+    if 'e.g. data':
+        a = 1
+        b = [2,3,4]
+        c = {'a':a,'b':b}
+        d = [a,b,c]
+        P = Percent('P','calculating','calculated')
+        P.show(5,10)
+        P.show()
 
-    P = Percent('x','calculating','calculated')
-    P.show(5,10)
-    P.show()
-
-    R.save()
+    R.save(list(globals().keys()))
 
     o = loD('D')
 

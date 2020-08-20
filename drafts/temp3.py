@@ -72,10 +72,10 @@ for i in range(l):
     s.append(np.argsort(m[i,:]))
 
 
-n = 100
-for i in range(0,l,10):
+n = 0
+for i in range(0,l,1):
     j = s[n][i]
-    mi(d[j]['face'],2,img_title=d2s(j,dp(m[n,j]),as_pct(i,l)))
+    mi(d[j]['face'],1,img_title=d2s(j,dp(m[n,j]),as_pct(i,l)))
     spause()
     time.sleep(0.2)
 

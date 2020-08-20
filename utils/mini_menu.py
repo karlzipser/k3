@@ -1,21 +1,11 @@
 
 from k3.utils.strings import *
 from k3.utils.array_stuff import *
-
-
-def EXAMPLE_of_using_mini_menu():
-    pass
-
-eg_menu_tuple=(
-    ('view',('Preview','kprint')),
-    ('min',(0,10)),
-    ('max',(0,10)),
-    ('show_unrated',(True,False)),
-)
+from k3.utils.printing2 import *
 
 def mini_menu(
     MiniMenu={},
-    menu_tuple=eg_menu_tuple,
+    menu_tuple=(),#eg_menu_tuple,
     normal='`---',
     emphasis='`--u',
     err='`wrb',
@@ -26,8 +16,8 @@ def mini_menu(
     if len(MiniMenu) == 0:
         for c in rlen(menu_tuple):
             MiniMenu[menu_tuple[c][0]] = menu_tuple[c][1][-1]
-        cy('initalizing MiniMenu and returning.')
-        return
+        cy('initalizing MiniMenu')
+        #return
 
     while True:
         error = False
@@ -85,8 +75,32 @@ def mini_menu(
 
         if error:
             clp(tb,'Error with entry',qtd(str(input1)),err,r=1)
-                    
 
+
+eg_menu_tuple=(
+    ('min',(0,10,0)),
+    ('max',(0,10,10)),
+    ('show_unrated',(True,False)),
+)
+    
+
+if __name__ == '__main__':
+    
+    M = {}
+
+    while True:
+
+        mini_menu(
+            MiniMenu=M,
+            menu_tuple=eg_menu_tuple,
+        )
+        kprint(M,'M')
+        q = input("'q'<enter> to quit, <enter> to return to mini_menu  --> ")
+        if q == 'q':
+            break
+            
+    print('')
+    kprint(M,'final M')
 
 
 #EOF
