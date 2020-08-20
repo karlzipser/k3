@@ -181,7 +181,7 @@ if __name__ == '__main__':
 
 
 
-if False:
+if True:
     o = loD('data')
     for a in o:
         mci(a['face'],delay=33)
@@ -189,12 +189,12 @@ if False:
         plot(a['embedding'])
         spause()
 
-mi(o[100]['face'],100)
-for i in rlen(o):
-    figure(2);clf();plt_square()
-    plot(o[100]['embedding'],o[i]['embedding'],'.')
-    mi(o[i]['face'],101)
-    spause()
+    mi(o[0]['face'],100)
+    for i in rlen(o):
+        figure(2);clf();plt_square()
+        plot(o[0]['embedding'],o[i]['embedding'],'.')
+        mi(o[i]['face'],101)
+        spause()
 
 
 #,b
