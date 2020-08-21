@@ -3,7 +3,7 @@
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied. Assume path = ~/k3"
-    find ~/k3 -name '*.pyc' -delete
+    find ~/k3 -name __pycache__ -delete
 else
-find $1 -name '*.pyc' -delete
+  find $1 -name __pycache__ -delete
 fi

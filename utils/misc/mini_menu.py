@@ -1,15 +1,16 @@
 
-from k3.utils.core import *
+from k3.utils.misc.sys import *
 
 def mini_menu(
     MiniMenu={},
     menu_tuple=(),#eg_menu_tuple,
-    normal='`---',
-    emphasis='`--u',
+    normal='`--rb',
+    emphasis='`--urb',
     err='`wrb',
-    cursor='`---',
+    cursor='`--rb',
     do_kprint=False,
     tb='\t\t\t',
+    pathname=None,
 ):
     if len(MiniMenu) == 0:
         for c in rlen(menu_tuple):
@@ -22,10 +23,15 @@ def mini_menu(
         clear_screen()
         if do_kprint:
             kprint(MiniMenu)
-        clp(tb,'mini-menu:',emphasis)
+        if pathname is None:
+            p = ''
+        else:
+            p = d2n('(',pathname.replace(opjh(),''),')')
+        clp(tb,'mini-menu:',p,emphasis)
         for c in rlen(menu_tuple):
             clp(tb,str(c)+')',menu_tuple[c][0]+':',MiniMenu[menu_tuple[c][0]],normal)
 
+        input0 = '<None>'
         input0 = raw_input(cf(tb+' >> ',cursor))
 
         if input0 == 'q':
@@ -72,7 +78,7 @@ def mini_menu(
             error = True
 
         if error:
-            clp(tb,'Error with entry',qtd(str(input1)),err,r=1)
+            clp(tb,'Error with entry',qtd(str(input1)),normal,err,r=1)
 
 
 eg_menu_tuple=(
@@ -82,23 +88,53 @@ eg_menu_tuple=(
 )
     
 
+
+
 if __name__ == '__main__':
     
-    M = {}
+    Arguments = get_Arguments(
+        Defaults={
+            'path':None,
+        }
+    )
+    kprint(Arguments,'Arguments')
+
+    if type(Arguments['path']) == str:
+        os_system('touch',Arguments['path'])
+        if len(sggo(Arguments['path'])) == 0:
+            cE(Arguments['path'],'is not valid path, setting',"Arguments['path'] = None",r=1)
+            Arguments['path'] = None
+    try:
+        M = lo(Arguments['path'])
+
+    except:
+        M = {}
+
 
     while True:
+
+        q = input("q-Enter to quit, m-Enter to return to mini_menu  --> ")
+        if q == 'q':
+            break
+        if q != 'm':
+            raw_enter('\nYou entered input ('+qtd(q)+') that does nothing.\n')
+            print('')
+            continue
 
         mini_menu(
             MiniMenu=M,
             menu_tuple=eg_menu_tuple,
+            pathname=Arguments['path']
         )
+
         kprint(M,'M')
-        q = input("'q'<enter> to quit, <enter> to return to mini_menu  --> ")
-        if q == 'q':
-            break
-            
+
     print('')
+
     kprint(M,'final M')
+
+    if type(Arguments['path']) == str:
+        so(Arguments['path'],M)
 
 
 #EOF

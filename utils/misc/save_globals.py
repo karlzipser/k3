@@ -1,5 +1,5 @@
 
-from k3.utils.collections import *
+from k3.utils.misc.printing2 import *
 
 
 def Record_vars(global_key_list,Globals):

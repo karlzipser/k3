@@ -23,6 +23,7 @@ imports = (
     'numbers',
     'math',
     'pickle',
+    'time',
     ('FROM','pprint','pprint'),
     ('FROM','termcolor','cprint'),
     ('FROM','collections','namedtuple'),

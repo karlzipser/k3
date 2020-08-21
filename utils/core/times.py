@@ -1,6 +1,7 @@
 
 from k3.utils.core.renaming import *
 
+import time
 
 class Timer:
     def __init__(self, time_s=0):

@@ -1,5 +1,7 @@
 
 from k3.utils.core.paths import *
+from k3.utils.core.times import *
+from k3.utils.core.printing import *
 
 
 
@@ -24,7 +26,13 @@ def tsggo(d,*args):
     return get_files_sorted_by_mtime(a)
 
 
-
+def natural_keys(text):
+    '''
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    '''
+    return [ atoi(c) for c in re.split('(\d+)', text) ]
 
 def dir_as_dic_and_list( path ):
     """Returns a dictionary and list of files and directories within the path.
@@ -62,19 +70,19 @@ def save_obj(obj, name,noisy=True,show_time=False,use_real_path=False):
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
     if noisy:
         timer = Timer()
-        a = cf('. . . saved','`',name+'.pkl','`--rb')
+        a = d2s('. . . saved',name+'.pkl')#,'`--rb')
         if show_time:
-            b = d2s('`','in',dp(timer.time()),'seconds.\r')
+            b = d2s('in',dp(timer.time()),'seconds.\r')
         else:
             b=''
-        clp(a,b)
+        pd2s(a,b)
 
 
 def load_obj(name,noisy=True,time=False,use_real_path=False):
     assert_disk_locations([pname(name)])
     if noisy:
         timer = Timer()
-        clp('Loading','`',name,'`--rb','. . .\r'),
+        pd2s('Loading',name)#,'`--rb','. . .\r'),
 
     name = name.replace('.pkl','')
     name = name + '.pkl'
@@ -84,7 +92,7 @@ def load_obj(name,noisy=True,time=False,use_real_path=False):
     with open(name, 'rb') as f:
         o = pickle.load(f)
         if noisy:
-            clp(d2s('. . . loaded in',dp(timer.time()),'seconds.\r')),
+            pd2s(d2s('. . . loaded in',dp(timer.time()),'seconds.\r')),
         return o
         
 lo = load_obj
