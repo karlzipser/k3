@@ -1,3 +1,4 @@
+print(__file__)
 
 from k3.utils.core.imports import *
 
@@ -15,7 +16,6 @@ from k3.utils.core.strings import *
 
 from k3.utils.core.arrays import *
 
-from k3.utils.core.arguments import *
-
+from k3.utils.core.printing import *
 
 #EOF
