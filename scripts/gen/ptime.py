@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from k3.utils3 import *
+from k3.utils import *
 
 s = time_str('Pretty2')
 

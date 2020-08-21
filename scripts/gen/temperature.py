@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from k3.utils3 import *
+from k3.utils import *
 exec(identify_file_str)
 import argparse
 parser = argparse.ArgumentParser()

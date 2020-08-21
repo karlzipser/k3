@@ -1,4 +1,4 @@
-from k3.utils3 import *
+from k3.utils import *
 
 _project_name = fname(pname(pname(__file__)))
 
