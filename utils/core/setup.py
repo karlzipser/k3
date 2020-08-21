@@ -1,6 +1,7 @@
 
 from k3.utils.core.renaming import *
 
+
 _which_python = sys.version.split(' ')[0]
 if _which_python[0] == '3':
     raw_input = input

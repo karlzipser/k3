@@ -1,5 +1,5 @@
 
-
+from k3.utils.core.imports import *
 
 
 def get_safe_name(
@@ -34,7 +34,8 @@ def num_from_str(s):
         try:
             return float(s)
         except:
-            return 'String does not represent a number.'
+            print('String does not represent a number.')
+            return None
 
 def str_contains(st,str_list):
     for s in str_list:

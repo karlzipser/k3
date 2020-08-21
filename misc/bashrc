@@ -10,7 +10,7 @@ alias k3gacp="cd ~/k3;gacp;cd"
 
 git config --global credential.helper "cache --timeout=86400"
 
-alias ipy="ipython --no-banner"
+alias ipy="ipython --no-banner --no-confirm-exit"
 
 export PYTHONPATH=~:$PYTHONPATH
 export PYTHONPATH=~/k3:$PYTHONPATH
