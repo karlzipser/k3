@@ -4,12 +4,6 @@ from k3.utils.core.renaming import *
 from termcolor import cprint
 from termcolor import colored
 
-def eg(file,cs=True):
-    if cs:
-        clear_screen()
-    pd2s('Examples from',file+':')
-    print('') 
-
 def print_dic_simple(D,title=''):
     print(title)
     if type(D) is not dict:
@@ -77,8 +71,7 @@ def dp(f,n=2):
     f = int(np.round(f))
     return f/(10.0**n)
 
-def clear_screen():
-    print(chr(27) + "[2J")
+
 
 
 
@@ -144,7 +137,8 @@ def format_row(list_of_sym_percent_pairs):
 
 if __name__ == '__main__':
 
-    print(__file__)
+    eg(__file__)
+    
     for i in range(0,100,2):
         j = 99-i
         print(format_row([('i',i),('j',j)]))

@@ -2,6 +2,17 @@
 from k3.utils.core.imports import *
 
 
+def clear_screen():
+    print(chr(27) + "[2J")
+    
+def eg(file,cs=True):
+    if cs:
+        clear_screen()
+    print('Examples from '+file+':')
+    print('') 
+
+
+
 def intr(n):
     return np.int(np.round(n))
 

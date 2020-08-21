@@ -1,5 +1,5 @@
 
-from k3.utils.core.imports import *
+from k3.utils.core.essentials import *
 
 
 def get_safe_name(
@@ -50,7 +50,7 @@ def str_contains_one(st,str_list):
     return False
 
 if __name__ == '__main__':
-    print(__file__)         
+    eg(__file__)         
     s = "Is this name: @ safe for a file!!!!"
     print('unsafe name:',s)
     print('get_safe_name():',get_safe_name(s))

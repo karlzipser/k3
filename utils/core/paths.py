@@ -53,7 +53,7 @@ def pname(path):
     return pstr
 
 if __name__ == '__main__':
-    print(__file__)
+    eg(__file__)
     p = opjk('test.py')
     print(p)
     print(fname(p))
