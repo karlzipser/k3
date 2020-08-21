@@ -41,9 +41,9 @@ if __name__ == '__main__':
     
     eg(__file__)
 
-    clp(' using_platform:',using_platform())
-    clp(' using_linux:',using_linux())
-    clp(' using_osx:',using_osx())
+    clp(' using_platform():',using_platform())
+    clp(' using_linux():',using_linux())
+    clp(' using_osx():',using_osx())
     clp(' HAVE_ROS:',HAVE_ROS)
     clp(' HAVE_GPU:',HAVE_GPU)
     print('')

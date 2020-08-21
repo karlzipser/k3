@@ -1,6 +1,6 @@
 
 from k3.utils.misc import *
-
+import cv2
 try:
     # pip install opencv-python==4.1.2.30
     import cv2
@@ -54,4 +54,11 @@ except:
     print("Don't have cv2")
 
 
+if __name__ == '__main__':
     
+    eg(__file__)
+
+    mci(z55(rndn(20,20,3)),scale=20)
+
+    raw_enter()
+#EOF

@@ -306,3 +306,13 @@ def Plot(xy_pix_sizes,origin,xy_mults):
     return D
 #
 ###############
+
+if __name__ == '__main__':
+    
+    eg(__file__)
+
+    hist(rndn(10000))
+
+    raw_enter()
+
+#EOF
