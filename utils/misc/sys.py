@@ -49,6 +49,8 @@ if __name__ == '__main__':
     s = "os_system('ls',e=1,r=0)"
 
     clear_screen()
+    clp('Examples from',__file__,'`--r')
+    
     clp('Example:',s,'`--r')
 
     exec(s)

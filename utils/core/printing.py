@@ -1,8 +1,14 @@
 
-from k3.utils.core import *
+from k3.utils.core.renaming import *
 
 from termcolor import cprint
 from termcolor import colored
+
+def eg(file,cs=True):
+    if cs:
+        clear_screen()
+    pd2s('Examples from',file+':')
+    print('') 
 
 def print_dic_simple(D,title=''):
     print(title)
@@ -111,12 +117,6 @@ for color in ['red','yellow','green','blue','magenta','cyan','white','Grey']:
 
 
 
-
-
-# minor
-
-
-
 def get_terminal_size():
     rows, columns = os.popen('stty size', 'r').read().split()
     return int(rows),int(columns)
@@ -142,28 +142,18 @@ def format_row(list_of_sym_percent_pairs):
     return row_str
 
 
-rd = '\x1b[31m'
-gr = '\x1b[32m'
-yl = '\x1b[33m'
-bl = '\x1b[34m'
-mg = '\x1b[35m'
-lb = '\x1b[36m'
-wh = '\x1b[37m'
+if __name__ == '__main__':
 
-wh_bk = '\x1b[40m'
-wh_rd = '\x1b[41m'
-wh_gr = '\x1b[42m'
-wh_bl = '\x1b[44m'
-wh_mg = '\x1b[45m'
-wh_lb = '\x1b[46m'
+    print(__file__)
+    for i in range(0,100,2):
+        j = 99-i
+        print(format_row([('i',i),('j',j)]))
+        time.sleep(0.05)
 
-mg = '\x1b[35m'
-lb = '\x1b[36m'
-wh = '\x1b[37m'
-
-og = '\x1b[91m'
-underlined = '\x1b[4m'
-
-
-
+    cy(1,2,3)
+    cg(4,5,6)
+    cr("Example exception text:")
+    et()
+    print('example of d2s and d2n used together.')
+    print(d2s(1,2,3,d2n(4,5,6)))
 #EOF

@@ -78,7 +78,28 @@ def setClipboardData(data):
     retcode = p.wait()
 scd = setClipboardData
 
+   
+#,a
+if __name__ == '__main__':
+    
+    eg(__file__)
 
-
-
+    clp('most_recent_py_file:', most_recent_py_file())
+    print('')
+    c = getClipboardData()
+    print("getClipboardData()")
+    print('')
+    clp(c,'`m--')
+    print('')
+    print("gsp()")
+    print('')
+    gsp()
+    print('')
+    print("getClipboardData()")
+    print('')
+    c = getClipboardData()
+    print('')
+    clp(c,'`m--')
+    print('')
+#,b
 #EOF

@@ -239,6 +239,27 @@ def errPrint(*s,**kwargs):
 cE = errPrint
 
 
-
+if __name__ == '__main__':
     
+    eg(__file__)
+
+    cE('this is a test of cE()')
+    print('')
+    clp('this','`','is a test of','`--r','clp()','`rgu','and fline():',fline())
+
+    Q = {
+        '1':{
+            '2':{
+                '.meta':[5,6],
+                'a':1,
+            '7':{'xx':['a','v','r',[1,2,3]]},
+            '8':'eight',
+            }
+        },
+        'qqq':'zzz',
+    }
+    print('')
+    kprint(Q,'This is a test of kprint()')
+    print('')
+
 #EOF

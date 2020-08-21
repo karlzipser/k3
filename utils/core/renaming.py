@@ -1,5 +1,5 @@
 
-from k3.utils.core.imports import *
+from k3.utils.core.essentials import *
 
 rnd = np.random.random
 rndint = np.random.randint
@@ -26,7 +26,7 @@ std = np.std
 pi = np.pi
 sleep = time.sleep
 sys = os.sys
-time = time.time
+
 
 
 

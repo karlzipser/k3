@@ -52,4 +52,13 @@ def pname(path):
             pstr += '/' + s
     return pstr
 
+if __name__ == '__main__':
+    print(__file__)
+    p = opjk('test.py')
+    print(p)
+    print(fname(p))
+    print(fnamene(p))
+    print(exname(p))
+    print(pname(p))
+    print(fname(pname(p)))
 #EOF

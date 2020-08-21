@@ -49,7 +49,16 @@ def str_contains_one(st,str_list):
             return True
     return False
 
-            
-#exec(identify_file_str)
+if __name__ == '__main__':
+    print(__file__)         
+    s = "Is this name: @ safe for a file!!!!"
+    print('unsafe name:',s)
+    print('get_safe_name():',get_safe_name(s))
+    print('123.3 is a string')
+    print(num_from_str('123.3'),'is a number from a string')
+    s = 'abcd efg hijk lmnop'
+    print(s)
+    print(str_contains(s,['abcd','xyz']))
+    print(str_contains_one(s,['abcd','xyz']))
 
 #EOF

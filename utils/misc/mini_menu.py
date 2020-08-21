@@ -92,6 +92,9 @@ eg_menu_tuple=(
 
 if __name__ == '__main__':
     
+    clear_screen()
+    clp('Examples from',__file__,'`--r')
+    
     clp('\n\nExample of using mini_menu with and without saved data\n','`ybb')
 
     Arguments = get_Arguments(

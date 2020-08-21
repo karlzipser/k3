@@ -37,8 +37,7 @@ def Record_vars(global_key_list,Globals):
 if __name__ == '__main__':
     
     clear_screen()
-
-    print('example using Record_vars.\n')
+    clp('Examples from',__file__,'`--r')
 
     R = Record_vars(list(globals().keys()),globals())
 
@@ -47,9 +46,9 @@ if __name__ == '__main__':
         b = [2,3,4]
         c = {'a':a,'b':b}
         d = [a,b,c]
-        P = Percent('P','calculating','calculated')
-        P.show(5,10)
-        P.show()
+        #P = Percent('P','calculating','calculated')
+        #P.show(5,10)
+        #P.show()
 
     R.save(list(globals().keys()))
 

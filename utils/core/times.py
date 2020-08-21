@@ -1,5 +1,5 @@
 
-from k3.utils.core.renaming import *
+from k3.utils.core.printing import *
 
 import time
 
@@ -150,4 +150,17 @@ def format_seconds(time):
     return "%d:%d:%d:%d" % (day, hour, minutes, seconds)
 
 
+if __name__ == '__main__':
+    eg(__file__)
+    t = 2
+    pd2s('Setting timer for',t,'second:')
+    timer = Timer(t)
+    while not timer.check():
+        print(timer.check())
+        sleep(0.333)
+    print(timer.check())
+    t = 5731
+    pd2s('format',t,'seconds:',format_seconds(t))
+    pd2s('current, file safe:',time_str())
+    pd2s('current, nice looking:',time_str('Pretty2',t=time.time()))
 #EOF
