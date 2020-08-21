@@ -4,7 +4,13 @@ from k3.utils.core import *
 from termcolor import cprint
 from termcolor import colored
 
-
+def print_dic_simple(D,title=''):
+    print(title)
+    if type(D) is not dict:
+        print(D)
+    else:
+        for k in D:
+            pd2s('   ',k+':',D[k])
 
 def d2s_spacer(args,spacer=' '):
     lst = []
@@ -46,7 +52,7 @@ def d2f(*args):
     return d2s_spacer(args[1:],spacer=args[0])
 
 def pd2s(*args):
-    cprint(d2s(*args))
+    print(d2s(*args))
 
 def pd2n(*args):
     print(d2n(*args))
@@ -67,6 +73,54 @@ def dp(f,n=2):
 
 def clear_screen():
     print(chr(27) + "[2J")
+
+
+
+
+def et():
+    print(
+        """
+except KeyboardInterrupt:
+    cr('\n\n*** KeyboardInterrupt ***\n')
+    sys.exit()
+except Exception as e:
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    print('Exception!',emphasis=True)
+    print(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)        
+
+        """
+)
+
+
+
+cstr = """
+def cQ(*args,**kwargs):
+    cprint(d2s_spacer(tuple(list(args)),spacer=' '),'COLOR')
+    if k_in_D('ra',kwargs) or k_in_D('r',kwargs):
+        cprint('\b  (hit Enter to continue)','COLOR')
+        raw_input()
+    if k_in_D('t',kwargs):
+        time.sleep(kwargs['t'])
+"""
+
+for color in ['red','yellow','green','blue','magenta','cyan','white','Grey']:
+    an_exec_string = cstr.replace('Q',color[0]).replace('COLOR',color).replace('Grey','grey')
+    exec(an_exec_string)
+
+
+
+
+
+
+# minor
+
+
+
+def get_terminal_size():
+    rows, columns = os.popen('stty size', 'r').read().split()
+    return int(rows),int(columns)
+
 
 def format_row(list_of_sym_percent_pairs):
     __,ncols = get_terminal_size()
@@ -109,51 +163,6 @@ wh = '\x1b[37m'
 
 og = '\x1b[91m'
 underlined = '\x1b[4m'
-
-
-
-cstr = """
-def cQ(*args,**kwargs):
-    cprint(d2s_spacer(tuple(list(args)),spacer=' '),'COLOR')
-    if k_in_D('ra',kwargs) or k_in_D('r',kwargs):
-        cprint('\b  (hit Enter to continue)','COLOR')
-        raw_input()
-    if k_in_D('t',kwargs):
-        time.sleep(kwargs['t'])
-"""
-
-for color in ['red','yellow','green','blue','magenta','cyan','white','Grey']:
-    an_exec_string = cstr.replace('Q',color[0]).replace('COLOR',color).replace('Grey','grey')
-    exec(an_exec_string)
-
-
-def print_dic_simple(D,title=''):
-    print(title)
-    if type(D) is not dict:
-        print(D)
-    else:
-        for k in D:
-            pd2s('   ',k+':',D[k])
-
-def get_terminal_size():
-    rows, columns = os.popen('stty size', 'r').read().split()
-    return int(rows),int(columns)
-
-
-def et():
-    print(
-        """
-except KeyboardInterrupt:
-    cr('\n\n*** KeyboardInterrupt ***\n')
-    sys.exit()
-except Exception as e:
-    exc_type, exc_obj, exc_tb = sys.exc_info()
-    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-    print('Exception!',emphasis=True)
-    print(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)        
-
-        """
-)
 
 
 

@@ -1,5 +1,5 @@
 
-
+from k3.utils.collections import *
 
 def os_system(*args,e=0,r=0,a=1):
     s = d2s(*args)

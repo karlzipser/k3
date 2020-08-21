@@ -8,6 +8,8 @@ from k3.utils.core.renaming import *
 
 from k3.utils.core.setup import *
 
+from k3.utils.core.files import *
+
 from k3.utils.core.paths import *
 
 from k3.utils.core.times import *

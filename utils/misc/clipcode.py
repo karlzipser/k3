@@ -1,4 +1,6 @@
 
+from k3.utils.misc.printing2 import *
+from k3.utils.misc.have_using import *
 
 try:
     import pyperclip

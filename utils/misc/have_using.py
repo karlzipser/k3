@@ -1,4 +1,5 @@
 
+from k3.utils.collections import *
 
 def using_platform():
     from sys import platform

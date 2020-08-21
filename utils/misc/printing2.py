@@ -1,6 +1,5 @@
 
-from k3.utils.printing.printing import *
-
+from k3.utils.collections import *
 
 def kprint(
     item,
@@ -235,7 +234,7 @@ def errPrint(*s,**kwargs):
     if 'f' not in kwargs or kwargs['f']:
         kwargs['f'] = 1
         del kwargs['f']
-        s = ['*** Error']+list(s)+['***']
+        s = ['*** Error:']+list(s)+['***']
     clp(*s,'`wrb',**kwargs)
 cE = errPrint
 
