@@ -1,5 +1,5 @@
 
-from k3.utils.core import *
+from k3.utils.misc.printing import *
 
 def by_keylist(D,keylist):
 	for i in rlen(keylist):
@@ -14,6 +14,9 @@ def by_keylist(D,keylist):
 
 
 def Navigate_Dictionary(D,ignore_keys=['.meta']):
+	"""
+	Does (should) not modify state of dict D.
+	"""
 	
 	keylist = []
 

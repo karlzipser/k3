@@ -1,5 +1,5 @@
 
-from k3.utils.misc.printing2 import *
+from k3.utils.misc.printing import *
 
 def using_platform():
     from sys import platform

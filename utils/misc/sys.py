@@ -1,5 +1,5 @@
 
-from k3.utils.misc.printing2 import *
+from k3.utils.misc.printing import *
 
 
 def os_system(*args,e=0,r=0,a=1):

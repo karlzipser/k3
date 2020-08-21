@@ -1,5 +1,5 @@
 
-from k3.utils.collections.collection import *
+from k3.utils.collections.collections import *
 
 def get_Arguments(Defaults={}):
     """

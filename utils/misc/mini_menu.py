@@ -92,6 +92,8 @@ eg_menu_tuple=(
 
 if __name__ == '__main__':
     
+    clp('\n\nExample of using mini_menu with and without saved data\n','`ybb')
+
     Arguments = get_Arguments(
         Defaults={
             'path':None,
@@ -113,7 +115,7 @@ if __name__ == '__main__':
 
     while True:
 
-        q = input("q-Enter to quit, m-Enter to return to mini_menu  --> ")
+        q = input(cf("Mini_menu Example: q-Enter to quit, m-Enter to return to mini_menu  --> ",'`g'))
         if q == 'q':
             break
         if q != 'm':
