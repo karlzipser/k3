@@ -1,7 +1,7 @@
 
 from k3.utils.core.renaming import *
 
-    
+
 def zeroToOneRange(m):
     min_n = 1.0*np.min(m)
     return (1.0*m-min_n)/(1.0*np.max(m)-min_n)
@@ -16,17 +16,6 @@ def z2_255_by_channel(m):
     for i in range(3):
         m[:,:,i] = z2_255(m[:,:,i])
 
-
-
-
-def rebin(a, shape):
-    '''
-    from http://stackoverflow.com/questions/8090229/resize-with-averaging-or-rebin-a-numpy-2d-array
-    '''
-    sh = shape[0],a.shape[0]//shape[0],shape[1],a.shape[1]//shape[1]
-    return a.reshape(sh).mean(-1).mean(1)
-
-
 def zscore(m,thresh=np.nan,all_values=False):
     m_mean = np.mean(m)
     z = m - m_mean
@@ -39,31 +28,6 @@ def zscore(m,thresh=np.nan,all_values=False):
         return z,m_mean,m_std
     else:
         return z
-
-
-def sequential_means(data,nn):
-    a = array(data)
-    d = []
-    x = []
-    n = min(len(a),nn)
-    for i in range(0,len(a),n):
-        d.append(a[i:i+n].mean())
-        x.append(i+n/2.)
-    return x,d
-
-
-
-
-try:
-    import numbers
-    def is_number(n):
-        if type(n) == bool:
-            return False
-        if type(n) == type(None):
-            return False
-        return isinstance(n,numbers.Number)
-except:
-    print("Don't have numbers module")
 
 
 
@@ -96,56 +60,5 @@ def mean_exclude_outliers(data,n,min_proportion,max_proportion):
 def meo(data,n):
     return mean_exclude_outliers(data,n,1/3.0,2/3.0)
 
-
-
-
-
-def find_index_of_closest(val,lst):
-    d = []
-    for i in range(len(lst)):
-        d.append(abs(lst[i]-val))
-    return d.index(min(d))
-
-
-
-
-
-
-
-
-
-
-
-def find_nearest(array,value):
-    """
-    https://stackoverflow.com/questions/2566412/find-nearest-value-in-numpy-array
-    """
-    idx = (np.abs(array-value)).argmin()
-    return array[idx]
-
-
-
-
-
-def bound_value(the_value,the_min,the_max):
-    if the_value > the_max:
-        return the_max
-    elif the_value < the_min:
-        return the_min
-    else:
-        return the_value
-
-
-
-def sort_by_column(a,col,reverse=False):
-    a = na(a)
-    if reverse:
-        a *= -1
-    a = a[a[:,col].argsort()]
-    if reverse:
-        a *= -1
-    return a
-
-#exec(identify_file_str)
 
 #EOF

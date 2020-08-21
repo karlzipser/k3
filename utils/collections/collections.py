@@ -23,17 +23,6 @@ def set_Defaults(Defaults,Dst,required=[]):
                 Dst[k] = Defaults[k]
 
 
-def dict_to_sorted_list(d):
-    l = []
-    ks = sorted(d.keys(),key=natural_keys)
-    for k in ks:
-        l.append(d[k])
-    return l
-    
-
-
-
-
 def advance(lst,e,min_len=1):
     len_lst = len(lst)
     if len_lst < min_len:
@@ -55,15 +44,6 @@ def an_element(dic):
     return dic[a_key(dic)]
 
 
-def get_key_sorted_elements_of_dic(d,specific=None):
-    ks = sorted(d.keys(),key=natural_keys)
-    els = []
-    for k in ks:
-        if specific == None:
-            els.append(d[k])
-        else:
-            els.append(d[k][specific])
-    return ks,els
 
 
 #EOF

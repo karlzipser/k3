@@ -26,7 +26,7 @@ std = np.std
 pi = np.pi
 sleep = time.sleep
 sys = os.sys
-
+gg = glob.glob
 
 
 

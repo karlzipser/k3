@@ -50,11 +50,7 @@ def get_Arguments(Defaults={}):
 
         del temp
 
-        
-
         for a in Args.keys():
-
-
 
             ar = Args[a]
 
@@ -74,7 +70,6 @@ def get_Arguments(Defaults={}):
                     'not proceeded by -- on command line ***',
                     ra=1
                 )
-
             if str_is_int(ar):
                 Arguments[a] = int(ar)
             elif str_is_float(ar):

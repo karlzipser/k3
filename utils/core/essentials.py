@@ -72,5 +72,31 @@ def k_in_D(k,D):
         return False
     else:
         return D[k]
-        
+
+
+def is_number(n):
+    if type(n) == bool:
+        return False
+    if type(n) == type(None):
+        return False
+    return isinstance(n,numbers.Number)
+
+
+def bound_value(the_value,the_min,the_max):
+    if the_value > the_max:
+        return the_max
+    elif the_value < the_min:
+        return the_min
+    else:
+        return the_value
+
+
+def natural_keys(text):
+    '''
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    '''
+    return [ atoi(c) for c in re.split('(\d+)', text) ]
+
 #EOF

@@ -1,10 +1,8 @@
-
-
+# export PYTHONSTARTUP=~/k3/__init__.py #/vis3.py
 
 alias ls='ls -alh'
 
 alias gacp="git add .;git commit -m 'gacp';git push origin master"
-
 
 alias k3gacp="cd ~/k3;gacp;cd"
 
@@ -13,31 +11,14 @@ git config --global credential.helper "cache --timeout=86400"
 alias ipy="ipython --no-banner --no-confirm-exit"
 
 export PYTHONPATH=~:$PYTHONPATH
-export PYTHONPATH=~/k3:$PYTHONPATH
-export PYTHONPATH=~/k3/scripts/gen:$PYTHONPATH
 
 export PATH=~/k3:$PATH
 export PATH=~/k3/scripts:$PATH
-export PATH=~/k3/scripts/connect:$PATH
-export PATH=~/k3/scripts/gen:$PATH
-export PATH=~/k3/scripts/net:$PATH
-export PATH=~/k3/scripts/osx:$PATH
-export PATH=~/k3/scripts/ros:$PATH
-export PATH=~/k3/Commands:$PATH
-export PATH=~/k3/misc:$PATH
 export PATH=~/k3/Menu:$PATH
 
 alias sb='cd;source ~/.bashrc'
-#######################################################
-#
+
 export COMPUTER_NAME=$HOSTNAME #'' #
 PS1="\[\033[01;35m\]\w\[\033[00m\] $ "
-#
-#######################################################
-
-alias menu='python ~/k3/Menu/main.py'
-
-alias U3='ssh -p 1022 -XY karlzipser@169.229.219.141'
-alias U='ssh -p 1022 -XY karlzipser@169.229.219.140'
 
 #EOF

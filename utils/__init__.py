@@ -1,7 +1,8 @@
 
-#print(__file__)
 
 from k3.utils.core import *
+
+from k3.utils.core.files import *
 
 from k3.utils.collections import *
 
