@@ -1,5 +1,5 @@
 
-export PYTHONSTARTUP=~/k3/misc/start.py
+export PYTHONSTARTUP=~/k3/misc/__start__.py
 
 alias ls='ls -alh'
 
