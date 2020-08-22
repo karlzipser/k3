@@ -15,6 +15,10 @@ export PYTHONPATH=~:$PYTHONPATH
 
 export PATH=~/k3:$PATH
 export PATH=~/k3/scripts:$PATH
+export PATH=~/k3/scripts/gen:$PATH
+export PATH=~/k3/scripts/net:$PATH
+export PATH=~/k3/scripts/osx:$PATH
+export PATH=~/k3/scripts/connect:$PATH
 export PATH=~/k3/Menu:$PATH
 
 alias sb='cd;source ~/.bashrc'

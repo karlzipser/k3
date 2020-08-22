@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-#from k3.utils import *
-#exec(identify_file_str)
+#!/usr/bin/env python3
+
 
 
 def et():
