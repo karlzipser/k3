@@ -4,8 +4,7 @@ python k3/Cars/n26Dec18/scripts/summarize_networks.py src ~/Desktop/ dst ~/Deskt
 """
 from k3.utils import *
 exec(identify_file_str)
-#Arguments['src'] = opjD()
-#Arguments['dst'] = opjm('rosbags')
+
 setup_Default_Arguments(
     {
         'src': opjD(),

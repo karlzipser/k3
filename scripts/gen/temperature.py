@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from k3.utils import *
-exec(identify_file_str)
+
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--Fahrenheit','-f',required=False,type=float,)

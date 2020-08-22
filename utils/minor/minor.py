@@ -80,16 +80,6 @@ def open_run2(run_name,Runs_dic=None,want_list=['L','O'],verbose=False):
     L,O,F = open_run(run_name,h5py_path=h5py_path,want_list=want_list,verbose=verbose)
     return L,O,F
 
-def backup_folder(
-    src=opjh('k3')+'/',
-    dst=opjh('_k3_older','k3_'+time_str())+'/'
-    ):
-    """
-    Make a time marked backup, with default as k3.
-    """
-    os.system('mkdir -p ' + dst)
-    #os.system(d2s('cp -r',src,dst))
-    os.system(d2s("rsync -ravL --exclude '*.pyc' --exclude '*.pkl'", src, dst))
 
 
 def try_to_close(lst):
@@ -125,6 +115,18 @@ wh = '\x1b[37m'
 
 og = '\x1b[91m'
 underlined = '\x1b[4m'
+
+
+
+def find_h5py_path(run_name):
+    H = find_files_recursively(opjD('Data'),run_name,DIRS_ONLY=True)
+    h5py_path = None
+    for p in H['paths']:
+        if fname(p) == 'h5py':
+            h5py_path = opj(H['src'],p)
+            break
+    assert h5py_path is not None
+    return h5py_path
 
 
 #EOF

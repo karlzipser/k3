@@ -1,24 +1,19 @@
 
 from k3.utils.core.printing import *
 
-import time
-
 class Timer:
     def __init__(self, time_s=0):
         self.time_s = time_s
         self.start_time = time.time()
         self.count = 0
     def check(self):
-        #self.count += 1
         if time.time() - self.start_time > self.time_s:
             return True
         else:
             return False
     def c(self):
-        #cr('*** warning, Timer.c() used ***',ra=1)
         return self.check()
     def check2(self):
-        #self.count += 1
         if time.time() - self.start_time > self.time_s:
             self.reset()
             return True
@@ -31,8 +26,6 @@ class Timer:
         self.count = 0
     def trigger(self):
         self.start_time = 0
-        #print("*** warning, trigger used ***")
-        #raw_enter()
     def freq(self,name='',do_print=True):
         self.count += 1
         if self.check():

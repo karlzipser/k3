@@ -37,15 +37,6 @@ def save_as_h5py(file_path,D,dtype='float16'):
     clp('done.')
 
 
-def find_h5py_path(run_name):
-    H = find_files_recursively(opjD('Data'),run_name,DIRS_ONLY=True)
-    h5py_path = None
-    for p in H['paths']:
-        if fname(p) == 'h5py':
-            h5py_path = opj(H['src'],p)
-            break
-    assert h5py_path is not None
-    return h5py_path
 
 
 
