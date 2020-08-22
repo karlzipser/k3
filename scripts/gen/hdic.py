@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from k3.utils import *
-exec(identify_file_str)
 
 
 bash_history = txt_file_to_list_of_strings(opjh('.bash_history'))
@@ -185,8 +184,8 @@ while True:
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        CS_('Exception!',emphasis=True)
-        CS_(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)
+        #CS_('Exception!',emphasis=True)
+        #CS_(d2s(exc_type,file_name,exc_tb.tb_lineno),emphasis=False)
         clp("\tType number of a command followed by '+' or '-' to open/close.")
         clp("\tType '+' or '-' followed by command name to add or subtract topics. E.g., '-python'")
         clp("\tType ']' or '[' followed by pattern to exclude or include it. E.g., ']Train_'")

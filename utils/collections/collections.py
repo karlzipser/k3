@@ -5,8 +5,8 @@ from k3.utils.core import *
 REQUIRED = '__REQUIRED__'
 
 def set_Defaults(Defaults,Dst):#,required=[]):
-    print_dic_simple(Defaults,'Defaults')
-    print_dic_simple(Dst),'Dst'
+    #print_dic_simple(Defaults,'Defaults')
+    #print_dic_simple(Dst),'Dst'
     for k in Dst.keys():
         if k not in Defaults.keys():
             cr("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()),ra=1)
