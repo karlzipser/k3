@@ -1,9 +1,9 @@
-from k3.vis3 import *
-import Menu.main
+from k3 import *
+import k3.aps.Menu.main as Menu_main
 
 path = opjk() # i.e., use ~/k3/defaults.py for data
 
-Q = Menu.main.start_Dic(
+Q = Menu_main.start_Dic(
     dic_project_path=pname(path), 
     Arguments={
         'menu':False,

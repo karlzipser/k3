@@ -1,4 +1,4 @@
-from k3.utils3 import *
+from k3 import *
 
 menus = 'menus'
 run_options = 'run programs'

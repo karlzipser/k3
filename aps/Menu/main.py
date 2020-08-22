@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 to run from command line:
@@ -19,43 +19,31 @@ or
     
 """
 
-from k3.vis3 import *
+from k3 import *
+
 try:
     import colored
     have_colored = True
 except:
     have_colored = False
-exec(identify_file_str)
-for k in CShowFile.keys():
-    CShowFile[k] = False
-if 'Arguments' not in locals():
-    Arguments = {}
-setup_Default_Arguments(
-    {
+
+if False:
+    for k in CShowFile.keys():
+        CShowFile[k] = False
+
+Arguments = get_Arguments(
+    Defaults={
         'menu': True,
         'read_only': False,
         'help': False,
-        'path': 'k3/Menu',
-        #'start_keys':[],
+        'path': 'k3/aps/Menu',
         'load_timer_time':0.1,
-    }
+    },
 )
+kprint(Arguments)
 
 
 
-if False:
-    # example
-    import k3.Menu.main as m
-    DV = m.Default_Values
-    A={'key 1':{'a':'x','b':'y'}}
-    E = DV(A,opjD(),[])
-    E['show']() 
-    E['down']('key 1')
-    E['show']()
-    E['set_value']('a')
-    E['show']()
-    E['set_value']('a',value='qqq')
-    E['show']()
 
 
 def Default_Values(
@@ -178,7 +166,7 @@ def Default_Values(
             else:
                 return False
         except:
-            cr('In k3/Menu/main.py, function_load(): load failed')
+            cr('In k3/aps/Menu/main.py, function_load(): load failed')
             return False
 
     def function_up():
@@ -611,6 +599,19 @@ def menu_python():
         return {'message':message}
 
 
+
+def project_path__to__project_import_prefix(project_path):
+    project_path = project_path.replace(opjh(),'')
+    a = project_path.split('/')
+    c = []
+    for b in a:
+        if len(b) > 0:
+            c.append(b)
+    project_import_prefix = '.'.join(c)
+    return project_import_prefix
+
+
+
 def start_Dic(dic_project_path,Dics={},parent_keys=[],Arguments={}):
     set_Defaults( {'menu':False,'read_only':True,'load_timer_time':1.0}, Arguments )
     
@@ -648,7 +649,7 @@ def start_Dic(dic_project_path,Dics={},parent_keys=[],Arguments={}):
     if Arguments['menu']:
         Dics[dic_project_path]['menu']()
     else:
-        clp('run menu from command line:\n','`','~/k3/Menu/main.py --path',dic_project_path,'`--rb')
+        clp('run menu from command line:\n','`','~/k3/aps/Menu/main.py --path',dic_project_path,'`--rb')
 
     return Dics[dic_project_path]
 

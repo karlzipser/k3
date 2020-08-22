@@ -4,13 +4,11 @@ from k3.utils.core import *
 
 REQUIRED = '__REQUIRED__'
 
-def set_Defaults(Defaults,Dst,required=[]):
-    for k in required:
-        if k not in Dst:
-            cr("*** Error, argument",k,"was required ***",ra=1)
-            os.sys.exit()
+def set_Defaults(Defaults,Dst):#,required=[]):
+    print_dic_simple(Defaults,'Defaults')
+    print_dic_simple(Dst),'Dst'
     for k in Dst.keys():
-        if k not in Defaults.keys() and k not in required:
+        if k not in Defaults.keys():
             cr("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()),ra=1)
 
     for k in Defaults.keys():
