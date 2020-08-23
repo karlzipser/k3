@@ -5,6 +5,7 @@ imports = (
     'shutil',
     'scipy',
     'scipy.io',
+    'copy',
     'string',
     'glob',
     'time',

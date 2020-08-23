@@ -1,8 +1,6 @@
 
 from k3.utils.misc.printing import *
-import copy
 
-# https://pythonadventures.wordpress.com/2014/03/20/unicode-box-drawing-characters/
 
 def format_j(j):
     assert(str_is_int(j))
@@ -14,132 +12,96 @@ def format_j(j):
     return s
 
 
-saw_j,current_index = None,None
 
 def zprint(
     item,
     t='zprint()',
-    top=True,
-    spaces='',
-    space_increment='    ',
-    ignore_keys=[],
-    only_keys=[],
-    ignore_types=[],
-    numbering=False,
-    max_items=999999,
     r=0,
     p=0,
     j=0,
-    W={},
-    keylist=[],
+    ignore_keys=[],
+    only_keys=[],
+    ignore_types=[],
+    max_items=999999,
+    _top=True,
+    _spaces='',
+    _space_increment='    ',
+    _W={},
+    _keylist=[],
 ):
 
-    global saw_j,current_index
+    if 'init':
 
-    if len(W) == 0:
-        saw_j = []
-        current_index = -1
+        if type(item) in ignore_types:
+            return j,_W
 
-    name = t
+        _keylist_ = copy.deepcopy(_keylist)
 
-    item_printed = False
+        if not _top:
+            _keylist_.append(t)
 
-    if type(item) in ignore_types:
-        return j,W
+        if j in _W:
+            cE(j,'in',list(_W.keys()))
+        else:
+            pass#cg(j,list(_W.keys()))
+        assert j not in _W
 
-    if type(name) not in [str,type(None)]:
-        name = str(name)
+        _W[j] = _keylist_
 
-    lst = ['']
+        if t is not None and type(t) is not tuple:
+            name = str(t)
+        elif type(t) is tuple and len(t) == 1:
+            name = d2n('(',t[0],')')
+        else:
+            name = t
 
-    for i in range(len(space_increment)):
-        lst.append('─')
-
-    lst[-1] = '┐'
-
-    if name == None:
-        lst[0] = '└'
-    elif top:
-        name = cf(name,'`--u')
-
-    indent_text = ''.join(lst)
-
-    n_equals = ''
-
-    if numbering:
-        if type(item) in [dict,list]:
-            n_equals = cf(' (n=',len(item),') ','`b-d',s0='',s1='')
-
-    keylist_ = copy.deepcopy(keylist)
-
-
-    if name is None:
-        if j not in saw_j:
-            saw_j.append(j)
-            current_index += 1
-        q = ('list_index',current_index)
-    else:
-        q = name
-
-    if not top:
-        keylist_.append(q)
-
-    assert j not in W
-
-    W[j] = keylist_
+    if 'lists':
+        if type(item) is list:
+            D = {}
+            for i in rlen(item):
+                D[(i,)] = item[i]
+            item = D
 
     
-    if top:
-        fj = ''
-    else:
-        fj = format_j(j)
+    if 'formatting 1':
 
-    if name != None:
+        item_printed = False
+
+        lst = ['']
+
+        for i in range(len(_space_increment)):
+            lst.append('─')
+
+        lst[-1] = '┐'
+
+        if _top:
+            name = cf(name,'`--u')
+
+        indent_text = ''.join(lst)
+
+        if _top:
+            fj = ''
+        else:
+            fj = format_j(j)
+
         
-        if len(name) > len(indent_text):
+        if len(str(name)) > len(indent_text):
             indent_name = name
 
         else:
-            indent_name = name + indent_text[(len(name)-1):]
+            indent_name = str(name) + indent_text[(len(str(name))-1):]
             
-        if type(item) in [dict,list]:
-            clp(spaces,'`',indent_name,'`',n_equals,fj,s0='',s1='')
+        if type(item) is dict:
+            clp(_spaces,'`',indent_name,'`',fj,s0='',s1='')
             j += 1
-            #print(0,qtd(indent_name))
+
         else:
-            clp(spaces,'`',name,'`','──','`',item,'`g',' ',fj,s1='',s0='' )
+            clp(_spaces,'`',str(name),'`','──','`',item,'`g',' ',fj,s1='',s0='' )
             item_printed = True
             j += 1
-            #print(1,qtd(name))
-        
-    else:
-        if type(item) in [dict,list]:
-            clp(spaces,indent_text,n_equals,fj,s0='',s1='')
-            j += 1
 
-    if type(item) == list:
-        ctr = 0
-        for i in item:
-            j,_ = zprint(
-                i,
-                t=None,
-                top=False,
-                spaces=spaces+space_increment,
-                space_increment=space_increment,
-                ignore_keys=ignore_keys,
-                only_keys=only_keys,
-                ignore_types=ignore_types,
-                numbering=numbering,
-                j=j,
-                W=W,
-                keylist=keylist_,
-            )
-
-            ctr += 1
-            if ctr >= max_items:
-                break
-
-    elif type(item) == dict:
+    
+    if type(item) == dict:
         
         ctr = 0
         for k in sorted(item.keys()):
@@ -155,26 +117,26 @@ def zprint(
             j,_ = zprint(
                 item[k],
                 t=k,
-                top=False,
-                spaces=spaces+space_increment,
-                space_increment=space_increment,
+                _top=False,
+                _spaces=_spaces+_space_increment,
+                _space_increment=_space_increment,
                 ignore_keys=ignore_keys,
                 only_keys=only_keys,
                 ignore_types=ignore_types,
-                numbering=numbering,
                 j=j,
-                W=W,
-                keylist=keylist_,
+                _W=_W,
+                _keylist=_keylist_,
             )
-
-
             ctr += 1
             if ctr >= max_items:
                 break
 
 
     elif not item_printed:
-        cf(spaces,item,'`g',s0='',s1='')
+        cf(_spaces,item,'`g',s0='',s1='')
+
+    else:
+        pass
 
 
     if p:
@@ -183,19 +145,19 @@ def zprint(
     if r:
         raw_enter()
 
-    return j,W
+    return j,_W
 
 
 
 
-def extract_D(Q,keylist):
-    if len(keylist) == 0:
+def extract_D(Q,_keylist):
+    if len(_keylist) == 0:
         return Q
-    k = keylist.pop(0)
+    k = _keylist.pop(0)
     if type(k) is str:
-        return extract_D(Q[k],keylist)
-    elif type(k) is tuple and k[0] == 'list_index':
-        return extract_D(Q[k[1]],keylist)
+        return extract_D(Q[k],_keylist)
+    elif type(k) is tuple:
+        return extract_D(Q[k[0]],_keylist)
     else:
         return Q
 
@@ -208,21 +170,40 @@ if __name__ == '__main__':
                 ],
             'I':'i',
         },
-        'C':'c',
-    }
-    Q_ = {
-        'B':{
-            'E':'e',
-            'F':'f',
+        'C':{
+            'B':[
+                    {'G':'g','H':'h',},
+                    {'E':'e','F':'f',},
+                ],
+            'I':'i',
+            },
+        'D':{
+            'C':{
+                'B':[
+                    {'aa':{'G':'g','H':'h',}},
+                    {'bb':{'E':'e','F':'f',}},
+                    {'cc':{'G':'g','H':'h',}},
+                    {'dd':{'E':'e','F':'f',}},
+                ],
+                'I':'i',
+            },
         }
     }
+    
+    clear_screen()
 
-    _,W = zprint(Q)
+    _,_W = zprint(Q)
+    
+    if True:
 
-    for i in list(W.keys()):
-        keylist = W[i]
-        Q_ = extract_D(Q,keylist)
-        kprint(Q_,r=1)
+        #zprint(_W)
+
+        for i in list(_W.keys()):
+            _keylist = _W[i]
+            cg(i,_keylist)
+            Q_ = extract_D(Q,_keylist)
+
+            #kprint(Q_)
 
 
 
