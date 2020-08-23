@@ -11,7 +11,8 @@ def format_j(j):
     s = cf(s,'`--d',' ')
     return s
 
-
+def kys(D):
+    return list(D.keys())
 
 def zprint(
     item,
@@ -41,7 +42,7 @@ def zprint(
             _keylist_.append(t)
 
         if j in _W:
-            cE(j,'in',list(_W.keys()))
+            cE(j,'in',kys(_W))
         else:
             pass#cg(j,list(_W.keys()))
         assert j not in _W
