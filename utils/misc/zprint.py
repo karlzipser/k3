@@ -13,9 +13,13 @@ def format_j(j):
     s = cf(s,'`--d',' ')
     return s
 
+
+saw_j,current_index = None,None
+
 def zprint(
     item,
-    t='',
+    t='zprint()',
+    top=True,
     spaces='',
     space_increment='    ',
     ignore_keys=[],
@@ -26,30 +30,37 @@ def zprint(
     r=0,
     p=0,
     j=0,
-    K={},
+    W={},
+    keylist=[],
 ):
 
-    name = t
+    global saw_j,current_index
 
-    kl=[]
+    if len(W) == 0:
+        saw_j = []
+        current_index = -1
+
+    name = t
 
     item_printed = False
 
     if type(item) in ignore_types:
-        return
+        return j,W
 
     if type(name) not in [str,type(None)]:
         name = str(name)
 
     lst = ['']
 
-    for i in range(len(space_increment)-1):
+    for i in range(len(space_increment)):
         lst.append('─')
 
-    lst.append('┐')
+    lst[-1] = '┐'
 
     if name == None:
         lst[0] = '└'
+    elif top:
+        name = cf(name,'`--u')
 
     indent_text = ''.join(lst)
 
@@ -57,35 +68,62 @@ def zprint(
 
     if numbering:
         if type(item) in [dict,list]:
-            n_equals = cf(' (n=',len(item),')','`w-d',s0='',s1='')
+            n_equals = cf(' (n=',len(item),') ','`b-d',s0='',s1='')
+
+    keylist_ = copy.deepcopy(keylist)
+
+
+    if name is None:
+        if j not in saw_j:
+            saw_j.append(j)
+            current_index += 1
+        q = ('list_index',current_index)
+    else:
+        q = name
+
+    if not top:
+        keylist_.append(q)
+
+    assert j not in W
+
+    W[j] = keylist_
+
+    
+    if top:
+        fj = ''
+    else:
+        fj = format_j(j)
 
     if name != None:
         
         if len(name) > len(indent_text):
             indent_name = name
-        else:
-            indent_name = name + indent_text[len(name):]
 
-        if type(item) in [dict,list]:
-            clp(spaces,'`',indent_name,'`',n_equals,format_j(j),s0='',s1='')
-            j += 1
         else:
-            clp(spaces,'`',name,'','`','──','`',item,'`g',' ',format_j(j),s1='',s0='' )
+            indent_name = name + indent_text[(len(name)-1):]
+            
+        if type(item) in [dict,list]:
+            clp(spaces,'`',indent_name,'`',n_equals,fj,s0='',s1='')
+            j += 1
+            #print(0,qtd(indent_name))
+        else:
+            clp(spaces,'`',name,'`','──','`',item,'`g',' ',fj,s1='',s0='' )
             item_printed = True
             j += 1
+            #print(1,qtd(name))
         
     else:
         if type(item) in [dict,list]:
-            clp(spaces,indent_text,n_equals,format_j(j),s0='',s1='')
+            clp(spaces,indent_text,n_equals,fj,s0='',s1='')
             j += 1
 
-    kl__ = []
     if type(item) == list:
         ctr = 0
         for i in item:
-            j,kl_ = zprint(
+            j,_ = zprint(
                 i,
                 t=None,
+                top=False,
                 spaces=spaces+space_increment,
                 space_increment=space_increment,
                 ignore_keys=ignore_keys,
@@ -93,16 +131,14 @@ def zprint(
                 ignore_types=ignore_types,
                 numbering=numbering,
                 j=j,
-                K=K,
+                W=W,
+                keylist=keylist_,
             )
-            kl__ += kl_
+
             ctr += 1
             if ctr >= max_items:
                 break
-        kl.append(kl__)
-        cr(j in K)
-        K[j] = copy.deepcopy(kl)
-        cb(j)
+
     elif type(item) == dict:
         
         ctr = 0
@@ -116,9 +152,10 @@ def zprint(
                 l = len(item[k])
             else:
                 l = 1
-            j,kl_ = zprint(
+            j,_ = zprint(
                 item[k],
                 t=k,
+                top=False,
                 spaces=spaces+space_increment,
                 space_increment=space_increment,
                 ignore_keys=ignore_keys,
@@ -126,22 +163,19 @@ def zprint(
                 ignore_types=ignore_types,
                 numbering=numbering,
                 j=j,
-                K=K,
+                W=W,
+                keylist=keylist_,
             )
-            kl__ += kl_
+
 
             ctr += 1
             if ctr >= max_items:
                 break
-        kl.append(kl__)
-        cm(j in K)  
-        K[j] = copy.deepcopy(kl)
-        cy(j)
+
 
     elif not item_printed:
         cf(spaces,item,'`g',s0='',s1='')
 
-    
 
     if p:
         time.sleep(p)
@@ -149,11 +183,21 @@ def zprint(
     if r:
         raw_enter()
 
-    if name is not None:
-        kl.insert(0,name)
-    
-    return j,kl
+    return j,W
 
+
+
+
+def extract_D(Q,keylist):
+    if len(keylist) == 0:
+        return Q
+    k = keylist.pop(0)
+    if type(k) is str:
+        return extract_D(Q[k],keylist)
+    elif type(k) is tuple and k[0] == 'list_index':
+        return extract_D(Q[k[1]],keylist)
+    else:
+        return Q
 
 if __name__ == '__main__':
     Q = {
@@ -172,17 +216,15 @@ if __name__ == '__main__':
             'F':'f',
         }
     }
-    K = {}
-    j,kl = zprint(Q,t='TOP',K=K)
-    #kprint(kl,'kl')
-    #pprint(kl)
-    #kprint(K,'K')
-    K_ = {}
-    cmax = max(K.keys())
-    for k in K:
-        K_[cmax-k] = K[k]
-    del K
-    K = K_
-    kprint(K,'K',numbering=False)
+
+    _,W = zprint(Q)
+
+    for i in list(W.keys()):
+        keylist = W[i]
+        Q_ = extract_D(Q,keylist)
+        kprint(Q_,r=1)
+
+
+
 
 #EOF
