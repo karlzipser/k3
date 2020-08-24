@@ -1,6 +1,7 @@
 
 from k3.utils.misc.printing import *
 
+# https://www.ltg.ed.ac.uk/~richard/unicode-sample.html
 
 def format_j(j):
     assert(str_is_int(j))
@@ -11,8 +12,14 @@ def format_j(j):
     s = cf(s,'`--d',' ')
     return s
 
+
+
+
 def kys(D):
     return list(D.keys())
+
+
+
 
 def zprint(
     item,
@@ -30,15 +37,46 @@ def zprint(
     _W={},
     _keylist=[],
 ):
+    if _top:
+        _W = {}
 
-    if True:
-        cm(_keylist)
-        h = copy.deepcopy(_keylist)
-        u = ['']
-        if len(h) > 1:
-            for e in h[:-1]:
-                u.append('|')
-            cy('   '.join(u)+'---',_keylist[-1])
+    if False:
+        _K[j-1] = copy.deepcopy(_keylist)
+
+
+        if False:
+            cb(j-1,_keylist,item)
+
+            A,B = None,None
+            if j-2 in _K:
+                A = _K[j-2]
+            B = _K[j-1]
+            
+
+            if B is not None and A is not None:
+
+                for i in rlen(B):
+                    try:
+                        if A[i] == '|' or A[i] == B[i]:
+                            B[i] = '|'
+
+                        if A[0] == ' ':
+                            B[0] = ' '
+                        #if A[1] == ' ':
+                        #    B[1] = ' '
+                        if len(A) < len(B):
+                            #if B[0] != ' ':
+                            #    B[0] = ' '
+                            #elif B[1] != ' ':
+                            #    B[1] = ' '
+                            pass
+                    except:
+                        pass
+
+
+                cr('   '.join(B)+'───┐')
+
+            #cb(n)
 
     if 'init':
 
@@ -49,7 +87,8 @@ def zprint(
 
         if not _top:
             _keylist_.append(t)
-
+        #cm(_keylist_)
+        
         if j in _W:
             cE(j,'in',kys(_W))
         else:
@@ -136,6 +175,7 @@ def zprint(
                 j=j,
                 _W=_W,
                 _keylist=_keylist_,
+
             )
             ctr += 1
             if ctr >= max_items:
@@ -173,25 +213,25 @@ def extract_D(Q,_keylist):
 
 if __name__ == '__main__':
     Q = {
-        'A':{
+        'Π':{
             'B':[
-                    {'G':'g','H':'h',},
+                    {'G':{'G':{'a':'b'},'H':'h',},'H':'h',},
                     {'E':'e','F':'f',},
                 ],
         
                 'I':'i',
         },
-        'C':{
+        'Σ':{
             'B':[
                     {'G':'g','H':'h',},
                     {'E':'e','F':'f',},
                 ],
             'I':'i',
             },
-        'D':{
+        'Φ':{
             'C':{
                 'B':[
-                    {'aa':{'G':'g','H':'h',}},
+                    {'aa':{'G':'g','G':'g','H':'h',}},
                     {'bb':{'E':'e','F':'f',}},
                     {'cc':{'G':'g','H':'h',}},
                     {'dd':{'E':'e','F':'f',}},
@@ -200,23 +240,76 @@ if __name__ == '__main__':
             },
         }
     }
-    
-    clear_screen()
+    Q__ = {
+        'A':{
+            'B':{'G':'g','H':'h',},    
+            'I':{'G':'g','H':'h',}, 
+        },
+    }
+    Q_ = {
+        'A':{
+            'B':{'G':{'a':'b'},'H':'h',},    
+            'I':{'G':'g','H':'h',}, 
+        },
+    }
 
-    _,_W = zprint(Q,_top=False,t='z')
-    
+    clear_screen()
+    _,_W = zprint(Q)#,_W={})
+
+    if False:
+        for r in range(10):
+            clear_screen()
+            _,_W = zprint(Q)
+            a = input('> ')
+            _keylist = _W[int(a)]
+            Q_ = extract_D(Q,_keylist)
+            zprint(Q_)
+            raw_enter()
+
     if False:
 
         kprint(_W)
 
         for i in list(_W.keys()):
             _keylist = _W[i]
-            cg(i,_keylist)
-            Q_ = extract_D(Q,_keylist)
+            a = input('> ')
+            #cg(i,_keylist)
+            #Q_ = extract_D(Q,_keylist)
+            #zprint(Q_)
 
-            #kprint(Q_)
+    pprint(_W)
+    vert =  '|    '
+    blank = '     '
+    bend =  '────┐'
+    for u  in range(6):
+        for i in range(max(kys(_W)),0,-1):
+                try:
+                    if _W[i][u] == _W[i+1][u]:
+                        _W[i+1][u] = vert
+                except:
+                    pass
+        in_line = False
+        for i in range(max(kys(_W)),0,-1):
 
+                try:
+                    if _W[i][u] != vert:
+                        in_line = True
+                    if not in_line and _W[i][u] == vert:
+                        _W[i][u] = blank
+                except:
+                    in_line = False
 
+    
 
+    for i in range(0,max(kys(_W))+1):
+        _W[i].append(bend) #
+
+    for i in range(0,max(kys(_W))+1):
+        w = []
+        for y in _W[i]:
+            if type(y) is tuple:
+                y = cf((y[0]),'`y-d')
+            w.append(str(y))
+        print(''.join(w))
 
 #EOF
