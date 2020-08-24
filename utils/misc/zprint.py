@@ -21,12 +21,14 @@ def kys(D):
 
 leaf = 'leaf|'
 
-def zprint(
+
+
+def get_j_and_W(
     item,
     t='',
+    j=0,
     r=0,
     p=0,
-    j=0,
     ignore_keys=[],
     only_keys=[],
     ignore_types=[],
@@ -40,7 +42,6 @@ def zprint(
     if _top:
         _W = {}
 
-
     if 'init':
 
         if type(item) in ignore_types:
@@ -50,12 +51,12 @@ def zprint(
 
         if not _top:
             _keylist_.append(t)
-        #cm(_keylist_)
+
         
         if j in _W:
             cE(j,'in',kys(_W))
         else:
-            pass#cg(j,list(_W.keys()))
+            pass
         assert j not in _W
 
         _W[j] = _keylist_
@@ -67,54 +68,8 @@ def zprint(
         else:
             name = t
 
-    if False:#'lists':
-        if type(item) is list:
-            D = {}
-            for i in rlen(item):
-                D[(i,)] = item[i]
-            item = D
+    j += 1
 
-    
-    if 'formatting 1':
-
-        item_printed = False
-
-        lst = ['']
-
-        for i in range(len(_space_increment)):
-            lst.append('─')
-
-        lst[-1] = '┐'
-
-        if _top:
-            name = cf(name,'`--u')
-
-        indent_text = ''.join(lst)
-
-        if _top:
-            fj = ''
-        else:
-            fj = format_j(j)
-
-        
-        if len(str(name)) > len(indent_text):
-            indent_name = name
-
-        else:
-            indent_name = str(name) + indent_text[(len(str(name))-1):]
-        
-
-        if type(item) is dict:
-            #clp(_spaces,'`',indent_name,'`',fj,s0='',s1='')
-            j += 1
-
-        else:
-            
-            #clp(_spaces,'`',str(name),'`','──','`',item,'`g',' ',fj,s1='',s0='' )
-            item_printed = True
-            j += 1
-
-    
     if type(item) == dict:
         
         ctr = 0
@@ -128,7 +83,7 @@ def zprint(
                 l = len(item[k])
             else:
                 l = 1
-            j,_ = zprint(
+            j,_ = get_j_and_W(
                 item[k],
                 t=k,
                 _top=False,
@@ -146,13 +101,130 @@ def zprint(
             if ctr >= max_items:
                 break
 
-
-    elif not item_printed:
-        cf(_spaces,item,'`g',s0='',s1='')
-
     else:
         pass
 
+    return j,_W
+
+
+
+def preprocess(Q):
+
+    for k in kys(Q):
+
+        if type(Q[k]) is list:
+            D = {}
+            for i in rlen(Q[k]):
+                D[(i,)] = Q[k][i]
+            Q[k] = D
+
+        if type(Q[k]) is dict:
+            Q[k] = preprocess(Q[k])
+
+        elif type(Q[k]) is None:
+            pass
+
+        else:
+            if is_number(Q[k]):
+                s = cf(Q[k],'`g-b')
+            elif type(Q[k]) is str:
+                s = cf(Q[k],'`y-b')
+            else:
+                s = cf(Q[k],'`b-b')
+            Q[k] = { leaf+s : None }
+    return Q
+
+
+
+def post_process(Din, html=False):
+
+    D = Din.copy()
+
+    if html:
+        space_char = '&nbsp'
+        line_end = ' <br>'
+    else:
+        space_char = ' '
+        line_end = ''
+    vert =  '|ssss'
+    blank = 'sssss'
+    bend =  '────┐'
+    blank = blank.replace('s',space_char)
+    vert = vert.replace('s',space_char)
+    
+    max_width = 0
+
+    for i in range(max(kys(D))):
+        max_width = max(max_width,len(D[i]))
+
+    for u  in range(max_width):
+        for i in range(max(kys(D)),0,-1):
+                try:
+                    if D[i][u] == D[i+1][u]:
+                        D[i+1][u] = vert
+                except:
+                    pass
+        in_line = False
+        for i in range(max(kys(D)),0,-1):
+
+                try:
+                    if D[i][u] != vert:
+                        in_line = True
+                    if not in_line and D[i][u] == vert:
+                        D[i][u] = blank
+                except:
+                    in_line = False
+
+    for θ in range(0,max(kys(D))+1):
+        if len(D[θ]):
+            if leaf in D[θ][-1]:
+                D[θ][-1] = D[θ][-1].replace(leaf,'')
+                continue
+            l = len(D[θ][-1])
+            if l <= len(bend):
+                b = bend[l-1:]
+            else:
+                b = ''
+            b += cf('',θ,'`--d')
+            D[θ].append(b) #
+
+    for θ in range(0,max(kys(D))+1):
+        w = []
+        for y in D[θ]:
+            if type(y) is tuple:
+                y = '•'
+            w.append(str(y))
+        print(''.join(w)+line_end)
+
+    return D
+
+
+def zprint(
+    Dictionary,
+    t='',
+    j=0,
+    r=0,
+    p=0,
+    ignore_keys=[],
+    only_keys=[],
+    ignore_types=[],
+    max_items=999999,
+    html=False,
+):
+
+    V = preprocess( Dictionary )
+
+    _,D = get_j_and_W(
+        V,
+        t=t,
+        j=j,
+        ignore_keys=ignore_keys,
+        only_keys=only_keys,
+        ignore_types=ignore_types,
+        max_items=max_items,
+    )
+
+    E = post_process( D, html=html )
 
     if p:
         time.sleep(p)
@@ -160,25 +232,14 @@ def zprint(
     if r:
         raw_enter()
 
+    return V,D,E
 
-    return j,_W
-
-
-
-
-def extract_D(Q,_keylist):
-    if len(_keylist) == 0:
-        return Q
-    k = _keylist.pop(0)
-    if type(k) is str:
-        return extract_D(Q[k],_keylist)
-    elif type(k) is tuple:
-        return extract_D(Q[k[0]],_keylist)
-    else:
-        return Q
 
 if __name__ == '__main__':
-    Q = {
+
+    A = get_Arguments(Defaults={'eg':0,'html':False})
+
+    R = {
         'Π':{
             'B':[
                     {'G':{'G':{'aaaaaa':'b'},'H':'h',},'H':'h',},
@@ -207,7 +268,7 @@ if __name__ == '__main__':
         }
     }
 
-    Q = {
+    J = {
         'A':{
             'B':{'G':{'a':'Big is beautiful!'},'H':'holy cow!',},    
             'I':{'G':[1,2,3],'H':[4,5,'6',(1,2)],}, 
@@ -216,97 +277,14 @@ if __name__ == '__main__':
             'B':{'G':{'a':'Big is beautiful!'},'H':'holy cow!',},    
             'I':{'G':[1,2,3],'H':[4,5,'6',(1,2)],}, 
         },
-
     }
 
-    def preprocess_Q(Q):
+    Egs = [R, J]
 
-        for k in kys(Q):
-
-            if type(Q[k]) is list:
-                D = {}
-                for i in rlen(Q[k]):
-                    D[(i,)] = Q[k][i]
-                Q[k] = D
-
-            if type(Q[k]) is dict:
-                Q[k] = preprocess_Q(Q[k])
-
-            elif type(Q[k]) is None:
-                pass
-
-            else:
-                if is_number(Q[k]):
-                    s = cf(Q[k],'`g-b')
-                elif type(Q[k]) is str:
-                    s = cf(Q[k],'`y-b')
-                else:
-                    s = cf(Q[k],'`b-b')
-                Q[k] = { leaf+s : None }
-        return Q
-
-    V = preprocess_Q(Q.copy())
-
-
-    clear_screen()
-    _,D = zprint(V)
-
-
-    pprint(D)
-
-    vert =  '|    '
-    blank = '     '
-    bend =  '────┐'
-
-    vert =  '|````'
-    blank = '`````'
-    bend =  '────┐'
-
-    max_width = 0
-    for i in range(max(kys(D))):
-        max_width = max(max_width,len(D[i]))
-
-    for u  in range(max_width):
-        for i in range(max(kys(D)),0,-1):
-                try:
-                    if D[i][u] == D[i+1][u]:
-                        D[i+1][u] = vert
-                except:
-                    pass
-        in_line = False
-        for i in range(max(kys(D)),0,-1):
-
-                try:
-                    if D[i][u] != vert:
-                        in_line = True
-                    if not in_line and D[i][u] == vert:
-                        D[i][u] = blank
-                except:
-                    in_line = False
-
-    
-
-    for θ in range(0,max(kys(D))+1):
-        if len(D[θ]):
-            if leaf in D[θ][-1]:
-                D[θ][-1] = D[θ][-1].replace(leaf,'')
-                continue
-            l = len(D[θ][-1])
-            if l <= len(bend):
-                b = bend[l-1:]
-            else:
-                b = ''
-            b += cf('',θ,'`--d')
-            D[θ].append(b) #
-
-    for θ in range(0,max(kys(D))+1):
-        w = []
-        for y in D[θ]:
-            if type(y) is tuple:
-                y = '•'
-            w.append(str(y))
-        print(''.join(w))
-
-
+    V,D,E = zprint(Egs[A['eg']],html=A['html'])
 
 #EOF
+
+
+
+
