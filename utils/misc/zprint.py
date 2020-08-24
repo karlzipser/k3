@@ -301,12 +301,12 @@ if __name__ == '__main__':
 
     
 
-    for i in range(0,max(kys(_W))+1):
-        _W[i].append(bend) #
+    for θ in range(0,max(kys(_W))+1):
+        _W[θ].append(bend) #
 
-    for i in range(0,max(kys(_W))+1):
+    for θ in range(0,max(kys(_W))+1):
         w = []
-        for y in _W[i]:
+        for y in _W[θ]:
             if type(y) is tuple:
                 y = cf((y[0]),'`y-d')
             w.append(str(y))
