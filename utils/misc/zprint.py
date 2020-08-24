@@ -253,10 +253,15 @@ if __name__ == '__main__':
 
 
     pprint(D)
+
     vert =  '|    '
     blank = '     '
     bend =  '────┐'
-    
+
+    vert =  '|````'
+    blank = '`````'
+    bend =  '────┐'
+
     max_width = 0
     for i in range(max(kys(D))):
         max_width = max(max_width,len(D[i]))
