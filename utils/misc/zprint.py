@@ -283,6 +283,15 @@ if __name__ == '__main__':
 
     V,D,E = zprint(Egs[A['eg']],html=A['html'])
 
+
+"""
+https://www.textfixer.com/html/convert-text-html.php
+
+────┐
+&#9472;&#9472;&#9472;&#9472;&#9488;
+
+"""
+
 #EOF
 
 
