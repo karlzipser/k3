@@ -19,11 +19,11 @@ def kys(D):
     return list(D.keys())
 
 
-
+leaf = 'leaf|'
 
 def zprint(
     item,
-    t='zprint()',
+    t='',
     r=0,
     p=0,
     j=0,
@@ -40,43 +40,6 @@ def zprint(
     if _top:
         _W = {}
 
-    if False:
-        _K[j-1] = copy.deepcopy(_keylist)
-
-
-        if False:
-            cb(j-1,_keylist,item)
-
-            A,B = None,None
-            if j-2 in _K:
-                A = _K[j-2]
-            B = _K[j-1]
-            
-
-            if B is not None and A is not None:
-
-                for i in rlen(B):
-                    try:
-                        if A[i] == '|' or A[i] == B[i]:
-                            B[i] = '|'
-
-                        if A[0] == ' ':
-                            B[0] = ' '
-                        #if A[1] == ' ':
-                        #    B[1] = ' '
-                        if len(A) < len(B):
-                            #if B[0] != ' ':
-                            #    B[0] = ' '
-                            #elif B[1] != ' ':
-                            #    B[1] = ' '
-                            pass
-                    except:
-                        pass
-
-
-                cr('   '.join(B)+'───┐')
-
-            #cb(n)
 
     if 'init':
 
@@ -104,7 +67,7 @@ def zprint(
         else:
             name = t
 
-    if 'lists':
+    if False:#'lists':
         if type(item) is list:
             D = {}
             for i in rlen(item):
@@ -139,13 +102,15 @@ def zprint(
 
         else:
             indent_name = str(name) + indent_text[(len(str(name))-1):]
-            
+        
+
         if type(item) is dict:
-            clp(_spaces,'`',indent_name,'`',fj,s0='',s1='')
+            #clp(_spaces,'`',indent_name,'`',fj,s0='',s1='')
             j += 1
 
         else:
-            clp(_spaces,'`',str(name),'`','──','`',item,'`g',' ',fj,s1='',s0='' )
+            
+            #clp(_spaces,'`',str(name),'`','──','`',item,'`g',' ',fj,s1='',s0='' )
             item_printed = True
             j += 1
 
@@ -195,6 +160,7 @@ def zprint(
     if r:
         raw_enter()
 
+
     return j,_W
 
 
@@ -215,7 +181,7 @@ if __name__ == '__main__':
     Q = {
         'Π':{
             'B':[
-                    {'G':{'G':{'a':'b'},'H':'h',},'H':'h',},
+                    {'G':{'G':{'aaaaaa':'b'},'H':'h',},'H':'h',},
                     {'E':'e','F':'f',},
                 ],
         
@@ -229,7 +195,7 @@ if __name__ == '__main__':
             'I':'i',
             },
         'Φ':{
-            'C':{
+            'Ccccc':{
                 'B':[
                     {'aa':{'G':'g','G':'g','H':'h',}},
                     {'bb':{'E':'e','F':'f',}},
@@ -240,76 +206,102 @@ if __name__ == '__main__':
             },
         }
     }
-    Q__ = {
+
+    Q = {
         'A':{
-            'B':{'G':'g','H':'h',},    
-            'I':{'G':'g','H':'h',}, 
+            'B':{'G':{'a':'Big is beautiful!'},'H':'holy cow!',},    
+            'I':{'G':[1,2,3],'H':[4,5,'6',(1,2)],}, 
         },
-    }
-    Q_ = {
-        'A':{
-            'B':{'G':{'a':'b'},'H':'h',},    
-            'I':{'G':'g','H':'h',}, 
+        'B':{
+            'B':{'G':{'a':'Big is beautiful!'},'H':'holy cow!',},    
+            'I':{'G':[1,2,3],'H':[4,5,'6',(1,2)],}, 
         },
+
     }
+
+    def preprocess_Q(Q):
+
+        for k in kys(Q):
+
+            if type(Q[k]) is list:
+                D = {}
+                for i in rlen(Q[k]):
+                    D[(i,)] = Q[k][i]
+                Q[k] = D
+
+            if type(Q[k]) is dict:
+                Q[k] = preprocess_Q(Q[k])
+
+            elif type(Q[k]) is None:
+                pass
+
+            else:
+                if is_number(Q[k]):
+                    s = cf(Q[k],'`g-b')
+                elif type(Q[k]) is str:
+                    s = cf(Q[k],'`y-b')
+                else:
+                    s = cf(Q[k],'`b-b')
+                Q[k] = { leaf+s : None }
+        return Q
+
+    V = preprocess_Q(Q.copy())
+
 
     clear_screen()
-    _,_W = zprint(Q)#,_W={})
+    _,D = zprint(V)
 
-    if False:
-        for r in range(10):
-            clear_screen()
-            _,_W = zprint(Q)
-            a = input('> ')
-            _keylist = _W[int(a)]
-            Q_ = extract_D(Q,_keylist)
-            zprint(Q_)
-            raw_enter()
 
-    if False:
-
-        kprint(_W)
-
-        for i in list(_W.keys()):
-            _keylist = _W[i]
-            a = input('> ')
-            #cg(i,_keylist)
-            #Q_ = extract_D(Q,_keylist)
-            #zprint(Q_)
-
-    pprint(_W)
+    pprint(D)
     vert =  '|    '
     blank = '     '
     bend =  '────┐'
-    for u  in range(6):
-        for i in range(max(kys(_W)),0,-1):
+    
+    max_width = 0
+    for i in range(max(kys(D))):
+        max_width = max(max_width,len(D[i]))
+
+    for u  in range(max_width):
+        for i in range(max(kys(D)),0,-1):
                 try:
-                    if _W[i][u] == _W[i+1][u]:
-                        _W[i+1][u] = vert
+                    if D[i][u] == D[i+1][u]:
+                        D[i+1][u] = vert
                 except:
                     pass
         in_line = False
-        for i in range(max(kys(_W)),0,-1):
+        for i in range(max(kys(D)),0,-1):
 
                 try:
-                    if _W[i][u] != vert:
+                    if D[i][u] != vert:
                         in_line = True
-                    if not in_line and _W[i][u] == vert:
-                        _W[i][u] = blank
+                    if not in_line and D[i][u] == vert:
+                        D[i][u] = blank
                 except:
                     in_line = False
 
     
 
-    for θ in range(0,max(kys(_W))+1):
-        _W[θ].append(bend) #
+    for θ in range(0,max(kys(D))+1):
+        if len(D[θ]):
+            if leaf in D[θ][-1]:
+                D[θ][-1] = D[θ][-1].replace(leaf,'')
+                continue
+            l = len(D[θ][-1])
+            if l <= len(bend):
+                b = bend[l-1:]
+            else:
+                b = ''
+            b += cf('',θ,'`--d')
+            D[θ].append(b) #
 
-    for θ in range(0,max(kys(_W))+1):
+    for θ in range(0,max(kys(D))+1):
         w = []
-        for y in _W[θ]:
+        for y in D[θ]:
             if type(y) is tuple:
-                y = cf((y[0]),'`y-d')
+                y = '•'
             w.append(str(y))
         print(''.join(w))
+
+
 
 #EOF
