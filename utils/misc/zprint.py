@@ -3,14 +3,6 @@ from k3.utils.misc.printing import *
 
 # https://www.ltg.ed.ac.uk/~richard/unicode-sample.html
 
-def format_j(j):
-    assert(str_is_int(j))
-    s = str(j)
-    if len(s) == 1:
-        s = s+' '
-
-    s = cf(s,'`--d',' ')
-    return s
 
 
 
@@ -126,11 +118,11 @@ def preprocess(Q):
 
         else:
             if is_number(Q[k]):
-                s = cf(Q[k],'`g-b')
+                s = cf(Q[k])#,'`g-b')
             elif type(Q[k]) is str:
-                s = cf(Q[k],'`y-b')
+                s = cf(Q[k])#,'`y-b')
             else:
-                s = cf(Q[k],'`b-b')
+                s = cf(Q[k])#,'`b-b')
             Q[k] = { leaf+s : None }
     return Q
 
@@ -146,9 +138,15 @@ def post_process(Din, html=False):
     else:
         space_char = ' '
         line_end = ''
-    vert =  '|ssss'
-    blank = 'sssss'
-    bend =  '────┐'
+    if not html:
+        vert =  '|ssss'
+        blank = 'sssss'
+        bend =  '────┐'
+    else:
+        vert =  '|ssss'
+        blank = 'sssss'
+        bend =  '&#9472;&#9472;&#9472;&#9472;&#9488;'
+
     blank = blank.replace('s',space_char)
     vert = vert.replace('s',space_char)
     
@@ -185,14 +183,14 @@ def post_process(Din, html=False):
                 b = bend[l-1:]
             else:
                 b = ''
-            b += cf('',θ,'`--d')
+            b += cf('',θ)#,'`--d')
             D[θ].append(b) #
 
     for θ in range(0,max(kys(D))+1):
         w = []
         for y in D[θ]:
             if type(y) is tuple:
-                y = '•'
+                y = '.'# '•'
             w.append(str(y))
         print(''.join(w)+line_end)
 
@@ -240,7 +238,7 @@ if __name__ == '__main__':
     A = get_Arguments(Defaults={'eg':0,'html':False})
 
     R = {
-        'Π':{
+        'A':{
             'B':[
                     {'G':{'G':{'aaaaaa':'b'},'H':'h',},'H':'h',},
                     {'E':'e','F':'f',},
@@ -248,15 +246,15 @@ if __name__ == '__main__':
         
                 'I':'i',
         },
-        'Σ':{
+        'X':{
             'B':[
                     {'G':'g','H':'h',},
                     {'E':'e','F':'f',},
                 ],
             'I':'i',
             },
-        'Φ':{
-            'Ccccc':{
+        'Q':{
+            'Ccc':{
                 'B':[
                     {'aa':{'G':'g','G':'g','H':'h',}},
                     {'bb':{'E':'e','F':'f',}},
