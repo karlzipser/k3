@@ -31,6 +31,15 @@ def zprint(
     _keylist=[],
 ):
 
+        if False:
+        cm(_keylist)
+        h = copy.deepcopy(_keylist)
+        u = ['   ']
+        if len(h) > 2:
+            for e in h[:-2]:
+                u.append('|')
+                cy('   '.join(u)+'---')
+
     if 'init':
 
         if type(item) in ignore_types:
@@ -193,11 +202,11 @@ if __name__ == '__main__':
     
     clear_screen()
 
-    _,_W = zprint(Q)
+    _,_W = zprint(Q,_top=False,t='z')
     
-    if True:
+    if False:
 
-        #zprint(_W)
+        kprint(_W)
 
         for i in list(_W.keys()):
             _keylist = _W[i]
