@@ -31,14 +31,14 @@ def zprint(
     _keylist=[],
 ):
 
-        if False:
+    if True:
         cm(_keylist)
         h = copy.deepcopy(_keylist)
-        u = ['   ']
-        if len(h) > 2:
-            for e in h[:-2]:
+        u = ['']
+        if len(h) > 1:
+            for e in h[:-1]:
                 u.append('|')
-                cy('   '.join(u)+'---')
+            cy('   '.join(u)+'---',_keylist[-1])
 
     if 'init':
 
@@ -178,7 +178,8 @@ if __name__ == '__main__':
                     {'G':'g','H':'h',},
                     {'E':'e','F':'f',},
                 ],
-            'I':'i',
+        
+                'I':'i',
         },
         'C':{
             'B':[
