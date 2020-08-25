@@ -206,25 +206,25 @@ def post_process(Din, html=False):
                 except:
                     in_line = False
 
-    for θ in range(0,max(kys(D))+1):
-        if len(D[θ]):
-            if leaf in D[θ][-1]:
-                D[θ][-1] = D[θ][-1].replace(leaf,'')
+    for i in range(0,max(kys(D))+1):
+        if len(D[i]):
+            if leaf in D[i][-1]:
+                D[i][-1] = D[i][-1].replace(leaf,'')
                 continue
-            l = len(D[θ][-1])
+            l = len(D[i][-1])
             if l <= len(bend):
                 b = bend[l-1:]
             else:
                 b = ''
             #b += cf('',0)#,'`--d')
-            D[θ].append(b) #
+            D[i].append(b) #
 
     print_lines = []
-    for θ in range(0,max(kys(D))+1):
+    for i in range(0,max(kys(D))+1):
         w = []
-        for y in D[θ]:
+        for y in D[i]:
             if type(y) is tuple:
-                y = '.'# '•'
+                y = '└'# '•'
             w.append(str(y))
         print_lines.append(''.join(w)+line_end)
 
@@ -323,6 +323,7 @@ if __name__ == '__main__':
     h = s.replace(' ','&nbsp')
     h = h.replace('\n',' <br>\n')
     h = h.replace('─','&#9472;')
+    h = h.replace('└','&#9492;')
     h = h.replace('┐','&#9488;')
     h = h.replace('[0m','')
     h = """<p style="font-family: 'Courier New'">\n""" + h
