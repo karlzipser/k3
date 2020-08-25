@@ -15,7 +15,15 @@ def zprint(
     ignore_types=[],
     max_items=999999,
     max_depth=999999,
+    do_return = False
 ):
+
+    if True:#type(Dictionary) is not dict:
+        if len(t) > 0:
+            n = t
+        else:
+            n = type(Dictionary).__name__
+        Dictionary = {n:Dictionary}
 
     V = _preprocess( copy.deepcopy(Dictionary), use_color )
 
@@ -47,7 +55,8 @@ def zprint(
     if r:
         raw_enter()
 
-    return D,print_lines
+    if do_return:
+        return D,print_lines
 
 
 
@@ -61,7 +70,7 @@ if True:
     def _get_j_and_W(
         item,
         t='',
-        j=0,
+        j=-1,
         r=0,
         p=0,
         use_color=0,
@@ -213,11 +222,11 @@ if True:
 
         for i in sorted(kys(D),reverse=False):
             if len(D[i]):
-                print(D[i][-1])
+                #print(D[i][-1])
                 if leaf in str(D[i][-1]):
                     D[i][-1] = D[i][-1].replace(leaf,'')
                     continue
-                l = len(D[i][-1])
+                l = len(str(D[i][-1]))
                 if l <= len(bend):
                     b = bend[l-1:]
                 else:
@@ -243,7 +252,8 @@ if True:
 
 
 
-
+#def type_to_str(a):
+#    return str(type(a)).split("'")[-2]
 
 if __name__ == '__main__':
 
@@ -268,17 +278,18 @@ if __name__ == '__main__':
         },
     }
 
-    kprint(Example)
+    #kprint(Example)
 
     if A['path'] is not None:
         Example = lo(A['path'])
 
-    kprint(Example)
+    #kprint(Example)
 
     D, print_lines = zprint(
         Example,
         use_color=A['use_color'],
         use_line_numbers=A['use_line_numbers'],
+        do_return=True,
     )
 
     if A['html']:
