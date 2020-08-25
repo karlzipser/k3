@@ -25,8 +25,8 @@ def load_obj(name,noisy=True,time=False,use_real_path=False):
     assert_disk_locations([pname(name)])
     if noisy:
         timer = Timer()
-        clp('Loading','`',name,'`--rb','. . .\r'),
-
+        #clp('Loading','`',name,'`--rb','. . .\r'),
+        pd2s('Loading',name,'. . .\r'),
     name = name.replace('.pkl','')
     name = name + '.pkl'
     if use_real_path:

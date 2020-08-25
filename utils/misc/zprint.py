@@ -250,6 +250,8 @@ if __name__ == '__main__':
             'no-banner':'not relevant',
             'use_color':1,
             'use_line_numbers':1,
+            'path':None,
+            'html':True,
         },
     )
 
@@ -264,13 +266,20 @@ if __name__ == '__main__':
         },
     }
 
+    kprint(Example)
+
+    if A['path'] is not None:
+        Example = lo(A['path'])
+
+    kprint(Example)
+
     D, print_lines = zprint(
         Example,
         use_color=A['use_color'],
         use_line_numbers=A['use_line_numbers'],
     )
 
-    if True:
+    if A['html']:
         html_str = lines_to_html_str("""<p style="font-family: 'Courier New'">\n""",print_lines)
         text_to_file(opjD('zprint_test.html'),html_str)
 
