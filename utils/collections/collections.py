@@ -8,7 +8,13 @@ def use_keychain(kc,D):
     for k in kc:
         D = D[k]
     return D
-    
+
+def set_with_keychain(kc,D,v):
+    for i in range(len(kc)-1):#k in kc:
+        k = kc[i]
+        D = D[k]
+    D[kc[-1]] = v
+
 def set_Defaults(Defaults,Dst):#,required=[]):
     #print_dic_simple(Defaults,'Defaults')
     #print_dic_simple(Dst),'Dst'

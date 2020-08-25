@@ -170,28 +170,35 @@ def preprocess(Q,use_color):
 
 
 
-def post_process(Din,use_line_numbers,use_color):
+def post_process(Din,use_line_numbers,use_color,start_keychain):
 
     D = copy.deepcopy(Din)
-
+    #kprint(D,r=1)
+    del_list = []
+    for k in kys(D):
+        if D[k][:len(start_keychain)] != start_keychain:
+            del_list.append(k)
+    for k in del_list:
+        del D[k]
+    #kprint(D,r=1)
     vert =  '|    '
     blank = '     '
     bend =  '────┐'
 
     max_width = 0
 
-    for i in range(max(kys(D))):
+    for i in kys(D):
         max_width = max(max_width,len(D[i]))
 
     for u  in range(max_width):
-        for i in range(max(kys(D)),0,-1):
+        for i in sorted(kys(D),reverse=True):
                 try:
                     if D[i][u] == D[i+1][u]:
                         D[i+1][u] = vert
                 except:
                     pass
         in_line = False
-        for i in range(max(kys(D)),0,-1):
+        for i in sorted(kys(D),reverse=True):
 
                 try:
                     if D[i][u] != vert:
@@ -201,7 +208,7 @@ def post_process(Din,use_line_numbers,use_color):
                 except:
                     in_line = False
 
-    for i in range(0,max(kys(D))+1):
+    for i in sorted(kys(D),reverse=False):
         if len(D[i]):
             if leaf in D[i][-1]:
                 D[i][-1] = D[i][-1].replace(leaf,'')
@@ -219,13 +226,15 @@ def post_process(Din,use_line_numbers,use_color):
             D[i].append(b)
 
     print_lines = []
-    for i in range(0,max(kys(D))+1):
+    for i in sorted(kys(D),reverse=False):
         w = []
         for y in D[i]:
             if type(y) is tuple:
                 y = '└'# '•'
             w.append(str(y))
-        print_lines.append(''.join(w))
+        
+        if D[i][:len(start_keychain)] == start_keychain:
+            print_lines.append(''.join(w))
 
 
 
@@ -246,11 +255,12 @@ def zprint(
     ignore_types=[],
     max_items=999999,
     max_depth=999999,
+    start_keychain=[],
 ):
 
     V = preprocess( copy.deepcopy(Dictionary), use_color )
 
-    _,D = get_j_and_W(
+    _,D_ = get_j_and_W(
         copy.deepcopy(V),
         t=t,
         #j=j,
@@ -261,21 +271,29 @@ def zprint(
         max_depth=max_depth,
     )
 
+    #kprint(D_)
 
 
-    E,print_lines = post_process( copy.deepcopy(D), use_line_numbers, use_color )
+    E,print_lines = post_process( copy.deepcopy(D_), use_line_numbers, use_color, start_keychain )
 
-    for i in rlen(D):
-        #print(i,D[i])
+    D = {}
+    for i in rlen(D_):
+        #cg(D_[i],start_keychain,D_[i][:len(start_keychain)]==start_keychain)
+        #if D_[i][:len(start_keychain)]==start_keychain:
+        #    D[i] = D_[i]
+        #    print(i,D[i])
         try:
-            #cm(D[i][-1])
             if leaf in D[i][-1]:
                 D[i] = D[i][:-1]
         except:
             pass
-        for j in rlen(D[i]):
-            if type(D[i][j]) == tuple and len(D[i][j]) == 1:
-                D[i][j] = D[i][j][0]
+        try:
+            pass
+        #    for j in rlen(D[i]):
+        #        if type(D[i][j]) == tuple and len(D[i][j]) == 1:
+        #            D[i][j] = D[i][j][0]
+        except:
+            pass
 
     print('\n'.join(print_lines))
 
@@ -285,7 +303,7 @@ def zprint(
     if r:
         raw_enter()
 
-    return D,print_lines
+    return D_,print_lines
 
 
 
@@ -299,7 +317,7 @@ def zprint(
 
 if __name__ == '__main__':
 
-    A = get_Arguments(Defaults={'eg':0,'html':False})
+    A = get_Arguments(Defaults={'eg':0,'html':0,'no-banner':'not relevant'})
 
     R = {
         'A':{
@@ -343,13 +361,15 @@ if __name__ == '__main__':
 
     Egs = [R, J]
 
-    R = get_dictionary_of_Photos()
+    #R = get_dictionary_of_Photos()
 
-    D,print_lines = zprint(R,use_color=1,use_line_numbers=1,ignore_keys=[],max_depth=6)
+    D,print_lines = zprint(R,use_color=1,use_line_numbers=1,ignore_keys=[])#,start_keychain=['A', 'B', (1,), 'E'])
 
-    html_str = lines_to_html_str("""<p style="font-family: 'Courier New'">\n""",print_lines)
-    text_to_file(opjD('n.html'),html_str)
+    if False:
+        html_str = lines_to_html_str("""<p style="font-family: 'Courier New'">\n""",print_lines)
+        text_to_file(opjD('n.html'),html_str)
 
+        set_with_keychain(a,R,1066)
 
 #EOF
 
