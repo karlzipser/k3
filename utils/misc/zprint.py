@@ -27,10 +27,10 @@ def get_dictionary_of_Photos():
             for g in days:
                 h = sggo(top,y,m,g,'.meta/*')
                 D[y][m][g] = {}
-                D[y][m][g]['<unsorted>'] = []
+                D[y][m][g]['un'] = []
                 for j in h:
                     if os.path.isfile(j):
-                        D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
+                        D[y][m][g]['un'].append(j.split('/')[-1])
                     else:
                         D[y][m][g][fname(j)] = []
                         k = sggo(j,'*.jpeg')
@@ -54,6 +54,7 @@ def get_j_and_W(
     j=0,
     r=0,
     p=0,
+    use_color=0,
     ignore_keys=[],
     only_keys=[],
     ignore_types=[],
@@ -63,6 +64,8 @@ def get_j_and_W(
     _space_increment='    ',
     _W={},
     _keylist=[],
+    depth=0,
+    max_depth=0,
 ):
     if _top:
         _W = {}
@@ -96,36 +99,39 @@ def get_j_and_W(
     j += 1
 
     if type(item) == dict:
-        
-        ctr = 0
-        for k in sorted(item.keys()):
-            if k in ignore_keys:
-                continue
-            if len(only_keys) > 0:
-                if k not in only_keys:
+        if depth < max_depth:
+            depth += 1
+            ctr = 0
+            for k in sorted(item.keys()):
+                if k in ignore_keys:
                     continue
-            if type(item[k]) in [dict,list]:
-                l = len(item[k])
-            else:
-                l = 1
-            j,_ = get_j_and_W(
-                item[k],
-                t=k,
-                _top=False,
-                _spaces=_spaces+_space_increment,
-                _space_increment=_space_increment,
-                ignore_keys=ignore_keys,
-                only_keys=only_keys,
-                ignore_types=ignore_types,
-                j=j,
-                _W=_W,
-                _keylist=_keylist_,
+                if len(only_keys) > 0:
+                    if k not in only_keys:
+                        continue
+                if type(item[k]) in [dict,list]:
+                    l = len(item[k])
+                else:
+                    l = 1
 
-            )
-            ctr += 1
-            if ctr >= max_items:
-                break
-
+                j,_ = get_j_and_W(
+                    item[k],
+                    t=k,
+                    use_color=use_color,
+                    _top=False,
+                    _spaces=_spaces+_space_increment,
+                    _space_increment=_space_increment,
+                    ignore_keys=ignore_keys,
+                    only_keys=only_keys,
+                    ignore_types=ignore_types,
+                    j=j,
+                    _W=_W,
+                    _keylist=_keylist_,
+                    depth=depth,
+                    max_depth=max_depth,
+                )
+                ctr += 1
+                if ctr >= max_items:
+                    break
     else:
         pass
 
@@ -133,7 +139,7 @@ def get_j_and_W(
 
 
 
-def preprocess(Q):
+def preprocess(Q,use_color):
 
     for k in kys(Q):
 
@@ -144,45 +150,34 @@ def preprocess(Q):
             Q[k] = D
 
         if type(Q[k]) is dict:
-            Q[k] = preprocess(Q[k])
+            Q[k] = preprocess(Q[k],use_color)
 
         elif type(Q[k]) is None:
             pass
 
         else:
-            if is_number(Q[k]):
-                s = cf(Q[k])#,'`g-b')
-            elif type(Q[k]) is str:
-                s = cf(Q[k])#,'`y-b')
+            if use_color:
+                if is_number(Q[k]):
+                    s = cf(Q[k],'`g-b')
+                elif type(Q[k]) is str:
+                    s = cf(Q[k],'`y-b')
+                else:
+                    s = cf(Q[k],'`b-b')
             else:
-                s = cf(Q[k])#,'`b-b')
+                s = str(Q[k])
             Q[k] = { leaf+s : None }
     return Q
 
 
 
-def post_process(Din, html=False):
+def post_process(Din,use_line_numbers,use_color):
 
     D = copy.deepcopy(Din)
 
-    if html:
-        space_char = '&nbsp'
-        line_end = ' <br>'
-    else:
-        space_char = ' '
-        line_end = ''
-    if not html:
-        vert =  '|ssss'
-        blank = 'sssss'
-        bend =  '────┐'
-    else:
-        vert =  '|ssss'
-        blank = 'sssss'
-        bend =  ';&#9472;&#9472;&#9472;&#9472;&#9488;'
+    vert =  '|    '
+    blank = '     '
+    bend =  '────┐'
 
-    blank = blank.replace('s',space_char)
-    vert = vert.replace('s',space_char)
-    
     max_width = 0
 
     for i in range(max(kys(D))):
@@ -216,8 +211,12 @@ def post_process(Din, html=False):
                 b = bend[l-1:]
             else:
                 b = ''
-            #b += cf('',0)#,'`--d')
-            D[i].append(b) #
+            if use_line_numbers:
+                if use_color:
+                    b += cf('',i,'`--d')
+                else:
+                    b += ' '+str(i)
+            D[i].append(b)
 
     print_lines = []
     for i in range(0,max(kys(D))+1):
@@ -226,41 +225,59 @@ def post_process(Din, html=False):
             if type(y) is tuple:
                 y = '└'# '•'
             w.append(str(y))
-        print_lines.append(''.join(w)+line_end)
+        print_lines.append(''.join(w))
 
-    print_str = '\n'.join(print_lines)
 
-    return D, print_str
+
+
+
+    return D, print_lines
 
 
 def zprint(
     Dictionary,
     t='',
-    j=0,
     r=0,
     p=0,
+    use_color=0,
+    use_line_numbers=0,
     ignore_keys=[],
     only_keys=[],
     ignore_types=[],
     max_items=999999,
-    html=False,
+    max_depth=999999,
 ):
 
-    V = preprocess( copy.deepcopy(Dictionary) )
+    V = preprocess( copy.deepcopy(Dictionary), use_color )
 
     _,D = get_j_and_W(
         copy.deepcopy(V),
         t=t,
-        j=j,
+        #j=j,
         ignore_keys=ignore_keys,
         only_keys=only_keys,
         ignore_types=ignore_types,
         max_items=max_items,
+        max_depth=max_depth,
     )
 
-    E,s = post_process( copy.deepcopy(D), html=html )
 
-    print(s)
+
+    E,print_lines = post_process( copy.deepcopy(D), use_line_numbers, use_color )
+
+    for i in rlen(D):
+        #print(i,D[i])
+        try:
+            #cm(D[i][-1])
+            if leaf in D[i][-1]:
+                D[i] = D[i][:-1]
+        except:
+            pass
+        for j in rlen(D[i]):
+            if type(D[i][j]) == tuple and len(D[i][j]) == 1:
+                D[i][j] = D[i][j][0]
+
+    print('\n'.join(print_lines))
 
     if p:
         time.sleep(p)
@@ -268,7 +285,16 @@ def zprint(
     if r:
         raw_enter()
 
-    return V,D,E,s
+    return D,print_lines
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -294,8 +320,8 @@ if __name__ == '__main__':
         'Q':{
             'Ccc':{
                 'B':[
-                    {'aa':{'G':'g','G':'g','H':'h',}},
-                    {'bb':{'E':'e','F':'f',}},
+                    {'aa':{'G':'g','G':'g','H':1,}},
+                    {'bb':{'E':'e','F':('a',1),}},
                     {'cc':{'G':'g','H':'h',}},
                     {'dd':{'E':'e','F':'f',}},
                 ],
@@ -316,46 +342,13 @@ if __name__ == '__main__':
     }
 
     Egs = [R, J]
-    #kprint(R)
-    V,D,E,s = zprint(R,html=A['html'])
 
-    # u'some string'.encode('ascii', 'xmlcharrefreplace')
-    h = s.replace(' ','&nbsp')
-    h = h.replace('\n',' <br>\n')
-    h = h.replace('─','&#9472;')
-    h = h.replace('└','&#9492;')
-    h = h.replace('┐','&#9488;')
-    h = h.replace('[0m','')
-    h = """<p style="font-family: 'Courier New'">\n""" + h
-    h = h + "ʹ ͵ ͺ ; ΄ ΅ Ά · Έ Ή Ί Ό Ύ Ώ ΐ Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω Ϊ Ϋ ά έ ή ί ΰ α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω ϊ ϋ ό ύ ώ ϐ ϑ ϒ ϓ ϔ ϕ ϖ Ϛ Ϝ Ϟ Ϡ Ϣ ϣ Ϥ ϥ Ϧ ϧ Ϩ ϩ Ϫ ϫ Ϭ ϭ Ϯ ϯ ϰ ϱ ϲ ϳ".encode('ascii', 'xmlcharrefreplace').decode('utf8')
-    text_to_file(opjD('n.html'),h)
+    R = get_dictionary_of_Photos()
 
-"""
-https://www.textfixer.com/html/convert-text-html.php
+    D,print_lines = zprint(R,use_color=1,use_line_numbers=1,ignore_keys=[],max_depth=6)
 
-────┐
-&#9472;&#9472;&#9472;&#9472;&#9488;
-
-
-    if html:
-        space_char = '&nbsp'
-        line_end = ' <br>'
-    else:
-        space_char = ' '
-        line_end = ''
-    if not html:
-        vert =  '|ssss'
-        blank = 'sssss'
-        bend =  '────┐'
-    else:
-        vert =  '|ssss'
-        blank = 'sssss'
-        bend =  ';&#9472;&#9472;&#9472;&#9472;&#9488;'
-
---put in dict, get of keylist, use keylist to get subdict
---get webserver working
-
-"""
+    html_str = lines_to_html_str("""<p style="font-family: 'Courier New'">\n""",print_lines)
+    text_to_file(opjD('n.html'),html_str)
 
 
 #EOF

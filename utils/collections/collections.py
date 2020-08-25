@@ -4,6 +4,11 @@ from k3.utils.core import *
 
 REQUIRED = '__REQUIRED__'
 
+def use_keychain(kc,D):
+    for k in kc:
+        D = D[k]
+    return D
+    
 def set_Defaults(Defaults,Dst):#,required=[]):
     #print_dic_simple(Defaults,'Defaults')
     #print_dic_simple(Dst),'Dst'

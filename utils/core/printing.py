@@ -150,4 +150,12 @@ if __name__ == '__main__':
     et()
     print('example of d2s and d2n used together.')
     print(d2s(1,2,3,d2n(4,5,6)))
+
+
+def lines_to_html_str(header,print_lines):
+    h = ' <br>'.join(print_lines).replace(' ','&nbsp').encode('ascii', 'xmlcharrefreplace').decode('utf8')
+    h = header + h
+    return h
+
+    
 #EOF
