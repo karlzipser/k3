@@ -8,8 +8,8 @@ def zprint(
     t='',
     r=0,
     p=0,
-    use_color=0,
-    use_line_numbers=0,
+    use_color=1,
+    use_line_numbers=1,
     ignore_keys=[],
     only_keys=[],
     ignore_types=[],
@@ -213,7 +213,8 @@ if True:
 
         for i in sorted(kys(D),reverse=False):
             if len(D[i]):
-                if leaf in D[i][-1]:
+                print(D[i][-1])
+                if leaf in str(D[i][-1]):
                     D[i][-1] = D[i][-1].replace(leaf,'')
                     continue
                 l = len(D[i][-1])
@@ -281,8 +282,14 @@ if __name__ == '__main__':
     )
 
     if A['html']:
-        html_str = lines_to_html_str("""<p style="font-family: 'Courier New'">\n""",print_lines)
-        text_to_file(opjD('zprint_test.html'),html_str)
+        html_str = lines_to_html_str(print_lines)
+        text_to_file(
+            opjD('zprint_test.html'),
+            d2s(
+                """<p style="font-family: 'Courier New'">\n""",
+                html_str
+            )
+        )
 
 
 

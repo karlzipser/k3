@@ -16,6 +16,7 @@ def set_with_keychain(kc,D,v,num_tuple_to_num=True):
     if num_tuple_to_num:
         kc = _untuple_keychain(kc)
     for i in range(len(kc)-1):
+        k = kc[i]
         if type(k) is tuple and len(k) == 1:
             k = k[0]
         D = D[k]

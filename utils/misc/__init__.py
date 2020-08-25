@@ -12,4 +12,7 @@ from k3.utils.misc.save_globals import *
 from k3.utils.misc.sys import *
 
 from k3.utils.misc.osx import *
+
+from k3.utils.misc.zprint import *
+
 #EOF

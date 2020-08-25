@@ -152,10 +152,14 @@ if __name__ == '__main__':
     print(d2s(1,2,3,d2n(4,5,6)))
 
 
-def lines_to_html_str(header,print_lines):
+def lines_to_html_str(print_lines):
     h = ' <br>'.join(print_lines).replace(' ','&nbsp').encode('ascii', 'xmlcharrefreplace').decode('utf8')
-    h = header + h
+    replace_list = list(range(100))
+    for i in rlen(replace_list):
+        replace_list[i] = d2n('[',replace_list[i],'m')
+    for s in replace_list:
+        h = h.replace(s,'')
     return h
 
-    
+
 #EOF
