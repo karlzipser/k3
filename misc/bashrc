@@ -20,6 +20,7 @@ export PATH=~/k3/scripts/net:$PATH
 export PATH=~/k3/scripts/osx:$PATH
 export PATH=~/k3/scripts/connect:$PATH
 export PATH=~/k3/Menu:$PATH
+export PATH=~/k3/utils/misc:$PATH
 
 alias sb='cd;source ~/.bashrc'
 
