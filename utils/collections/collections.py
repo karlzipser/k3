@@ -3,7 +3,24 @@
 from k3.utils.core import *
 
 REQUIRED = '__REQUIRED__'
+#,a
 
+ENV = namedtuple('_', 'D')({})
+ENV.D['a']={}
+ENV.D['a']['b']=22
+ENV.D['c']=3
+
+def da(
+        *kc,
+        D=ENV.D,
+        e=None,
+        num_tuple_to_num=True,
+    ):
+    if e is None:
+        return use_keychain(kc,D,num_tuple_to_num)
+    else:
+        set_with_keychain(kc,D,e,num_tuple_to_num)
+#,b
 def use_keychain(kc,D,num_tuple_to_num=True):
     if num_tuple_to_num:
         kc = _untuple_keychain(kc)   
@@ -12,7 +29,7 @@ def use_keychain(kc,D,num_tuple_to_num=True):
     return D
 
 
-def set_with_keychain(kc,D,v,num_tuple_to_num=True):
+def set_with_keychain(kc,D,e,num_tuple_to_num=True):
     if num_tuple_to_num:
         kc = _untuple_keychain(kc)
     for i in range(len(kc)-1):
@@ -20,7 +37,7 @@ def set_with_keychain(kc,D,v,num_tuple_to_num=True):
         if type(k) is tuple and len(k) == 1:
             k = k[0]
         D = D[k]
-    D[kc[-1]] = v
+    D[kc[-1]] = e
 
 def _untuple_keychain(kc):
     kc_ = []
