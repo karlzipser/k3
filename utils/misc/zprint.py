@@ -319,7 +319,7 @@ if __name__ == '__main__':
     #kprint(R)
     V,D,E,s = zprint(R,html=A['html'])
 
-    
+    # u'some string'.encode('ascii', 'xmlcharrefreplace')
     h = s.replace(' ','&nbsp')
     h = h.replace('\n',' <br>\n')
     h = h.replace('─','&#9472;')
@@ -327,6 +327,7 @@ if __name__ == '__main__':
     h = h.replace('┐','&#9488;')
     h = h.replace('[0m','')
     h = """<p style="font-family: 'Courier New'">\n""" + h
+    h = h + "ʹ ͵ ͺ ; ΄ ΅ Ά · Έ Ή Ί Ό Ύ Ώ ΐ Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω Ϊ Ϋ ά έ ή ί ΰ α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ ς σ τ υ φ χ ψ ω ϊ ϋ ό ύ ώ ϐ ϑ ϒ ϓ ϔ ϕ ϖ Ϛ Ϝ Ϟ Ϡ Ϣ ϣ Ϥ ϥ Ϧ ϧ Ϩ ϩ Ϫ ϫ Ϭ ϭ Ϯ ϯ ϰ ϱ ϲ ϳ".encode('ascii', 'xmlcharrefreplace').decode('utf8')
     text_to_file(opjD('n.html'),h)
 
 """
@@ -350,7 +351,12 @@ https://www.textfixer.com/html/convert-text-html.php
         vert =  '|ssss'
         blank = 'sssss'
         bend =  ';&#9472;&#9472;&#9472;&#9472;&#9488;'
+
+--put in dict, get of keylist, use keylist to get subdict
+--get webserver working
+
 """
+
 
 #EOF
 
