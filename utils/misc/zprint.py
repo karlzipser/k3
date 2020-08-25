@@ -4,6 +4,39 @@ from k3.utils.misc.printing import *
 # https://www.ltg.ed.ac.uk/~richard/unicode-sample.html
 
 
+top = opjD('Photos/all')
+def get_dictionary_of_Photos():
+    D = {}
+    years = []
+    a = sggo(top,'*')
+    for b in a:
+        years.append(b.split('/')[-1])
+    for y in years:
+        D[y] = {}
+    for y in years:
+        months = []
+        c = sggo(top,y,'*')
+        for d in c:
+            months.append(d.split('/')[-1])
+        for m in months:
+            D[y][m] = {}
+            days = []
+            e = sggo(top,y,m,'*')
+            for f in e:
+                days.append(f.split('/')[-1])
+            for g in days:
+                h = sggo(top,y,m,g,'.meta/*')
+                D[y][m][g] = {}
+                D[y][m][g]['<unsorted>'] = []
+                for j in h:
+                    if os.path.isfile(j):
+                        D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
+                    else:
+                        D[y][m][g][fname(j)] = []
+                        k = sggo(j,'*.jpeg')
+                        for u in k:
+                            D[y][m][g][fname(j)].append(u.split('/')[-1])
+    return D
 
 
 
@@ -130,7 +163,7 @@ def preprocess(Q):
 
 def post_process(Din, html=False):
 
-    D = Din.copy()
+    D = copy.deepcopy(Din)
 
     if html:
         space_char = '&nbsp'
@@ -145,7 +178,7 @@ def post_process(Din, html=False):
     else:
         vert =  '|ssss'
         blank = 'sssss'
-        bend =  '&#9472;&#9472;&#9472;&#9472;&#9488;'
+        bend =  ';&#9472;&#9472;&#9472;&#9472;&#9488;'
 
     blank = blank.replace('s',space_char)
     vert = vert.replace('s',space_char)
@@ -183,18 +216,21 @@ def post_process(Din, html=False):
                 b = bend[l-1:]
             else:
                 b = ''
-            b += cf('',θ)#,'`--d')
+            #b += cf('',0)#,'`--d')
             D[θ].append(b) #
 
+    print_lines = []
     for θ in range(0,max(kys(D))+1):
         w = []
         for y in D[θ]:
             if type(y) is tuple:
                 y = '.'# '•'
             w.append(str(y))
-        print(''.join(w)+line_end)
+        print_lines.append(''.join(w)+line_end)
 
-    return D
+    print_str = '\n'.join(print_lines)
+
+    return D, print_str
 
 
 def zprint(
@@ -210,10 +246,10 @@ def zprint(
     html=False,
 ):
 
-    V = preprocess( Dictionary )
+    V = preprocess( copy.deepcopy(Dictionary) )
 
     _,D = get_j_and_W(
-        V,
+        copy.deepcopy(V),
         t=t,
         j=j,
         ignore_keys=ignore_keys,
@@ -222,7 +258,9 @@ def zprint(
         max_items=max_items,
     )
 
-    E = post_process( D, html=html )
+    E,s = post_process( copy.deepcopy(D), html=html )
+
+    print(s)
 
     if p:
         time.sleep(p)
@@ -230,7 +268,7 @@ def zprint(
     if r:
         raw_enter()
 
-    return V,D,E
+    return V,D,E,s
 
 
 if __name__ == '__main__':
@@ -278,9 +316,17 @@ if __name__ == '__main__':
     }
 
     Egs = [R, J]
+    #kprint(R)
+    V,D,E,s = zprint(R,html=A['html'])
 
-    V,D,E = zprint(Egs[A['eg']],html=A['html'])
-
+    
+    h = s.replace(' ','&nbsp')
+    h = h.replace('\n',' <br>\n')
+    h = h.replace('─','&#9472;')
+    h = h.replace('┐','&#9488;')
+    h = h.replace('[0m','')
+    h = """<p style="font-family: 'Courier New'">\n""" + h
+    text_to_file(opjD('n.html'),h)
 
 """
 https://www.textfixer.com/html/convert-text-html.php
@@ -288,6 +334,21 @@ https://www.textfixer.com/html/convert-text-html.php
 ────┐
 &#9472;&#9472;&#9472;&#9472;&#9488;
 
+
+    if html:
+        space_char = '&nbsp'
+        line_end = ' <br>'
+    else:
+        space_char = ' '
+        line_end = ''
+    if not html:
+        vert =  '|ssss'
+        blank = 'sssss'
+        bend =  '────┐'
+    else:
+        vert =  '|ssss'
+        blank = 'sssss'
+        bend =  ';&#9472;&#9472;&#9472;&#9472;&#9488;'
 """
 
 #EOF
