@@ -4,20 +4,36 @@ from k3.utils.core import *
 
 REQUIRED = '__REQUIRED__'
 
-def use_keychain(kc,D):
+def use_keychain(kc,D,num_tuple_to_num=True):
+    if num_tuple_to_num:
+        kc = _untuple_keychain(kc)   
     for k in kc:
         D = D[k]
     return D
 
-def set_with_keychain(kc,D,v):
-    for i in range(len(kc)-1):#k in kc:
-        k = kc[i]
+
+def set_with_keychain(kc,D,v,num_tuple_to_num=True):
+    if num_tuple_to_num:
+        kc = _untuple_keychain(kc)
+    for i in range(len(kc)-1):
+        if type(k) is tuple and len(k) == 1:
+            k = k[0]
         D = D[k]
     D[kc[-1]] = v
 
-def set_Defaults(Defaults,Dst):#,required=[]):
-    #print_dic_simple(Defaults,'Defaults')
-    #print_dic_simple(Dst),'Dst'
+def _untuple_keychain(kc):
+    kc_ = []
+    for k in kc:
+        if type(k) is tuple and len(k) == 1:
+            k = k[0]
+        kc_.append(k)
+    return kc_ 
+
+def kys(D):
+    return list(D.keys())
+
+
+def set_Defaults(Defaults,Dst):
     for k in Dst.keys():
         if k not in Defaults.keys():
             cr("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()),ra=1)
