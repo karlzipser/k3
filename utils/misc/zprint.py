@@ -267,6 +267,8 @@ if __name__ == '__main__':
         },
     )
 
+
+
     Example = {
         'A':{
             'B':{'G':{'a':'Big is beautiful!'},'H':'holy cow!',},    
@@ -278,12 +280,34 @@ if __name__ == '__main__':
         },
     }
 
-    #kprint(Example)
+
+
+    Example = {
+        'range':{
+            'min':{
+                'current':0,
+                'min':0,
+                'max':10,
+            },
+            'max':{
+                'current':10,
+                'min':0,
+                'max':10,
+            },
+        },
+        'toggle':False,
+        'word': {
+            'current':'cat',
+            'options':['cat','dog','mouse','horse'],
+        }   
+    }
+
+
 
     if A['path'] is not None:
         Example = lo(A['path'])
 
-    #kprint(Example)
+
 
     D, print_lines = zprint(
         Example,
