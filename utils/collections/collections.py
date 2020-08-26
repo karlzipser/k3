@@ -48,7 +48,7 @@ def _untuple_keychain(kc):
     return kc_ 
 
 def kys(D):
-    return list(D.keys())
+    return list(sorted(D.keys()))
 
 
 def set_Defaults(Defaults,Dst):

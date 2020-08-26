@@ -10,12 +10,13 @@ def zprint(
     p=0,
     use_color=1,
     use_line_numbers=1,
+    do_print=1,
     ignore_keys=[],
     only_keys=[],
     ignore_types=[],
     max_items=999999,
     max_depth=999999,
-    do_return = False
+    do_return = False,
 ):
 
     if True:#type(Dictionary) is not dict:
@@ -47,7 +48,8 @@ def zprint(
         except:
             pass
 
-    print('\n'.join(print_lines))
+    if do_print:
+        print('\n'.join(print_lines))
 
     if p:
         time.sleep(p)
@@ -263,7 +265,7 @@ if __name__ == '__main__':
             'use_color':1,
             'use_line_numbers':1,
             'path':None,
-            'html':True,
+            'html':False,
         },
     )
 
@@ -306,7 +308,6 @@ if __name__ == '__main__':
 
     if A['path'] is not None:
         Example = lo(A['path'])
-
 
 
     D, print_lines = zprint(

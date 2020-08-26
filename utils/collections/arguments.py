@@ -15,13 +15,30 @@ def get_Arguments(Defaults={}):
                 print_dic_simple(Defaults,'Defaults')
                 os.sys.exit()
 
-        if not is_even(len(args[0])):
-            print('def args_to_dictionary(*args): Warning, not is_even(len(args[0]))')
-            return
+        if False:
+            if not is_even(len(args[0])):
+                print('def args_to_dictionary(*args): Warning, not is_even(len(args[0]))')
+                return
+
+        args_0 = []
+        for i in range(len(args[0])):
+            if '--' not in args[0][i]:
+                if i == 0 or '--' not in args[0][i-1]:
+                    print("Error with",args[0])
+                    return
+            if '--' in args[0][i] and args[0][i][:2] == '--':
+                args_0.append(args[0][i])
+                if i+1 == len(args[0]) or '--' in args[0][i+1] and args[0][i+1][:2] == '--':
+                    args_0.append(1)
+            else:
+                args_0.append(args[0][i])
+
+
+
         ctr = 0
         keys = []
         values = []
-        for e in args[0]:
+        for e in args_0:
             if is_even(ctr):
                 keys.append(e)
             else:
