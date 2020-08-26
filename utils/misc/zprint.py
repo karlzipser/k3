@@ -229,7 +229,9 @@ if True:
                     D[i][-1] = D[i][-1].replace(leaf,'')
                     continue
                 l = len(str(D[i][-1]))
-                if l <= len(bend):
+                if type(D[i][-1]) is tuple and len(D[i][-1]) == 1:
+                    b = bend
+                elif l <= len(bend):
                     b = bend[l-1:]
                 else:
                     b = ''
