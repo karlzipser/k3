@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-#,a
+
 from k3.utils import *
 
-Arguments = get_Arguments()
+Arguments = get_Arguments({'x':0})
 
-save_dir = opjh('multiclip')
+save_dir = opjh('.'+fnamene(__file__))
 
 os.system('mkdir -p ' + save_dir)
 
 try:
-	save_file = opj(save_dir,'multiclip.pkl')
+	save_file = opj(save_dir,fnamene(__file__)+'.pkl')
 	mtime = os.path.getmtime(save_file)
 	timestamped_save_file = save_file.replace('.pkl','.'+str(int(mtime)))+'.pkl'
 	os.system(d2s('cp',save_file,timestamped_save_file))
@@ -20,8 +20,6 @@ try:
 		just_text.append(l[0])
 		just_text.append('___\n')
 	list_of_strings_to_txt_file(timestamped_save_file.replace('.pkl','.txt'),just_text)
-
-	
 except:
 	lst = []
 
@@ -38,26 +36,25 @@ E = {
 	'pause_thread':False,
 }
 
+#istr =  cf('--> ','`gb-')
+
 def clipthread():
 
-	print_lst()
+	#()
 
 	while True:
-		#print '.'
+
 		if E['Command'] == 'quit':
 			cg('quitting clipthread()')
 			return 0
-		if True:
-			#cm(E['pause_thread'])
-			if E['pause_thread']:
-				E['thread_sleeping'] = True
-				time.sleep(0.2)
-				E['thread_sleeping'] = False
-				return 0
+
+		if E['pause_thread']:
+			E['thread_sleeping'] = True
+			time.sleep(0.2)
+			E['thread_sleeping'] = False
+			return 0
 
 		c = getClipboardData()
-
-		
 
 		if use_prefix_and_suffix and prefix not in c and suffix not in c:
 			c = prefix + c + suffix
@@ -78,6 +75,7 @@ def clipthread():
 			E['lst'].append( [c,s] )
 
 			print_lst()
+			#print(istr)
 
 			so(E['lst'],save_file,noisy=E['noisy'])
 			E['noisy'] = False
@@ -101,64 +99,61 @@ def print_lst():
 threading.Thread(target=clipthread).start()
 
 while True:
-	if False:#not E['thread_sleeping']:
-		continue
-	if True:#try:
-		istr =  '--> '
 
+	
+
+	#if use_prefix_and_suffix:
+	#	istr = 'X' + istr
+
+	#if E['pause_thread']:
+	#	istr = 'P' + istr
+	
+	q = raw_input()#istr)
+
+	r = q.split(' ')
+	if str_is_int(r[0]):
+		setClipboardData(E['lst'][int(r[0])][0])
+		clp('set clipboard to:\n','`g',qtd(E['lst'][int(r[0])][0]),'`m')
+	elif r[0] == 'q':
+		E['Command'] = 'quit'
+		break
+	elif r[0] == 'r':
+		u = 0
+		if len(r) == 3:
+			u  = int(r[2]) + 1
+		elif len(r) == 2:
+			u = int(r[1])+1
+		if u:
+			for v in range(int(r[1]),u):
+				E['lst'].pop(int(r[1]))
+			so(E['lst'],save_file,noisy=E['noisy'])
+			print_lst()
+	elif r[0] == 'n':
+		if int(r[1]) < 0:
+			E['num_chars'] = 999999
+		else:
+			E['num_chars'] = int(r[1])
+		print_lst()
+	elif r[0] == 'l':
+		files = sggo(save_dir,'*.pkl')
+		for i in rlen(files):
+			if '.pkl' in files[i]:
+				clp(i,')',fname(files[i]))
+		j = input('==>> ')
+		assert(str_is_int(j))
+		j = int(j)
+		print(files[j])
+		E['lst'] = lo(files[j])
+		print_lst()
+	elif r[0] == 'x':
 		if use_prefix_and_suffix:
-			istr = 'X' + istr
+			use_prefix_and_suffix = False
+		else:
+			use_prefix_and_suffix = True
 
-		if E['pause_thread']:
-			istr = 'P' + istr
-		
-			
-		q = raw_input(istr)
-		r = q.split(' ')
-		if str_is_int(r[0]):
-			setClipboardData(E['lst'][int(r[0])][0])
-			clp('set clipboard to:\n','`',E['lst'][int(r[0])][0])
-		elif r[0] == 'q':
-			E['Command'] = 'quit'
-			break
-		elif r[0] == 'r':
-			u = 0
-			if len(r) == 3:
-				u  = int(r[2]) + 1
-			elif len(r) == 2:
-				u = int(r[1])+1
-			if u:
-				for v in range(int(r[1]),u):
-					E['lst'].pop(int(r[1]))
-				so(E['lst'],save_file,noisy=E['noisy'])
-				print_lst()
-		elif r[0] == 'n':
-			if int(r[1]) < 0:
-				E['num_chars'] = 999999
-			else:
-				E['num_chars'] = int(r[1])
-			print_lst()
-		elif r[0] == 'l':
-			files = sggo(save_dir,'*.pkl')
-			for i in rlen(files):
-				if '.pkl' in files[i]:
-					clp(i,')',fname(files[i]))
-			j = input('==>> ')
-			assert(str_is_int(j))
-			j = int(j)
-			print(files[j])
-			E['lst'] = lo(files[j])
-			print_lst()
-		elif r[0] == 'x':
-			if use_prefix_and_suffix:
-				use_prefix_and_suffix = False
-			else:
-				use_prefix_and_suffix = True
-
-		elif r[0] == 'p':
-			E['pause_thread'] = not E['pause_thread']
+	elif r[0] == 'p':
+		E['pause_thread'] = not E['pause_thread']
 
 
-#,b
 #EOF
 

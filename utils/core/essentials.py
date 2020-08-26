@@ -22,7 +22,7 @@ def as_pct(a,b):
 
 
 def qtd(a):
-    return '\"'+a+'\"'
+    return '\"'+str(a)+'\"'
     
 
 def raw_enter(optional_str=''):
