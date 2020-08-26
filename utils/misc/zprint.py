@@ -268,6 +268,7 @@ if __name__ == '__main__':
             'use_line_numbers':1,
             'path':None,
             'html':False,
+            'do_print':1,
         },
     )
 
@@ -317,6 +318,7 @@ if __name__ == '__main__':
         use_color=A['use_color'],
         use_line_numbers=A['use_line_numbers'],
         do_return=True,
+        do_print=A['do_print'],
     )
 
     if A['html']:

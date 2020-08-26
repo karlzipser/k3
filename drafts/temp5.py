@@ -48,7 +48,7 @@ D, print_lines = zprint(
     do_return=True,
     do_print=False,
 )
-pprint(D)
+#pprint(D)
 #zprint(da('MenuEg','range'))
 
 a = ['MenuEg','range']
@@ -66,7 +66,7 @@ woptions1 = a+['options',(1,)]
 woptions2 = a+['options',(2,)]
 woptions3 = a+['options',(3,)]
 
-print(da(*curmax),da(*curmin))
+#print(da(*curmax),da(*curmin))
 
 for i in kys(D):
 	if i+1 in D:
@@ -81,4 +81,7 @@ for i in kys(D):
 		print_lines[i+1] += cf(' (',ctr,')','`m',s0='')
 		ctr += 1
 print('\n'.join(print_lines))
+while True:
+    c = int(input('> '))
+    print(da(*V[c]))
 #EOF

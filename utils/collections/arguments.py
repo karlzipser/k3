@@ -22,10 +22,18 @@ def get_Arguments(Defaults={}):
 
         args_0 = []
         for i in range(len(args[0])):
+
             if '--' not in args[0][i]:
                 if i == 0 or '--' not in args[0][i-1]:
                     print("Error with",args[0])
                     return
+
+            """
+            if '--' in args[0][i] and args[0][i][-2:] == '--':
+                args_0.append(args[0][i])
+                args_0.append(0)
+            """
+
             if '--' in args[0][i] and args[0][i][:2] == '--':
                 args_0.append(args[0][i])
                 if i+1 == len(args[0]) or '--' in args[0][i+1] and args[0][i+1][:2] == '--':
