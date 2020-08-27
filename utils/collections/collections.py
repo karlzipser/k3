@@ -4,7 +4,7 @@ from k3.utils.core import *
 
 REQUIRED = '__REQUIRED__'
 #,a
-
+"""
 ENV = namedtuple('_', 'D')({})
 ENV.D['a']={}
 ENV.D['a']['b']=22
@@ -21,6 +21,28 @@ def da(
     else:
         set_with_keychain(kc,D,e,num_tuple_to_num)
 #,b
+"""
+
+
+
+
+ENV = namedtuple('_', 'D')({})
+def da(
+        *kc,
+        D=ENV.D,
+        e=None,
+        num_tuple_to_num=True,
+    ):
+    if e is None:
+        return use_keychain(kc,D,num_tuple_to_num)
+    else:
+        set_with_keychain(kc,D,e,num_tuple_to_num)
+
+
+
+
+
+
 def use_keychain(kc,D,num_tuple_to_num=True):
     if num_tuple_to_num:
         kc = _untuple_keychain(kc)   
@@ -85,6 +107,10 @@ def a_key(dic):
 
 def an_element(dic):
     return dic[a_key(dic)]
+
+
+
+
 
 
 

@@ -81,7 +81,7 @@ def clipthread():
 			E['noisy'] = False
 
 		
-def print_lst():
+def _print_lst():
 	clear_screen()
 	for i in rlen(E['lst']):
 		m = min(len(E['lst'][i][0]),E['num_chars'])
@@ -94,6 +94,24 @@ def print_lst():
 		clp(str(i)+')','`--b',E['lst'][i][1],'`--d','\n'+'\n'.join(c), '`-wb') #'`wbb')
 		if m < len(E['lst'][i][0]):
 			clp('...','`bwb')
+
+def print_lst():
+	rows,cols = get_terminal_size()
+	clear_screen()
+	for i in rlen(E['lst']):
+		m = min(len(E['lst'][i][0]), cols-10) #E['num_chars'])
+		a = E['lst'][i][0][:m]
+		b = a.split('\n')
+		c = []
+		for d in b:
+			if len(d) > 0:
+				c.append(d)
+		if m < len(E['lst'][i][0]):
+			dots = '...'
+		else:
+			dots = ''
+		clp(str(i)+')','`---','\n'.join(c)+dots, '`---') #'`wbb')
+		
 
 
 threading.Thread(target=clipthread).start()
