@@ -123,6 +123,14 @@ def print_menu(top,ignore_underscore=True,ignore_keys=['options'],max_depth=9999
     return V
 
 
+def test_for_valid_path(p):
+    try:
+        _ = da(*(p.split('/')))
+        return True
+    except:
+        return False
+
+
 max_depth = 999999
 
 if __name__ == '__main__':
@@ -203,10 +211,20 @@ if __name__ == '__main__':
                 while done == False:
                     p = input('enter new path > ')
                     if p[-1] == '/':
-                        print(kys(da(*(p[:-1].split('/')))))
+                        if test_for_valid_path(p):
+                            print(kys(da(*(p[:-1].split('/')))))
+                            message = d2s(p,'is valid')
+                        else:
+                            message = d2s(p,'is not a good path')
                     else:
                         done = True
-                top = p.split('/')
+                t = p.split('/')
+                if test_for_valid_path(p):
+                    q = da(*t)
+                    top = t
+                    message = d2s(p,'is valid')
+                else:
+                    message = d2s(p,'is not a good path')
 
             elif c == 't':
                 i = list_select_(targets)
