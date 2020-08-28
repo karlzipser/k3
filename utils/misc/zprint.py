@@ -14,6 +14,7 @@ def zprint(
     ignore_keys=[],
     only_keys=[],
     ignore_types=[],
+    ignore_underscore=True,
     max_items=999999,
     max_depth=999999,
     do_return = False,
@@ -34,6 +35,7 @@ def zprint(
         ignore_keys=ignore_keys,
         only_keys=only_keys,
         ignore_types=ignore_types,
+        ignore_underscore=ignore_underscore,
         max_items=max_items,
         max_depth=max_depth,
     )
@@ -79,6 +81,7 @@ if True:
         ignore_keys=[],
         only_keys=[],
         ignore_types=[],
+        ignore_underscore=True,
         max_items=999999,
         _top=True,
         _spaces='',
@@ -126,6 +129,8 @@ if True:
                 for k in sorted(item.keys()):
                     if k in ignore_keys:
                         continue
+                    if ignore_underscore and k[0] == '_':
+                        continue
                     if len(only_keys) > 0:
                         if k not in only_keys:
                             continue
@@ -144,6 +149,7 @@ if True:
                         ignore_keys=ignore_keys,
                         only_keys=only_keys,
                         ignore_types=ignore_types,
+                        ignore_underscore=ignore_underscore,
                         j=j,
                         _W=_W,
                         _keylist=_keylist_,
