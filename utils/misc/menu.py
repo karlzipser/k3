@@ -152,7 +152,7 @@ if __name__ == '__main__':
             c = input('> ')
             if c == 'q':
                 break
-            if str_is_int(c):
+            elif str_is_int(c):
                 i = int(c)
                 if i in V:
                     kc = V[i]
@@ -172,6 +172,8 @@ if __name__ == '__main__':
                                         
                 else:
                     message = d2s(i,'is not a valid index')
+            else:
+                message = ''
         """
         except KeyboardInterrupt:
             cE('*** KeyboardInterrupt ***')
