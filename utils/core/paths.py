@@ -30,6 +30,7 @@ def opjm(*args):
 
 def fname(path):
     return path.split('/')[-1]
+fn = fname
 
 def fnamene(path):
     """
@@ -47,12 +48,9 @@ def exname(path):
         return ''
 
 def pname(path):
-    p = path.split('/')[:-1]
-    pstr = ""
-    for s in p:
-        if len(s)>0:
-            pstr += '/' + s
-    return pstr
+    return '/'.join(  path.split('/')[:-1]  )
+pn = pname
+
 
 if __name__ == '__main__':
     eg(__file__)

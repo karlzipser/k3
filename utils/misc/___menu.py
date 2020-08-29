@@ -1,12 +1,11 @@
 
 from k3.utils.misc.zprint import *
 from k3.utils.misc.sys import *
-from k3.utils.vis import *
-#from k3.utils.vis.cv2_ import *
-#from k3.utils.vis.files import *
-#import cv2
-#imread = cv2.imread
-#imsave = cv2.imwrite
+from k3.utils.vis.cv2_ import *
+from k3.utils.vis.files import *
+import cv2
+imread = cv2.imread
+imsave = cv2.imwrite
 
 
 
@@ -36,7 +35,6 @@ def open_imgs_with_Preview(l):
 
 def quit_Preview():
     os_system(""" osascript -e 'quit app "Preview"' """)
-    os_system(""" osascript -e 'tell application "Finder" to close every window' """)
     return
 
 def open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
@@ -234,17 +232,22 @@ def toggle(path,ig0,ig1):
 
 def placeholder(path,ig0,ig1):
     p = path.replace('menu','Desktop/Photos/all')
+    #cy(p)
     f = di(path)[0]
     g = '/'.join(p.split('/')[:-1])
     h = g+'/'+f
     k = pn(h)
+    #if k[0] == '/':
+    #    k = k[1:]
+    #cm(k)
     imgs = sggo(k,'*.jpeg')
+    #cb(imgs,r=1)
     open_imgs_with_Preview(imgs)
     i0 = zimread(h)
+    #mci(i0,title=h,scale=0.2)
     meta = opj(pn(h),'.meta')
+    cr(meta)
     os_system('open',meta)
-    raw_enter()
-    quit_Preview()
 
 
 
@@ -268,6 +271,7 @@ def print_menu(
     ignore_keys=['options'],
     max_depth=999999,action_paths=[],
 ):
+    #cy(divide_path(top,-1)[0])
     top = top.split('/')
     D, print_lines = zprint(
         da(*top),
@@ -350,14 +354,6 @@ if __name__ == '__main__':
         woptions =  'menu/word/_options'
         place =     'menu/range/_min'
         place2 =    'menu/word/_options'
-
-    """
-        'max/current':{
-            'path':'menu/range',
-            'function':set_number,
-            'args':['_min','_max'],
-        },
-    """
 
     Actions = {
         curmax:{
