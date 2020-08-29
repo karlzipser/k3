@@ -36,6 +36,9 @@ def open_imgs_with_Preview(l):
 
 def quit_Preview():
     os_system(""" osascript -e 'quit app "Preview"' """)
+    return
+
+def close_Finder_windows():
     os_system(""" osascript -e 'tell application "Finder" to close every window' """)
     return
 
@@ -245,6 +248,7 @@ def placeholder(path,ig0,ig1):
     os_system('open',meta)
     raw_enter()
     quit_Preview()
+    close_Finder_windows()
 
 
 
