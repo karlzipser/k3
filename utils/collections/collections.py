@@ -27,6 +27,14 @@ def da(
 
 
 ENV = namedtuple('_', 'D')({})
+
+
+def di(path,e=None):
+    assert type(path) == str
+    kc = path.split('/')
+    return da(*kc,e=e)
+    
+
 def da(
         *kc,
         D=ENV.D,

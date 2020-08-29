@@ -1,18 +1,171 @@
 
 from k3.utils.misc.zprint import *
+from k3.utils.misc.sys import *
+from k3.utils.vis.cv2_ import *
+from k3.utils.vis.files import *
+import cv2
+imread = cv2.imread
+imsave = cv2.imwrite
 
-offset = '\n───> '
+
+def find_folder_with_list_of_images(D):
+    image_folders = []
+    for i in D:
+        try:
+            q = da(*D[i])
+            if type(q) == list:
+                for f in q:
+                    if '.jpeg' in f:
+                        image_folders.append(D[i])
+                        break
+        except:
+            pass
+    return image_folders
+
+
+top = opjD('Photos/all')
+
+
+
+
+def open_imgs_with_Preview(l):
+    if type(l) is str:
+        l = [l]
+    for f in l:
+        os_system('open',qtd(f))
+
+
+
+
+def quit_Preview():
+    os_system(""" osascript -e 'quit app "Preview"' """)
+    return
+
+
+
+def open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
+    keylist = Args['keylist']
+    top = Args['top']
+    True
+    h = []
+    kprint(f,'open_imgs_with_Preview_action')
+    for g in f:
+        g = opj(pname(g),fname(g).split('|')[-1])
+        h.append(opj(top,'/'.join(keylist),g))
+    quit_Preview()
+    open_imgs_with_Preview(h)
+
+
+def rating_from_filename(f):
+    
+    if 'ratings=' not in f:
+        return None
+
+    f = f.split('|')[0]
+    f = f.split('ratings=')[-1]
+    l = f.split(',')
+    c = 0
+    
+    for a in l:
+        c += int(a)
+
+    c /= len(l)
+
+    return c
+
+
+def get_dictionary_of_Photos():
+    D = {}
+    years = []
+    a = sggo(top,'*')
+    for b in a:
+        years.append(b.split('/')[-1])
+    for y in years:
+        D[y] = {}
+    for y in years:
+        months = []
+        c = sggo(top,y,'*')
+        for d in c:
+            months.append(d.split('/')[-1])
+        for m in months:
+            D[y][m] = {}
+            days = []
+            e = sggo(top,y,m,'*')
+            for f in e:
+                days.append(f.split('/')[-1])
+            for g in days:
+                h = sggo(top,y,m,g,'.meta/*')
+                D[y][m][g] = {}
+                D[y][m][g]['<unsorted>'] = []
+                for j in h:
+                    if os.path.isfile(j):
+                        D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
+                    else:
+                        D[y][m][g][fname(j)] = []
+                        k = sggo(j,'*.jpeg')
+                        for u in k:
+                            D[y][m][g][fname(j)].append(u.split('/')[-1])
+    return D
+
+
+
+
+
+
+
+
 offset = '\n     '
 
-def set_str(dst_kc):
+
+
+def input_int(s='> '):
+    c = input(s)
+    if str_is_int(c):
+        return int(c)
+    else:
+        return None
+
+
+
+def input_int_in_range(a,b,s):
+    c = input_int(s)
+    if c is None or c < a or c > b:
+        return None
+    else:
+        return c
+
+
+
+def list_select_(lst):
+    for i in rlen(lst):
+        clp('    ',i,') ',lst[i],s0='')
+    i = input_int_in_range(0,len(lst)-1,offset+'>> ')
+    return i
+
+
+
+
+
+
+
+
+
+
+def set_str(path):
+    #print('set_str',path)
+    dst_kc = path.split('/')
     kp = cf(*dst_kc,s0='/')
     v = input(d2s(offset+'Enter str for',kp))
     da(*dst_kc,e=v)  
     return d2s(offset,kp,'set to',da(*dst_kc))
 
 
-def set_number(dst_kc,min_kc,max_kc):
 
+def set_number(dst_path,min_path,max_path):
+    #print('set_number',dst_path,min_path,max_path)
+    dst_kc = dst_path.split('/')
+    min_kc = min_path.split('/')
+    max_kc = max_path.split('/')
     mn = da(*min_kc)
     assert(is_number(mn))
     mx = da(*max_kc)
@@ -52,51 +205,73 @@ def set_number(dst_kc,min_kc,max_kc):
     return d2s(offset+kp,'set to',da(*dst_kc))
 
 
-def input_int(s='> '):
-    c = input(s)
-    if str_is_int(c):
-        return int(c),c
-    else:
-        return None,c
 
+def list_select(dst_path,options_path,ig0):
+    #print('list_select',dst_path,options_path)
+    dst_kc = dst_path.split('/')
+    options_kc = options_path.split('/')
 
-def input_int_in_range(a,b,s):
-    c,d = input_int(s)
-    if c is None:
-        return c,d
-    if c < a or c > b:
-        return None,d
-    return c,d
-
-
-def list_select_(lst):
-    for i in rlen(lst):
-        clp('    ',i,') ',lst[i],s0='')
-    i,_ = input_int_in_range(0,len(lst)-1,offset+'>> ')
-    return i
-
-
-def list_select(dst_kc,options_kc):
     for i in rlen(da(*options_kc)):
         clp('    ',i,') ',da(*options_kc)[i],s0='')
 
-    i,_ = input_int_in_range(0,len(da(*options_kc))-1,offset+'>> ')
+    i = input_int_in_range(0,len(da(*options_kc))-1,offset+'>> ')
     if i is None:
         return offset+'failed'
 
     da(*dst_kc,e=(da(*options_kc)[i]))
     return offset+'okay'
 
-def toggle(kc):
+
+
+def toggle(path,ig0,ig1):
+    kc = path.split('/')
     da(*kc,e=not da(*kc))
     message = d2s(offset+'toggled','/'.join(kc),'to',da(*kc))
     return message
 
 
-def print_menu(top,ignore_underscore=True,ignore_keys=['options'],max_depth=999999):
 
+def placeholder(path,ig0,ig1):
+    #zprint(di(path),t=path,use_line_numbers=False,)
+    #print(di(path))
+    cg(path)
+    p = path.replace('menu','Desktop/Photos/all')
+    cy(p)
+    f = di(path)[0]
+    cb(f)
+    g = '/'.join(p.split('/')[:-1])
+    cm(g)
+    h = g+'/'+f
+    cr(h)
+    #open_imgs_with_Preview([h])
+    i0 = zimread(h)
+    mci(i0,title=h,scale=0.2)
+    os_system('open',pname(h)[1:])
+    #spause()
+
+def divide_path(path,i):
+    if path[-1] == '/':
+        path = path[:-1]
+    if path[0] == '/':
+        path = path[1:]    
+    kc = path.split('/')
+    assert (i > 0 and i < len(kc)) or (i < 0 and i > -len(kc))
+    path0 = '/'.join(kc[:i])
+    path1 = '/'.join(kc[i:])
+    return path0, path1
+
+
+
+def print_menu(
+    top,
+    ignore_underscore=True,
+    ignore_keys=['options'],
+    max_depth=999999,action_paths=[],
+):
+    #cy(divide_path(top,-1)[0])
+    top = top.split('/')
     D, print_lines = zprint(
-        da(*top),#ENV.D['menu'],
+        da(*top),
         t=top[-1],
         use_color=True,
         use_line_numbers=False,
@@ -113,14 +288,19 @@ def print_menu(top,ignore_underscore=True,ignore_keys=['options'],max_depth=9999
     V = {}
     ctr = 1
     for i in kys(D):
-        #clp([D[i]],'in',[curmax,curmin,tog,curword,])
-        if top[:-1]+D[i] in [curmax,curmin,tog,curword,]:
-            V[ctr] = top[:-1]+D[i]
+        d = []
+        for a in top[:-1]+D[i]:
+            d.append(str(a))
+        p = '/'.join(d)
+        if p in action_paths:
+            V[ctr] = p
             print_lines[i+1] += cf(' (',ctr,')','`m',s0='')
             ctr += 1
-    clear_screen()
+    #clear_screen()
+    clp()
     print('\n'.join(print_lines))
-    return V
+    return V,D
+
 
 
 def test_for_valid_path(p):
@@ -133,6 +313,10 @@ def test_for_valid_path(p):
 
 max_depth = 999999
 
+
+
+
+
 if __name__ == '__main__':
         
     if 'setup menu':
@@ -141,13 +325,9 @@ if __name__ == '__main__':
             'range':{
                 'min':{
                     'current':0,
-                    #'_min':0,
-                    #'_max':10,
                 },
                 'max':{
                     'current':10,
-                    #'_min':0,
-                    #'_max':10,
                 },
                 '_min':0,
                 '_max':10,
@@ -158,51 +338,88 @@ if __name__ == '__main__':
                 '_options':_words,
             }   
         }
-        ENV.D['menu'] = _menu
+        ENV.D['menu'] = get_dictionary_of_Photos()#_menu
 
 
     if 'setup keychains':
-        a = ['menu','range']
-        curmax = a+['max','current']
-        #maxmax = a+['max','_max']
-        #maxmin = a+['max','_min']
-        maxmax = a+['_max']
-        maxmin = a+['_min']
-        curmin = a+['min','current']
-        minmax = maxmax#a+['min','_max']
-        minmin = maxmin#a+['min','_min']
-        tog = ['menu','toggle']
-        a = ['menu','word']
-        curword = a+['current']
-        woptions = a+['_options']
+        curmax =    'menu/range/max/current'
+        maxmax =    'menu/range/_max'
+        maxmin =    'menu/range/_min'
+        curmin =    'menu/range/min/current'
+        tog =       'menu/toggle'
+        curword =   'menu/word/current'
+        woptions =  'menu/word/_options'
+        place =     'menu/range/_min'
+        place2 =    'menu/word/_options'
 
-
+    Actions = {
+        curmax:{
+            'function':set_number,
+            'args':[curmax,maxmin,maxmax],
+        },
+        curmin:{
+            'function':set_number,
+            'args':[curmin,maxmin,maxmax],
+        },
+        tog:{
+            'function':toggle,
+            'args':[tog,None,None],
+        },
+        curword:{
+            'function':list_select,
+            'args':[curword,woptions,None],
+        },
+        place:{
+            'function':placeholder,
+            'args':[place,None,None],
+        },
+        place2:{
+            'function':placeholder,
+            'args':[place2,None,None],
+        },    }
 
 
 
     message = ''
-    top = ['menu']
+    top = 'menu'
 
     targets = ['menu','menu/range','menu/word']
 
+    V,D = print_menu(
+        top,
+        ignore_underscore=False,
+        ignore_keys=[],
+        max_depth=max_depth,
+        action_paths=kys(Actions),
+    )
+    image_folder_paths = find_folder_with_list_of_images(D)
+    for f in image_folder_paths:
+        f = '/'.join(f)
+        Actions[f] = {'function':placeholder,'args':[f,None,None]}
+
+
     while True:
 
-        V = print_menu(
+        V,D = print_menu(
             top,
-            ignore_underscore=da(*tog),
-            ignore_keys=[da(*curword)],
+            ignore_underscore=False,
+            ignore_keys=[],
             max_depth=max_depth,
+            action_paths=kys(Actions),
         )
+
+
 
         print(message)
 
         if True:#try:
             c = input('> ')
+
             if c == 'q':
                 break
 
             elif c == 'm':
-                m,_ = input_int('enter max_depth > ')
+                m = input_int('enter max_depth > ')
                 if type(m) is int and m > 0:
                     max_depth = m
 
@@ -228,45 +445,38 @@ if __name__ == '__main__':
 
             elif c == 't':
                 i = list_select_(targets)
-                top = targets[i].split('/')
+                top = targets[i]
 
             elif c == 'u':
-                if len(top) > 1:
-                    top.pop()
+                if len(top.split('/')) > 1:
+                    top = '/'.join(top.split('/')[:-1])
                     message = "went up"
                 else:
                     message = "already at the top"
 
             elif c == 'd':
-                if type(da(*top)) is not dict:
+                toplist = top.split('/')
+                if type(da(*toplist)) is not dict:
                     message = "can't go down"
                 else:
-                    i = list_select_(kys(da(*top)))
+                    i = list_select_(kys(da(*toplist)))
                     if i is None:
                         message = 'invalid selection'
                     else:
-                        top.append(kys(da(*top))[i])
-                        message = 'went down to '+top[-1]
+                        toplist.append(kys(da(*toplist))[i])
+                        message = 'went down to '+toplist[-1]
+                top = '/'.join(toplist)
 
             elif str_is_int(c):
                 i = int(c)
                 if i in V:
                     kc = V[i]
-                    kp = cf(*kc,s0='/')
 
-                    if kc == curmax:
-                        message = set_number(curmax,maxmin,maxmax)
+                    X = Actions[kc]
 
-                    elif kc == curmin:
-                        message = set_number(curmin,minmin,minmax)    
-     
-                    elif kc == tog:
-                        message = toggle(kc)
-                        #da(*kc,e=not da(*kc))
-                        #message = d2s(offset+'toggled','/'.join(kc),'to',da(*kc))
+                    X['function'](X['args'][0],X['args'][1],X['args'][2],)
 
-                    elif kc == curword:
-                        message = list_select(curword,woptions)
+
                                         
                 else:
                     message = d2s(i,'is not a valid index')
@@ -281,7 +491,6 @@ if __name__ == '__main__':
             file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             message = cf('Exception:',exc_type,file_name,exc_tb.tb_lineno,'`rwb')        
         """
-
 
 
 
