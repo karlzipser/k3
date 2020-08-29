@@ -8,6 +8,7 @@ imread = cv2.imread
 imsave = cv2.imwrite
 
 
+
 def find_folder_with_list_of_images(D):
     image_folders = []
     for i in D:
@@ -26,22 +27,15 @@ def find_folder_with_list_of_images(D):
 top = opjD('Photos/all')
 
 
-
-
 def open_imgs_with_Preview(l):
     if type(l) is str:
         l = [l]
     for f in l:
         os_system('open',qtd(f))
 
-
-
-
 def quit_Preview():
     os_system(""" osascript -e 'quit app "Preview"' """)
     return
-
-
 
 def open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
     keylist = Args['keylist']
@@ -54,7 +48,6 @@ def open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
         h.append(opj(top,'/'.join(keylist),g))
     quit_Preview()
     open_imgs_with_Preview(h)
-
 
 def rating_from_filename(f):
     
@@ -72,6 +65,10 @@ def rating_from_filename(f):
     c /= len(l)
 
     return c
+
+
+
+
 
 
 def get_dictionary_of_Photos():
@@ -96,9 +93,11 @@ def get_dictionary_of_Photos():
             for g in days:
                 h = sggo(top,y,m,g,'.meta/*')
                 D[y][m][g] = {}
-                D[y][m][g]['<unsorted>'] = []
+                
                 for j in h:
                     if os.path.isfile(j):
+                        if '<unsorted>' not in D[y][m][g]:
+                            D[y][m][g]['<unsorted>'] = []
                         D[y][m][g]['<unsorted>'].append(j.split('/')[-1])
                     else:
                         D[y][m][g][fname(j)] = []
@@ -232,22 +231,24 @@ def toggle(path,ig0,ig1):
 
 
 def placeholder(path,ig0,ig1):
-    #zprint(di(path),t=path,use_line_numbers=False,)
-    #print(di(path))
-    cg(path)
     p = path.replace('menu','Desktop/Photos/all')
-    cy(p)
+    #cy(p)
     f = di(path)[0]
-    cb(f)
     g = '/'.join(p.split('/')[:-1])
-    cm(g)
     h = g+'/'+f
-    cr(h)
-    #open_imgs_with_Preview([h])
+    k = pname(h)
+    if k[0] == '/':
+        k = k[1:]
+    #cm(k)
+    imgs = sggo(k,'*.jpeg')
+    #cb(imgs,r=1)
+    open_imgs_with_Preview(imgs)
     i0 = zimread(h)
-    mci(i0,title=h,scale=0.2)
-    os_system('open',pname(h)[1:])
-    #spause()
+    #mci(i0,title=h,scale=0.2)
+    os_system('open',opj(pname(h),'.meta')[1:])
+
+
+
 
 def divide_path(path,i):
     if path[-1] == '/':
