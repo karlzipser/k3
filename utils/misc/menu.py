@@ -2,11 +2,7 @@
 from k3.utils.misc.zprint import *
 from k3.utils.misc.sys import *
 from k3.utils.vis import *
-#from k3.utils.vis.cv2_ import *
-#from k3.utils.vis.files import *
-#import cv2
-#imread = cv2.imread
-#imsave = cv2.imwrite
+
 
 
 
@@ -70,10 +66,6 @@ def rating_from_filename(f):
     c /= len(l)
 
     return c
-
-
-
-
 
 
 def get_dictionary_of_Photos():
@@ -150,8 +142,10 @@ def list_select_(lst):
 
 
 
-
-
+def _set_str(path,s='Enter str for'):
+    v = input(d2s(s,path))
+    di(path,e=v)  
+    return d2s(path,'set to',di(path))
 
 
 
