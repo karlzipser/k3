@@ -9,7 +9,7 @@ def zprint(
     r=0,
     p=0,
     use_color=1,
-    use_line_numbers=1,
+    use_line_numbers=0,
     do_print=1,
     ignore_keys=[],
     only_keys=[],
