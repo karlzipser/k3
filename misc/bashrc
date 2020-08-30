@@ -6,7 +6,7 @@ alias ls='ls -alh'
 alias gacp="git add .;git commit -m 'gacp';git push origin master"
 
 alias k3gacp="cd ~/k3;gacp;cd"
-alias k3pull="cd~/k3;git pull;cd"
+alias k3pull="cd ~/k3;git pull;cd"
 
 git config --global credential.helper "cache --timeout=86400"
 
