@@ -1,5 +1,5 @@
 
-
+from k3 import *
 
 #,a
 
@@ -8,17 +8,15 @@
 
 Environment = {
     'dictionary': {
-        '~':{'a':1}
+        '~':{}
     },
     'current_prefix_path': '~/',
-    'named_paths': {
-        'renamed_a':{
-            'path':'~/a/',
-        }
+    'named_paths': {}
     },
-    '-p':True,
+    '':True,
     '-v':True,
 }
+
 
 def set_prefix(path):
     Environment['current_prefix_path'] = path
@@ -39,8 +37,24 @@ def has_form_of_named_path(s):
                 return True
     return False    
 
+
+def str_to_tuple_as_necessary(s):
+    if type(s) == str:
+        if len(s) > 1:
+            if s[-1] == ',':
+                if str_is_int(s[:-1]):
+                    return (int(s[:-1]),)
+    return s
+
+
 def is_valid_path(path):
-    pass
+    try:
+        o(path):
+        return True
+    except:
+        return False
+
+
 
 def get_valid_path(a):
     if has_form_of_path(a):
@@ -51,13 +65,9 @@ def get_valid_path(a):
     else:
         assert False
 
-def str_to_tuple_as_necessary(s):
-    if type(s) == str:
-        if len(s) > 1:
-            if s[-1] == ',':
-                if str_is_int(s[:-1]):
-                    return int(s[:-1])
-    return s
+
+
+
 
 def o(path_or_name,e=None,w=None,s=None):
 
@@ -66,6 +76,8 @@ def o(path_or_name,e=None,w=None,s=None):
 
     if has_form_of_named_path(path_or_name):
         path = get_valid_path(path_or_name)
+        D = Environment['named_paths']
+        return D[a]['prefix_path'] + D[a]['path']
     else:
         path = Environment['current_prefix_path'] + get_valid_path(path_or_name)
 
@@ -88,6 +100,26 @@ def o(path_or_name,e=None,w=None,s=None):
         D[k] = e
         return e
 
+
+if __name__ == '__main__':
+
+
+Environment = {
+    'dictionary': {
+        '~':{'a':1}
+    },
+    'current_prefix_path': '~/',
+    'named_paths': {
+        'renamed_a':{
+            'path':'~/a/',
+        }
+    },
+    '-p':True,
+    '-v':True,
+}
+    clp( o('a/') )
+    o('a/',e=123)
+    zprint(o('a/'))
 #,b
     
 
