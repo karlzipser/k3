@@ -11,15 +11,42 @@ Environment = {
         '~':{}
     },
     'current_prefix_path': '~/',
-    'named_paths': {}
+    'aliases': {},
+    '-p':True,
+    '-v':True,
+}
+Environment = {
+    'dictionary': {
+        '~':{'menu':{
+                'range':{
+                    'min':{
+                        'current':0,
+                    },
+                    'max':{
+                        'current':10,
+                    },
+                    '_min':0,
+                    '_max':10,
+                },
+                'set_toggle':False,
+                'word': {
+                    'current':'adfs',
+                    '_options':'adsf',
+                },
+                'str': {
+                    'current':'---'
+                }
+            }
+        }
     },
-    '':True,
+    'current_prefix_path': '~/',
+    'aliases': {
+        'cw':'~/menu/word/current/',
+    },
+    '-p':True,
     '-v':True,
 }
 
-
-def set_prefix(path):
-    Environment['current_prefix_path'] = path
 
 
 def has_form_of_path(s):
@@ -30,12 +57,13 @@ def has_form_of_path(s):
                     return True
     return False
 
-def has_form_of_named_path(s):
+def has_form_of_alias(s):
     if type(s) == str:
         if len(s) > 0:
             if '/' not in s:
                 return True
     return False    
+
 
 
 def str_to_tuple_as_necessary(s):
@@ -47,9 +75,10 @@ def str_to_tuple_as_necessary(s):
     return s
 
 
+
 def is_valid_path(path):
     try:
-        o(path):
+        o(path)
         return True
     except:
         return False
@@ -59,8 +88,8 @@ def is_valid_path(path):
 def get_valid_path(a):
     if has_form_of_path(a):
         return a
-    elif has_form_of_named_path:
-        D = Environment['named_paths']
+    elif has_form_of_alias:
+        D = Environment['aliases']
         return D[a]['prefix_path'] + D[a]['path']
     else:
         assert False
@@ -69,17 +98,29 @@ def get_valid_path(a):
 
 
 
-def o(path_or_name,e=None,w=None,s=None):
+def o(path_or_name=None,e=None,w=None,s=None):
 
-    # w is 'with path, temp change'
-    # s sets the prefix path
+    if has_form_of_path(s):
+        Environment['current_prefix_path'] = s
 
-    if has_form_of_named_path(path_or_name):
-        path = get_valid_path(path_or_name)
-        D = Environment['named_paths']
-        return D[a]['prefix_path'] + D[a]['path']
+    if w == None:
+        prefix = Environment['current_prefix_path']
+
     else:
-        path = Environment['current_prefix_path'] + get_valid_path(path_or_name)
+        assert w == '' or has_form_of_path(w)
+        prefix = w
+
+    if path_or_name is None:
+        path_or_name = Environment['current_prefix_path']
+        prefix = ''
+
+    if has_form_of_alias(path_or_name):
+        #cm(path_or_name,Environment['aliases'][path_or_name])
+        return o(Environment['aliases'][path_or_name],e=e,w='',s=s)
+
+    else:
+        assert has_form_of_path(path_or_name)
+        path = prefix + path_or_name
 
     key_list = path[:-1].split('/')
     D = Environment['dictionary']
@@ -87,39 +128,33 @@ def o(path_or_name,e=None,w=None,s=None):
     if e == None:
         for k in key_list:
             k = str_to_tuple_as_necessary(k)
-            clp('k:',k,'D:',D)#,'D[k]:',D[k])
+            #cg('k:',k,'D:',D)
             D = D[k]
         return D
 
     else:
         for k in key_list[:-1]:
             k = str_to_tuple_as_necessary(k)
-            clp('k:',k,'D:',D)#,'D[k]:',D[k])
+            #cy('k:',k,'D:',D)
             D = D[k]
         k = str_to_tuple_as_necessary( key_list[-1] )
         D[k] = e
         return e
 
 
+
 if __name__ == '__main__':
 
+    clp( o('menu/') )
 
-Environment = {
-    'dictionary': {
-        '~':{'a':1}
-    },
-    'current_prefix_path': '~/',
-    'named_paths': {
-        'renamed_a':{
-            'path':'~/a/',
-        }
-    },
-    '-p':True,
-    '-v':True,
-}
-    clp( o('a/') )
-    o('a/',e=123)
-    zprint(o('a/'))
+    #o('a/',e=123)
+
+    zprint(o('menu/'))
+
+    #o('b',e=9)
+
+    #zprint(o('~/'))
+    o('cw',e='ted')
 #,b
     
 

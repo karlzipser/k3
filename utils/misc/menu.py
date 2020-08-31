@@ -165,7 +165,7 @@ max_depth = 5
 if __name__ == '__main__':
         
     if 'setup menu':
-        _words = ['cat','set_toggle','range','horse']
+        _words = ['cat','dog','bird','horse']
         _menu = {
             'range':{
                 'min':{
