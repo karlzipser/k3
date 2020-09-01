@@ -116,6 +116,7 @@ def o(
     s=None,
     u=False,
     d=False,
+    a=None,
     message=None,
     ):
 
@@ -201,6 +202,11 @@ def o(
 
     key_list = path[:-1].split('/')
     D = Environment['dictionary']
+
+    if a is not None:
+        assert_as(has_form_of_alias(a),"has_form_of_alias(a)")
+        Environment['aliases'][a] = path
+        Environment['messages'].append(d2s("add alias",a,"to",path))
 
     if e == None:
         for k in key_list:
