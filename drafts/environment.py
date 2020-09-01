@@ -4,7 +4,7 @@
 from k3 import *
 
 if False:
-    exec(gcsp()) ###############################################∑
+    exec(gcsp()) ###############################################
 
 
 Environment = {
@@ -104,112 +104,6 @@ def select_from_list(lst):
 
 
 
-
-def _o(
-    p=None,
-    e=None,
-    w=None,
-    s=None,
-    u=False,
-    d=False,
-    message=None,
-    ):
-
-    if message:
-        Environment['messages'].append( (message,time.time() ) )
-
-    if u:
-        if Environment['current_prefix_path'] == '~/':
-            return o(message="already at top")
-        Environment['current_prefix_path'] = pname_(
-            Environment['current_prefix_path']
-        ) + '/'
-        return o(
-            w=Environment['current_prefix_path'],
-            message='went up to '+Environment['current_prefix_path']
-        )
-
-    if d == 1 or d == True or has_form_of_alias(d):
-        key_list = Environment['current_prefix_path'][:-1].split('/')
-        D = Environment['dictionary']
-        for k in key_list:
-            k = str_to_tuple_as_necessary(k)
-            D = D[k]
-        if type(D) == dict:
-            if has_form_of_alias(d):
-                if d in kys(D):
-                    Environment['current_prefix_path'] += d + '/'
-                    return o()
-                else:
-                    assert False
-            if len(kys(D)) > 1:
-                k = select_from_list(kys(D))
-            else:
-                k = kys(D)[0]
-            Environment['current_prefix_path'] += k + '/'
-        else:
-            Environment['messages'].append("can't go down")
-        return o()
-    elif d == 0 or d == False:
-        pass
-
-    else:
-        assert False
-
-    if s is None:
-        pass
-    elif has_form_of_path(s):
-        cm(s)
-
-        Environment['current_prefix_path'] = s
-    else:
-        assert False
-
-    if w == None:
-        prefix = Environment['current_prefix_path']
-    else:
-        assert has_form_of_path(w)
-        prefix = w
-
-
-
-    if p is None:
-        if w is None:
-            p = Environment['current_prefix_path']
-            prefix = ''
-        else:
-            assert has_form_of_path(w)
-            p = w
-
-    if has_form_of_alias(p):
-        return o(Environment['aliases'][p],e=e,w='',s=s)
-
-    else:
-        if not( has_form_of_path(p) ):
-            cE("not( has_form_of_path(",p,") )")
-        path = prefix + p
-
-    key_list = path[:-1].split('/')
-    D = Environment['dictionary']
-
-    if e == None:
-        for k in key_list:
-            k = str_to_tuple_as_necessary(k)
-            D = D[k]
-        return D
-
-    else:
-        for k in key_list[:-1]:
-            k = str_to_tuple_as_necessary(k)
-            if k not in D:
-                if Environment['create_missing_paths']:
-                    if Environment['report_implicit_path_creation']:
-                        Environment['messages'].append( d2s('creating',k ) )
-                    D[k] = {}
-            D = D[k]
-        k = str_to_tuple_as_necessary( key_list[-1] )
-        D[k] = e
-        return e
 
 def assert_as(a,s):
     if not a:
