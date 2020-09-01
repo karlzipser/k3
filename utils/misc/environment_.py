@@ -1,0 +1,274 @@
+#,a
+from k3.utils.misc.zprint import *
+
+Environment = {
+
+    'create_missing_paths':True,
+    'report_implicit_path_creation':True,
+    'current_prefix_path': '~/',
+    'aliases': {},
+    'messages':[],
+    'max_num_messages':20,
+    'dictionary': {
+        '~':{},
+    },
+}
+
+
+def o(
+    p=None,
+    e=None,
+    w=None,
+    s=None,
+    u=False,
+    d=False,
+    a=None,
+    message=None,
+    pm=False,
+    ):
+    """
+    Args:
+        p (str): either a path (ending in '/') or an alias (with no '/'s).
+        e (anything): right hand side of equals equation, value to set to.
+        w (str): either absolute path (starting at '~') or alias,
+                used as reference location for just this call.
+        s (str): path, set current_prefix_path to this.
+        u (int or bool): u=1 means go up.
+        d (int or bool or str): go down, with selection or named key to go down to.
+        a (str): create alias of path to this name.
+        message (str): generally used with o function itself, appends message to message list.
+        pm (int or bool): print most recent message.
+
+    Returns:
+        Generally returns result of operation, but with pm returns None. 
+
+    """
+    Environment['messages'] = Environment['messages'][:Environment['max_num_messages']]
+
+
+    if pm:
+        print(Environment['messages'][-1])
+        return None
+
+    if message:
+        Environment['messages'].append( message )
+
+    if u:
+        if Environment['current_prefix_path'] == '~/':
+            return o(message="already at top")
+            ###################
+        Environment['current_prefix_path'] = pname_(
+            Environment['current_prefix_path']
+        ) + '/'
+        return o(
+            w=Environment['current_prefix_path'],
+            message='went up to '+Environment['current_prefix_path']
+        )
+        ###################
+
+    if d == 1 or d == True or has_form_of_alias(d):
+        key_list = Environment['current_prefix_path'][:-1].split('/')
+        D = Environment['dictionary']
+        for k in key_list:
+            k = str_to_tuple_as_necessary(k)
+            D = D[k]
+        if type(D) == dict:
+            if has_form_of_alias(d):
+                if d in kys(D):
+                    Environment['current_prefix_path'] += d + '/'
+                    return o(message=d2s('down to',d))
+                    ###################
+                else:
+                    assert False
+            if len(kys(D)) > 1:
+                k = select_from_list(kys(D))
+            else:
+                k = kys(D)[0]
+            Environment['current_prefix_path'] += k + '/'
+            Environment['messages'].append(d2s('down to',k))
+        else:
+            Environment['messages'].append("can't go down")
+        return o()
+        ###################
+    elif d == 0 or d == False:
+        pass
+
+    else:
+        assert False
+
+
+    if s is None:
+        pass
+    elif has_form_of_path(s):
+        Environment['current_prefix_path'] = s
+    else:
+        cE("not has_form_of_path(",s,")")
+
+
+    if w == None:
+        prefix = Environment['current_prefix_path']
+    else:
+        if has_form_of_alias(w):
+            w = Environment['aliases'][w]
+        assert_as( has_form_of_path(w) or w == '', d2s("has_form_of_path(",w,") ") )
+        prefix = w
+
+    if p is None:
+        if w is None:
+            p = Environment['current_prefix_path']
+            prefix = ''
+        else:
+            assert has_form_of_path(w)
+            p = prefix
+            prefix = ''
+
+    if has_form_of_alias(p):
+        Environment['messages'].append(d2s("returning from alias",p))
+        return o(Environment['aliases'][p],e=e,w='',s=s)
+        ###################
+
+    else:
+        if not( has_form_of_path(p) ):
+            cE("not( has_form_of_path(",p,") )")
+        path = prefix + p
+
+    key_list = path[:-1].split('/')
+    D = Environment['dictionary']
+
+    if a is not None:
+        assert_as(has_form_of_alias(a),"has_form_of_alias(a)")
+        Environment['aliases'][a] = path
+        Environment['messages'].append(d2s("add alias",a,"to",path))
+
+    if e == None:
+        for k in key_list:
+            k = str_to_tuple_as_necessary(k)
+            assert_as( k in D, d2s("k in D? No,",k,"not in",D))
+            D = D[k]
+        Environment['messages'].append(d2s("returning value at",path))
+        return D
+        ###################
+    else:
+        for k in key_list[:-1]:
+            k = str_to_tuple_as_necessary(k)
+            if k not in D:
+                if Environment['create_missing_paths']:
+                    if Environment['report_implicit_path_creation']:
+                        Environment['messages'].append( d2s('creating',k) )
+                    D[k] = {}
+            D = D[k]
+        k = str_to_tuple_as_necessary( key_list[-1] )
+        D[k] = e
+        Environment['messages'].append(d2s("returning value set at",path))
+        return e
+        ###################
+
+
+
+
+def has_form_of_path(s):
+    if type(s) == str:
+        if len(s) > 1:
+            if s[0] != '/':
+                if s[-1] == '/':
+                    return True
+    return False
+
+
+def has_form_of_alias(s):
+    if type(s) == str:
+        if len(s) > 0:
+            if '/' not in s:
+                return True
+    return False    
+
+
+
+def str_to_tuple_as_necessary(s):
+    if type(s) == str:
+        if len(s) > 1:
+            if s[-1] == ',':
+                if str_is_int(s[:-1]):
+                    return (int(s[:-1]),)
+    return s
+
+
+def pname_(path):
+    assert has_form_of_path(path)
+    path = path[:-1]
+    return pname(path)
+
+
+def input_int(s='> '):
+    c = input(s)
+    if str_is_int(c):
+        return int(c)
+    else:
+        return None
+
+
+def input_int_in_range(a,b,s):
+    c = input_int(s)
+    if c is None or c < a or c > b:
+        return None
+    else:
+        return c
+
+
+def select_from_list(lst):
+    for i in rlen(lst):
+        clp('    ',i,') ',lst[i],s0='')
+    i = input_int_in_range(0,len(lst)-1,'>> ')
+    return lst[i]
+
+
+def assert_as(a,s):
+    if not a:
+        cE(s)
+
+
+
+
+if __name__ == '__main__':
+
+    eg(__file__)
+
+    zprint(o(),t='1')
+
+    print(o('a/b/c/',e=123))
+    o(pm=1)
+    zprint(o(),t='2')
+    
+
+    print(o('a/b/d/',e=456,a='d'))
+    o(pm=1)
+    zprint(o(),t='3')
+    
+    print(o('a/b/e/',e=789,a='e'))
+    o(pm=1)
+    zprint(o(),t='4')
+
+    print(o('a/f/g/h/',e=3,a='h'))
+    o(pm=1)
+    zprint(o(),t='5')
+
+    print(o(s='~/a/f/'))
+    o(pm=1)
+    
+    print(o('g/h/',e=6))
+    o(pm=1)
+    zprint(o(),t='6')
+
+    zprint(Environment)
+
+
+if False:
+    exec(gcsp()) ###############################################
+
+
+#EOF
+
+
+
+
+
