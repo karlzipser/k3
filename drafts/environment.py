@@ -1,113 +1,18 @@
-
 #,a
-
 from k3 import *
-
-if False:
-    exec(gcsp()) ###############################################
-
 
 Environment = {
 
     'create_missing_paths':True,
     'report_implicit_path_creation':True,
     'current_prefix_path': '~/',
-    'aliases': {
-            'cw':'~/menu/word/current/',
-    },
+    'aliases': {},
     'messages':[],
-
     'dictionary': {
-        '~':{
-            'menu':{
-                'range':{
-                    'min':{
-                        'current':0,
-                    },
-                    'max':{
-                        'current':10,
-                    },
-                    '_min':0,
-                    '_max':10,
-                },
-                'set_toggle':False,
-                'word': {
-                    'current':'adfs',
-                    '_options':'adsf',
-                },
-                'str': {
-                    'current':'---',
-                }
-            }
-        }
-    }
+        '~':{},
+    },
 }
 
-
-
-
-def has_form_of_path(s):
-    if type(s) == str:
-        if len(s) > 1:
-            if s[0] != '/':
-                if s[-1] == '/':
-                    return True
-    return False
-
-
-def has_form_of_alias(s):
-    if type(s) == str:
-        if len(s) > 0:
-            if '/' not in s:
-                return True
-    return False    
-
-
-
-def str_to_tuple_as_necessary(s):
-    if type(s) == str:
-        if len(s) > 1:
-            if s[-1] == ',':
-                if str_is_int(s[:-1]):
-                    return (int(s[:-1]),)
-    return s
-
-
-def pname_(path):
-    assert has_form_of_path(path)
-    path = path[:-1]
-    return pname(path)
-
-
-
-def input_int(s='> '):
-    c = input(s)
-    if str_is_int(c):
-        return int(c)
-    else:
-        return None
-
-
-def input_int_in_range(a,b,s):
-    c = input_int(s)
-    if c is None or c < a or c > b:
-        return None
-    else:
-        return c
-
-
-def select_from_list(lst):
-    for i in rlen(lst):
-        clp('    ',i,') ',lst[i],s0='')
-    i = input_int_in_range(0,len(lst)-1,'>> ')
-    return lst[i]
-
-
-
-
-def assert_as(a,s):
-    if not a:
-        cE(s)
 
 def o(
     p=None,
@@ -231,6 +136,72 @@ def o(
         return e
         ###################
 
+
+
+
+def has_form_of_path(s):
+    if type(s) == str:
+        if len(s) > 1:
+            if s[0] != '/':
+                if s[-1] == '/':
+                    return True
+    return False
+
+
+def has_form_of_alias(s):
+    if type(s) == str:
+        if len(s) > 0:
+            if '/' not in s:
+                return True
+    return False    
+
+
+
+def str_to_tuple_as_necessary(s):
+    if type(s) == str:
+        if len(s) > 1:
+            if s[-1] == ',':
+                if str_is_int(s[:-1]):
+                    return (int(s[:-1]),)
+    return s
+
+
+def pname_(path):
+    assert has_form_of_path(path)
+    path = path[:-1]
+    return pname(path)
+
+
+def input_int(s='> '):
+    c = input(s)
+    if str_is_int(c):
+        return int(c)
+    else:
+        return None
+
+
+def input_int_in_range(a,b,s):
+    c = input_int(s)
+    if c is None or c < a or c > b:
+        return None
+    else:
+        return c
+
+
+def select_from_list(lst):
+    for i in rlen(lst):
+        clp('    ',i,') ',lst[i],s0='')
+    i = input_int_in_range(0,len(lst)-1,'>> ')
+    return lst[i]
+
+
+def assert_as(a,s):
+    if not a:
+        cE(s)
+
+
+
+
 if __name__ == '__main__':
 
 
@@ -273,6 +244,42 @@ def get_valid_path(a):
     else:
         assert False
 
+if False:
+    Environment = {
+
+        'create_missing_paths':True,
+        'report_implicit_path_creation':True,
+        'current_prefix_path': '~/',
+        'aliases': {
+                'cw':'~/menu/word/current/',
+        },
+        'messages':[],
+
+        'dictionary': {
+            '~':{
+                'menu':{
+                    'range':{
+                        'min':{
+                            'current':0,
+                        },
+                        'max':{
+                            'current':10,
+                        },
+                        '_min':0,
+                        '_max':10,
+                    },
+                    'set_toggle':False,
+                    'word': {
+                        'current':'adfs',
+                        '_options':'adsf',
+                    },
+                    'str': {
+                        'current':'---',
+                    }
+                }
+            }
+        }
+    }
 
 #,b
     
