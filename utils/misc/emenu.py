@@ -6,53 +6,21 @@ from k3.utils.misc.environment import *
 
 
 
-
-
-
-
-
-
-
-if False:#'util functions':
-
-    def input_int(s='> '):
-        c = input(s)
-        if str_is_int(c):
-            return int(c)
-        else:
-            return None
-
-    def input_int_in_range(a,b,s):
-        c = input_int(s)
-        if c is None or c < a or c > b:
-            return None
-        else:
-            return c
-
-    def select_from_list(lst):
-        for i in rlen(lst):
-            clp('    ',i,') ',lst[i],s0='')
-        i = input_int_in_range(0,len(lst)-1,'>> ')
-        return i
-
-
 if 'functions to set dict values':
 
     def set_str(path):
         s='Enter str for'
         v = input(d2s(s,qtd(path),'> '))
-        di(path,e=v)  
-        return d2s(qtd(path),'set to',di(path))
+        o(path,e=v)  
+        return d2s(qtd(path),'set to',o(path))
 
 
-    def set_number(dst_path,min_path,max_path):
+    def set_number(dst_path,mn,mx):
 
-        mn = di(min_path)
         assert(is_number(mn))
-        mx = di(max_path)
         assert(is_number(mx))
 
-        target_type = type(di(dst_path))
+        target_type = type(o(dst_path))
 
         v = input(d2s('Enter',target_type.__name__,'for',qtd(dst_path),'in range',(mn,mx),'> '))
 
@@ -79,9 +47,9 @@ if 'functions to set dict values':
         if v < mn or v > mx:
             return d2s(v,'not in range',(mn,mx))
 
-        di(dst_path,e=v)
+        o(dst_path,e=v)
                 
-        return d2s(qtd(dst_path),'set to',di(dst_path))
+        return d2s(qtd(dst_path),'set to',o(dst_path))
 
 
     def set_from_list(dst_path,options_path):
@@ -93,12 +61,12 @@ if 'functions to set dict values':
         if i is None:
             return 'failed'
 
-        di(dst_path,e=(di(options_path)[i]))
+        o(dst_path,e=(o(options_path)[i]))
         return d2s(qtd(dst_path),'set to',di(dst_path))
 
 
     def set_toggle(path):
-        di(path,e=not di(path))
+        o(path,e=not o(path))
         message = d2s('toggled',qtd(path),'to',di(path))
         return message
 

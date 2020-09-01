@@ -104,7 +104,7 @@ def _get_path(p,w,s):
 
 
 def _message(message):
-    Environment['messages'] = Environment['messages'][:Environment['max_num_messages']]
+    Environment['messages'] = Environment['messages'][-Environment['max_num_messages']:]
     Environment['messages'].append(message)
 
 
