@@ -23,7 +23,12 @@ def o(
     d=False,
     a=None,
     message=None,
+    pm=False,
     ):
+
+    if pm:
+        print(Environment['messages'][-1])
+        return None
 
     if message:
         Environment['messages'].append( message )
@@ -210,21 +215,31 @@ if __name__ == '__main__':
 
     zprint(o(),t='1')
 
-    o('a/b/c/',e=123)
-
+    print(o('a/b/c/',e=123))
+    o(pm=1)
     zprint(o(),t='2')
+    
 
-
-    o('a/b/d/',e=456)
-
+    print(o('a/b/d/',e=456,a='d'))
+    o(pm=1)
     zprint(o(),t='3')
+    
+    print(o('a/b/e/',e=789,a='e'))
+    o(pm=1)
+    zprint(o(),t='4')
 
-    zprint(o(w='~/menu/range/'),t='4')
-    #o('b',e=9)
+    print(o('a/f/g/h/',e=3,a='h'))
+    o(pm=1)
+    zprint(o(),t='5')
 
-    #zprint(o('~/'))
-    #o('cw',e='ted')
+    print(o(s='~/a/f/'))
+    o(pm=1)
+    
+    print(o('g/h/',e=6))
+    o(pm=1)
+    zprint(o(),t='6')
 
+    zprint(Environment)
 
 def is_valid_path(path):
     try:
