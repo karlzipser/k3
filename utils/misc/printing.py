@@ -235,9 +235,11 @@ def errPrint(*s,**kwargs):
         kwargs['f'] = 1
         del kwargs['f']
         s = ['*** Error:']+list(s)+['***']
+    #if 'ex' in kwargs:
+    #    del kwargs['ex']
     clp(*s,'`wrb',**kwargs)
-    if 'ex' in kwargs and kwargs['ex']:
-        raise Exception(fline())
+    #if 'ex' in kwargs and kwargs['ex']:
+    raise Exception(fline())
 cE = errPrint
 
 

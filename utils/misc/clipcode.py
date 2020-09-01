@@ -7,7 +7,7 @@ try:
 except:
     print("Failed: import pyperclip")
 
-def get_code_snippet():
+def get_code_snippet_():
     code_file = most_recent_py_file()
     code_lst = txt_file_to_list_of_strings(code_file)
     snippet_lst = []
@@ -21,6 +21,11 @@ def get_code_snippet():
             snippet_lst.append(c)
 
     code_str = '\n'.join(snippet_lst)
+    return code_str
+gcsp = get_code_snippet_
+
+def get_code_snippet():
+    code_str = get_code_snippet_()
     if using_osx():
         setClipboardData(code_str)
     else:
