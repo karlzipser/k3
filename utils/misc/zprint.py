@@ -14,7 +14,7 @@ def zprint(
     ignore_keys=[],
     only_keys=[],
     ignore_types=[],
-    ignore_underscore=True,
+    ignore_underscore=False,
     max_items=999999,
     max_depth=999999,
     do_return = False,
