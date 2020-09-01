@@ -192,29 +192,37 @@ if __name__ == '__main__':
         ENV.D['menu'] = _menu
 
 
- 
+    if 'setup keychains':
+        curmax =    'menu/range/max/current'
+        maxmax =    'menu/range/_max'
+        maxmin =    'menu/range/_min'
+        curmin =    'menu/range/min/current'
+        tog =       'menu/set_toggle'
+        curword =   'menu/word/current'
+        woptions =  'menu/word/_options'
+        curstr =   'menu/str/current'
 
 
     Actions = {
-        'menu/range/max/current':{
+        curmax:{
             'function':set_number,
-            'args':['menu/range/_min','menu/range/_max'],
+            'args':[curmax,maxmin,maxmax],
         },
-        'menu/range/min/current':{
+        curmin:{
             'function':set_number,
-            'args':['menu/range/_min','menu/range/_max'],
+            'args':[curmin,maxmin,maxmax],
         },
-        'menu/set_toggle':{
+        tog:{
             'function':set_toggle,
-            'args':[],
+            'args':[tog,None,None],
         },
-        'menu/word/current':{
+        curword:{
             'function':set_from_list,
-            'args':['menu/word/_options'],
+            'args':[curword,woptions,None],
         },
-        'menu/str/current':{
+        curstr:{
             'function':set_str,
-            'args':[],
+            'args':[curstr,None,None],
         },
     }
 
@@ -232,7 +240,7 @@ if __name__ == '__main__':
 
         V,D_ = print_menu(
             top,
-            ignore_underscore=di('menu/set_toggle'),
+            ignore_underscore=di(tog),
             ignore_keys=[],
             max_depth=max_depth,
             action_paths=kys(Actions),
@@ -299,15 +307,10 @@ if __name__ == '__main__':
                 i = int(c)
                 if i in V:
                     kc = V[i]
-                    print(kc)
-                    X = Actions[kc]
-                    a,b = None,None
-                    if len(X['args']) > 0:
-                        a = X['args'][0]
-                    if len(X['args']) > 1:
-                        b = X['args'][1]
 
-                    message = X['function'](kc,a,b)
+                    X = Actions[kc]
+
+                    message = X['function'](X['args'][0],X['args'][1],X['args'][2],)
 
 
                                         

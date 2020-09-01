@@ -1,5 +1,5 @@
 #,a
-from k3 import *
+from k3.utils.misc.zprint import *
 
 Environment = {
 
@@ -231,6 +231,8 @@ def assert_as(a,s):
 
 if __name__ == '__main__':
 
+    eg(__file__)
+
     zprint(o(),t='1')
 
     print(o('a/b/c/',e=123))
@@ -263,44 +265,6 @@ if __name__ == '__main__':
 if False:
     exec(gcsp()) ###############################################
 
-if False:
-    Environment = {
-
-        'create_missing_paths':True,
-        'report_implicit_path_creation':True,
-        'current_prefix_path': '~/',
-        'aliases': {
-                'cw':'~/menu/word/current/',
-        },
-        'messages':[],
-
-        'dictionary': {
-            '~':{
-                'menu':{
-                    'range':{
-                        'min':{
-                            'current':0,
-                        },
-                        'max':{
-                            'current':10,
-                        },
-                        '_min':0,
-                        '_max':10,
-                    },
-                    'set_toggle':False,
-                    'word': {
-                        'current':'adfs',
-                        '_options':'adsf',
-                    },
-                    'str': {
-                        'current':'---',
-                    }
-                }
-            }
-        }
-    }
-
-#,b
 
 #EOF
 
