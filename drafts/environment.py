@@ -8,6 +8,7 @@ Environment = {
     'current_prefix_path': '~/',
     'aliases': {},
     'messages':[],
+    'max_num_messages':20,
     'dictionary': {
         '~':{},
     },
@@ -25,6 +26,9 @@ def o(
     message=None,
     pm=False,
     ):
+
+    Environment['messages'] = Environment['messages'][:Environment['max_num_messages']]
+
 
     if pm:
         print(Environment['messages'][-1])
@@ -88,7 +92,10 @@ def o(
     if w == None:
         prefix = Environment['current_prefix_path']
     else:
-        assert_as( has_form_of_path(w) or w == '', d2s("has_form_of_path(",w,") ") )
+        if has_form_of_alias(w):
+            w = Environment['aliases'][w]
+        else:
+            assert_as( has_form_of_path(w) or w == '', d2s("has_form_of_path(",w,") ") )
         prefix = w
 
     if p is None:
