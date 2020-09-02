@@ -9,9 +9,9 @@ Environment = {
     'aliases': {},
     'messages':[],
     'max_num_messages':20,
-    'dictionary': {
-        '~':{},
-    },
+    'message_ctr':0,
+    'max_depth':10**6,
+    'dictionary': { '~':{} },
 }
 
 
@@ -46,7 +46,7 @@ def o(
             k = str_to_tuple_as_necessary(k)
             assert_as( k in D, d2s("k in D? No,",k,"not in",D))
             D = D[k]
-        _message(d2s("returning value at",path))
+        #_message(d2s("returning value at",path))
         return D ###################
     else:
         for k in key_list[:-1]:
@@ -59,7 +59,7 @@ def o(
             D = D[k]
         k = str_to_tuple_as_necessary( key_list[-1] )
         D[k] = e
-        _message(d2s("returning value set at",path))
+        #_message(d2s("returning value set at",path))
         return e ###################
 
 
@@ -105,7 +105,9 @@ def _get_path(p,w,s):
 
 def _message(message):
     Environment['messages'] = Environment['messages'][-Environment['max_num_messages']:]
-    Environment['messages'].append(message)
+    Environment['message_ctr'] += 1
+    Environment['messages'].append((Environment['message_ctr'],message))
+    
 
 
 def _up_or_down(u,d):

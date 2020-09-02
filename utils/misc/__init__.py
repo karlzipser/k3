@@ -15,6 +15,6 @@ from k3.utils.misc.osx import *
 
 from k3.utils.misc.zprint import *
 
-from k3.utils.misc.menu import *
+#from k3.utils.misc.menu import *
 
 #EOF
