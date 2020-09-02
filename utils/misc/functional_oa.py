@@ -2,35 +2,6 @@
 from k3.utils.misc.environment import *
 
 
-def menu():
-    clear_screen()
-    zprint(o(),t='o()',max_depth=Environment['params']['max_depth'])
-    print('')
-    if len(Environment['messages']) > 0:
-        m = Environment['messages'][-1] 
-        s = cf(str(m[0])+')',m[1],'`g')
-    else:
-        s = ''
-    c = input(s + ' >> ')
-    if c == 'u':
-        o(u=1)
-    elif c == 'd':
-        o(d=1)
-    elif c == 'q':
-        return False
-
-    elif c == 'm':
-        m = input_int('enter max_depth ('+str(Environment['params']['max_depth'])+') >>> ')
-        if type(m) is int and m > 0:
-            Environment['params']['max_depth'] = m
-    else:
-        if c == '':
-            c = '<enter>'
-        cr(qtd(c),'is unknown option')
-
-    return True
-
-
 def set_str(path):
     s='Enter str for'
     v = input(d2s(s,qtd(path),'> '))
@@ -38,8 +9,9 @@ def set_str(path):
     return d2s(qtd(path),'set to',o(path))
 
 
-def set_number(dst_path,mn,mx):
-
+def set_number(dst_path,min_path,max_path):
+    #cy(dst_path,min_path,max_path,r=1)
+    mn,mx = o(min_path,w='~/'),o(max_path,w='~/')
     assert(is_number(mn))
     assert(is_number(mx))
 
@@ -76,25 +48,62 @@ def set_number(dst_path,mn,mx):
 
 
 def set_from_list(dst_path,options_path):
+    #cy(dst_path,options_path)
+    #cm(o(options_path),r=1)
 
-    for i in rlen(di(options_path)):
-        clp('    ',i,') ',di(options_path)[i],s0='')
+    for i in rlen(o(options_path,w='~/')):
+        clp('    ',i,') ',o(options_path,w='~/')[i],s0='')
 
-    i = input_int_in_range(0,len(di(options_path))-1,'>> ')
+    i = input_int_in_range(0,len(o(options_path,w='~/'))-1,'>> ')
     if i is None:
         return 'failed'
 
-    o(dst_path,e=(o(options_path)[i]))
-    return d2s(qtd(dst_path),'set to',di(dst_path))
+    o(dst_path,e=(o(options_path,w='~/')[i]))
+    return d2s(qtd(dst_path),'set to',o(dst_path))
 
 
 def set_toggle(path):
     o(path,e=not o(path))
-    message = d2s('toggled',qtd(path),'to',di(path))
+    message = d2s('toggled',qtd(path),'to',o(path))
     return message
 
 
 
+
+def is_functional(path):
+    import collections
+
+    ks = kys(o(path))
+    if '_function' in ks:
+        if isinstance(o(path+'_function/'),collections.Callable):
+            f = o(path+'_function/')
+        else:
+            return False
+    else:
+        return False
+    if '_args' in ks:
+        arg_paths = o(path+'_args/')
+    else:
+        arg_paths = []
+    if 'value' in ks:
+        value_path = path+'value/'
+    else:
+        return False
+    return [f,arg_paths,value_path]
+
+
+def run_function(path,z=0):
+    r = is_functional(path)
+    if not r:
+        return None
+    f,arg_paths,value_path = r[0],r[1],r[2]
+    
+    message = f(value_path,*arg_paths)
+
+    if z:
+        zprint(Environment,ignore_underscore=Environment['params']['ignore_underscore'])
+
+    return message
 
 
 if __name__ == '__main__':
@@ -116,7 +125,7 @@ if __name__ == '__main__':
             '_min':0,
             '_max':10,
         },
-        'set_toggle':{
+        'toggle':{
             'value':False,
             '_function':set_toggle,
         },
@@ -135,9 +144,7 @@ if __name__ == '__main__':
     del _words
  
 
-    while menu():
-        pass
-
+    zprint(Environment)
 
 
 

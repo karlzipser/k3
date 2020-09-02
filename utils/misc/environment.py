@@ -2,15 +2,19 @@
 from k3.utils.misc.zprint import *
 
 Environment = {
-
-    'create_missing_paths':True,
-    'report_implicit_path_creation':True,
+    'params': {
+        'create_missing_paths':True,
+        'report_implicit_path_creation':True,
+        'max_num_messages':20,
+        'message_ctr':0,
+        'max_depth':10**6,
+        'ignore_underscore':False,
+    },
     'current_prefix_path': '~/',
     'aliases': {},
     'messages':[],
-    'max_num_messages':20,
-    'message_ctr':0,
-    'max_depth':10**6,
+    
+
     'dictionary': { '~':{} },
 }
 
@@ -52,8 +56,8 @@ def o(
         for k in key_list[:-1]:
             k = str_to_tuple_as_necessary(k)
             if k not in D:
-                if Environment['create_missing_paths']:
-                    if Environment['report_implicit_path_creation']:
+                if Environment['params']['create_missing_paths']:
+                    if Environment['params']['report_implicit_path_creation']:
                         _message( d2s('creating',k) )
                     D[k] = {}
             D = D[k]
@@ -104,9 +108,9 @@ def _get_path(p,w,s):
 
 
 def _message(message):
-    Environment['messages'] = Environment['messages'][-Environment['max_num_messages']:]
-    Environment['message_ctr'] += 1
-    Environment['messages'].append((Environment['message_ctr'],message))
+    Environment['messages'] = Environment['messages'][-Environment['params']['max_num_messages']:]
+    Environment['params']['message_ctr'] += 1
+    Environment['messages'].append((Environment['params']['message_ctr'],message))
     
 
 
@@ -228,8 +232,7 @@ def assert_as(a,s):
 
 if __name__ == '__main__':
 
-    if '__file__' in locals():
-        eg(__file__)
+    if '__file__' in locals(): eg(__file__)
 
     print(o('a/b/c/',e=1))
 

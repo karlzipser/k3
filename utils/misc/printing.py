@@ -1,5 +1,5 @@
 
-from k3.utils.collections import *
+from k3.utils.collections_ import *
 
 def kprint(
     item,
@@ -239,7 +239,8 @@ def errPrint(*s,**kwargs):
     #    del kwargs['ex']
     clp(*s,'`wrb',**kwargs)
     #if 'ex' in kwargs and kwargs['ex']:
-    raise Exception(fline())
+    sys.exit(0)#raise Exception(fline())
+    #os._exit(1)
 cE = errPrint
 
 
