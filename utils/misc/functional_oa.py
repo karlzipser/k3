@@ -72,11 +72,11 @@ def set_toggle(path):
 
 
 def is_functional(path):
-    import collections
+    import collections.abc
 
     ks = kys(o(path))
     if '_function' in ks:
-        if isinstance(o(path+'_function/'),collections.Callable):
+        if isinstance(o(path+'_function/'),collections.abc.Callable):
             f = o(path+'_function/')
         else:
             return False
@@ -120,6 +120,36 @@ def move_node(path,new_path):
 
 def scan_tree(path):
     pass
+
+def myprint(d):
+    for k, v in d.items():
+        if isinstance(v, dict):
+            myprint(v)
+        else:
+            print("{0} : {1}".format(k, v))
+
+
+
+def a(Din,kl):
+
+    Dout = {}
+    for key, element in Din.items():
+        kk = kl.copy()
+        kk.append(key)
+        
+        if type(key) is str and key[0] == '=':
+            return Dout
+        if isinstance(element, dict):
+            Dout[key] = a(element,kk)
+            Dout[key]['='] = '/'.join(kk)
+            print('/'.join(kk))
+        else:
+            
+            Dout[key] = element
+            print(d2p(*(kk+[element])))
+    return Dout
+
+
 
 
 if __name__ == '__main__':
