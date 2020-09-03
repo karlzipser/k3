@@ -209,6 +209,10 @@ if __name__ == '__main__':
     run_function('str/',1)
     run_function('word/',1)
 
+
+    #zprint(a(_menu,[]))
+    zprint(a(Environment,[]))
+
 #,b
 
 
