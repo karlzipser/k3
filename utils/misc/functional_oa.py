@@ -1,4 +1,5 @@
 #,a
+
 from k3.utils.misc.environment import *
 
 
@@ -105,11 +106,34 @@ def run_function(path,z=0):
 
     return message
 
+def create_shadow(path):
+    pass
+
+def select_functional():
+    pass
+
+def delete_node(path):
+    pass
+
+def move_node(path,new_path):
+    pass
+
+def scan_tree(path):
+    pass
+
 
 if __name__ == '__main__':
     if '__file__' in locals(): eg(__file__)
-        
+    
+    Environment['dictionary']['~shadow'] = {}
+
     _words = ['cat','dog','bird','horse']
+    Environment['dictionary']['~']['_functionals'] = {
+            'value':None,
+            '_function':set_from_list,
+            '_args':['/_functionals/_paths/'],
+            '_paths':['menu/range/min/','menu/range/max/'],
+    }
     Environment['dictionary']['~']['menu'] = {
         'range':{
             'min':{
@@ -139,16 +163,24 @@ if __name__ == '__main__':
             'value':'This is a string.',
             '_function':set_str,
         },
-           
     }
     del _words
  
 
     zprint(Environment)
 
+    run_function('menu/range/min/',1)
 
+    run_function('menu/range/max/',1)
 
+    o(s='~/menu/')
+
+    run_function('toggle/',1)
+    run_function('str/',1)
+    run_function('word/',1)
 
 #,b
+
+
 
 #EOF

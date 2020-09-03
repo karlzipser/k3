@@ -44,28 +44,17 @@ class MyServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes("""<br><img src="Desktop/IMG_1778.JPG" style="width:200px;"><br><br>""", "utf-8"))
             self.wfile.write(bytes("""
 
+
 <form action="search" method="GET">
 Search Term: <input type="text" name="search_query">
 </form>
 <br>
 
-<form action="" method="get">
-    <input type="submit" name="upvote" value="Upvote" />
-</form>
+
 <br><img src="Desktop/img.png" style="width:200px;"><br><br>""", "utf-8"))
             self.wfile.write(bytes("</body></html>", "utf-8"))
 
-    def _do_GET(self):
-        path_to_image = opjh("img.jpeg")
-        statinfo = os.stat(path_to_image)
-        img_size = statinfo.st_size
-        self.send_response(200)
-        self.send_header("Content-type", "image/jpg")
-        self.send_header("Content-length", img_size)
-        self.end_headers()
-        f = open(path_to_image, 'rb')
-        self.wfile.write(f.read())
-        f.close()   
+ 
 
 
     def do_POST(self):
@@ -90,7 +79,14 @@ myServer.server_close()
 print(time.asctime(), "Server Stops - %s:%s" % (hostName, hostPort))
 
 
+"""
+<form action="" method="get">
+    <input type="submit" name="upvote" value="Upvote" />
+</form>
+<a href="">lh</a>
 
+
+"""
 
 
 # https://riptutorial.com/python/example/26748/basic-handling-of-get--post--put-using-basehttprequesthandler
