@@ -243,6 +243,10 @@ def errPrint(*s,**kwargs):
     #os._exit(1)
 cE = errPrint
 
+def assert_as(a,s):
+    if not a:
+        cE('Assertion failed:',s)
+        
 
 if __name__ == '__main__':
     

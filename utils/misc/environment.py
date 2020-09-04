@@ -36,6 +36,7 @@ def o(
     if r is not None:
         return r ###################
 
+    assert_as( w is None and s is None, "w is None and s is None" )
     path = _get_path(p,w,s)
 
     if a is not None:
@@ -223,9 +224,7 @@ def select_from_list(lst):
     return lst[i]
 
 
-def assert_as(a,s):
-    if not a:
-        cE(s)
+
 
 
 
@@ -248,12 +247,12 @@ if __name__ == '__main__':
 
     zprint(o(),t='5')
 
-    print(o(s='~/a/f/'))
+    #print(o(s='~/a/f/'))
 
     
-    print(o('g/h/',e=6))
+    #print(o('g/h/',e=6))
 
-    zprint(o(),t='6')
+    #zprint(o(),t='6')
     
     zprint(Environment)
 
