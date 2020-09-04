@@ -87,24 +87,34 @@ scd = setClipboardData
 #,a
 if __name__ == '__main__':
     
-    eg(__file__)
 
-    clp('most_recent_py_file:', most_recent_py_file())
-    print('')
-    c = getClipboardData()
-    print("getClipboardData()")
-    print('')
-    clp(c,'`m--')
-    print('')
-    print("gsp()")
-    print('')
-    gsp()
-    print('')
-    print("getClipboardData()")
-    print('')
-    c = getClipboardData()
-    print('')
-    clp(c,'`m--')
-    print('')
+
+    code = """
+clear_screen()
+if '__file__' in locals(): eg(__file__)
+clp('most_recent_py_file:', most_recent_py_file())
+print('')
+c = getClipboardData()
+print("getClipboardData()")
+print('')
+clp(c,'`m--')
+    """
+    for c in code.split('\n'):
+        if not c.isspace():
+            clp(c,'`--u')
+            exec(c)
+"""
+print('')
+print("gsp()")
+print('')
+gsp()
+print('')
+print("getClipboardData()")
+print('')
+c = getClipboardData()
+print('')
+clp(c,'`m--')
+print('')
+"""
 #,b
 #EOF

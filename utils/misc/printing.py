@@ -234,13 +234,9 @@ def errPrint(*s,**kwargs):
     if 'f' not in kwargs or kwargs['f']:
         kwargs['f'] = 1
         del kwargs['f']
-        s = ['*** Error:']+list(s)+['***']
-    #if 'ex' in kwargs:
-    #    del kwargs['ex']
-    clp(*s,'`wrb',**kwargs)
-    #if 'ex' in kwargs and kwargs['ex']:
-    sys.exit(0)#raise Exception(fline())
-    #os._exit(1)
+        s = cf('*** Error: ','`wrb',' ',*s,' ','`wrbr',' ***','`wrb',s1='')
+    clp(s,**kwargs)
+    sys.exit(0) #raise Exception(fline()) #os._exit(1)
 cE = errPrint
 
 def assert_as(a,s):

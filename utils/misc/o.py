@@ -3,31 +3,8 @@
 from k3.utils.misc.zprint import *
 
 
-def at_least_1_None(*l):
-    for q in l:
-        if q is None:
-            return True
-    return False
+Last_D = {'D':{}}
 
-
-def has_form_of_path(s):
-    if type(s) == str:
-        if len(s) > 1:
-            if s[0] != '/':
-                if s[-1] == '/':
-                    return True
-    return False
-
-
-def has_form_of_alias(s):
-    if type(s) == str:
-        if len(s) > 0:
-            if '/' not in s:
-                return True
-    return False    
-
-
-Last_D = [None]
 
 def o(
     p,
@@ -36,52 +13,118 @@ def o(
     sD=None,
     create_missing_paths=True,
     report_path_creation=True,
+    zp=False,
+    t=None,
+    prune=None,
+    copy_=None,
+    move = None,
 ):
+    def _zprint(zp,p,D,t,k):
+        if zp:
+            if t is None: t = p
+            if k is not None:
+                D = D[k]
+            zprint(D,t)
+
     if sD is not None:
-        assert wD is None
-        Last_D[0] = sD
+        assert_as( wD is None, "wD is None")
+        Last_D['D'] = sD
         D = sD
     elif wD is not None:
-        assert sD is None
+        assert_as( sD is None, "sD is None" )
         D = wD
     elif sD is None and wD is None:
-        D = Last_D[0]
+        D = Last_D['D']
 
     assert_as(D is not None,"D is not None")
 
-    assert_as(has_form_of_path(p),d2n('has_form_of_path(',p,')'))
+    if p in ['']:
+        _zprint(zp,p,D,t,None)
+        return D
+
+    assert_as(has_form_of_path(p),d2n('has_form_of_path(',qtd(p),')'))
 
     key_list = p[:-1].split('/')
 
     if e == None:
-        for k in key_list:
-            assert_as( k in D, d2s("k in D? No,",k,"not in",D))
+        
+        #for k in key_list:
+        for i in rlen(key_list):
+           # print(i,D)
+            k = key_list[i]
+            if i == len(key_list)-1:
+                if prune:
+                    #print('del D[k]',D,k)
+                    del D[k]
+                    break
+            assert_as( k in D, d2s("k in D? No,",qtd(k),"not in",D))
             D = D[k]
+        _zprint(zp,p,D,t,k)
+        #if prune:
+            #del [key_list[-1]]
+            #print(D,key_list[-1],'prune')
         return D 
     else:
+        assert_as(prune is None,"prune is None")
         for k in key_list[:-1]:
             if k not in D:
                 if create_missing_paths:
                     if report_path_creation:
-                        print( d2s('creating',k) )
+                        print( d2s('creating',qtd(k)) )
                     D[k] = {}
             D = D[k]
         k = key_list[-1]
         D[k] = e
+        _zprint(zp,p,D,t,k)
         return e
 
 
-
+def has_form_of_path(s):
+    if type(s) == str:
+        if len(s) > 1:
+            if s[0] != '/':
+                if s[-1] == '/':
+                    return True
+    return False 
 
 
 if __name__ == '__main__':
+ 
+    code = """
+clear_screen()
 
-    o('a/b/c/d/e/',e=1,sD={})
-    Q = o('a/b/c/e/')
-    o('a/b/c/e/',e=o('a/',wD=Q))#a/b/c/d/'))
-    #o('a/b/c/e/f/',2)
+if '__file__' in locals(): eg(__file__)
 
-    zprint(Last_D[0])
+import copy
+
+o('a/b/c/d/e/',e=1,sD={},zp=1)
+
+Q = {}
+
+o('x/y/z/',e=2,wD=Q,zp=1)
+
+
+o('',wD=Q,zp=1,t='Q')
+
+o('a/b/c/d/f/',e=Q,zp=1)
+
+o('a/b/g/',e=copy.deepcopy(o('x/y/',wD=Q)),zp=1)
+
+o('',zp=1,t='Last_D[0]')
+
+o('a/b/c/d/e/',prune=1)
+
+o('',zp=1,t='Last_D[0]')
+
+o('a/b/c/',prune=1)
+
+o('',zp=1,t='Last_D[0]')
+    """
+
+    for c in code.split('\n'):
+        if not c.isspace():
+            clp(c,'`--u')
+            exec(c)
 #,b
 
 if False:

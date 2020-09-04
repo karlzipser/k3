@@ -140,8 +140,10 @@ def a(Din,kl):
         if type(key) is str and key[0] == '=':
             return Dout
         if isinstance(element, dict):
+            if is_functional(element):
+                cy('is_functional',r=1)
             Dout[key] = a(element,kk)
-            Dout[key]['='] = '/'.join(kk)
+            Dout[key]['<'] = '/'.join(kk)
             print('/'.join(kk))
         else:
             
@@ -158,23 +160,23 @@ if __name__ == '__main__':
     Environment['dictionary']['~shadow'] = {}
 
     _words = ['cat','dog','bird','horse']
-    Environment['dictionary']['~']['_functionals'] = {
+    Environment['top']['_functionals'] = {
             'value':None,
             '_function':set_from_list,
-            '_args':['/_functionals/_paths/'],
-            '_paths':['menu/range/min/','menu/range/max/'],
+            '_args':['dictionary/_functionals/_paths/'],
+            '_paths':['dictionary/~/menu/range/min/','dictionary/~/menu/range/max/'],
     }
-    Environment['dictionary']['~']['menu'] = {
+    Environment['top']['world']['~'] = {
         'range':{
             'min':{
                 'value':0,
                 '_function':set_number,
-                '_args': ['menu/range/_min/','menu/range/_max/'],
+                '_args': ['dictionary/~menu/range/_min/','dictionary/~menu/range/_max/'],
             },
             'max':{
                 'value':10,
                 '_function':set_number,
-                '_args': ['menu/range/_min/','menu/range/_max/'], 
+                '_args': ['dictionary/~menu/range/_min/','dictionary/~menu/range/_max/'], 
             },
             '_min':0,
             '_max':10,
@@ -196,18 +198,18 @@ if __name__ == '__main__':
     }
     del _words
  
+    if False:
+        zprint(Environment)
 
-    zprint(Environment)
+        run_function('menu/range/min/',1)
 
-    run_function('menu/range/min/',1)
+        run_function('menu/range/max/',1)
 
-    run_function('menu/range/max/',1)
+        o(s='~/menu/')
 
-    o(s='~/menu/')
-
-    run_function('toggle/',1)
-    run_function('str/',1)
-    run_function('word/',1)
+        run_function('toggle/',1)
+        run_function('str/',1)
+        run_function('word/',1)
 
 
     #zprint(a(_menu,[]))
@@ -215,6 +217,8 @@ if __name__ == '__main__':
 
 #,b
 
+if False:
+    exec(gcsp()) ###############################################
 
 
 #EOF
