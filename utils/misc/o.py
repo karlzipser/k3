@@ -22,8 +22,8 @@ def o(
     def _zprint(zp,p,D,t,k):
         if zp:
             if t is None: t = p
-            if k is not None:
-                D = D[k]
+            #if k is not None:
+            #    D = D[k]
             zprint(D,t)
 
     if sD is not None:
@@ -91,6 +91,7 @@ def has_form_of_path(s):
 if __name__ == '__main__':
  
     code = """
+
 clear_screen()
 
 if '__file__' in locals(): eg(__file__)
@@ -103,12 +104,13 @@ Q = {}
 
 o('x/y/z/',e=2,wD=Q,zp=1)
 
-
 o('',wD=Q,zp=1,t='Q')
 
 o('a/b/c/d/f/',e=Q,zp=1)
 
 o('a/b/g/',e=copy.deepcopy(o('x/y/',wD=Q)),zp=1)
+
+o('a/b/c/d/',zp=1)
 
 o('',zp=1,t='Last_D[0]')
 
@@ -129,6 +131,37 @@ o('',zp=1,t='Last_D[0]')
 
 if False:
     exec(gcsp()) ###############################################
+
+
+
+def q(path,Din,u,d):
+    D = Din
+    key_list = path[:-1].split('/')
+    for i in rlen(key_list):
+        k = key_list[i]
+        D = D[k]
+
+
+
+
+def a(Din,kl):
+
+    Dout = {}
+    for key, element in Din.items():
+        kk = kl.copy()
+        kk.append(key)
+        
+        if type(key) is str and key[0] == '=':
+            return Dout
+        if isinstance(element, dict):
+            Dout[key] = a(element,kk)
+            Dout[key]['<'] = '/'.join(kk)
+            print('/'.join(kk))
+        else:
+            
+            Dout[key] = element
+            print(d2f('/',*(kk+[element])))
+    return Dout
 
 
 #EOF
