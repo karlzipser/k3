@@ -23,7 +23,7 @@ def as_pct(a,b):
 
 
 def qtd(a):
-    if (a[0] == '\'' and a[-1] == '\'') or (a[0] == '\"' and a[-1] == '\"'):
+    if type(a) == str and ((a[0] == '\'' and a[-1] == '\'') or (a[0] == '\"' and a[-1] == '\"')):
         print('*** qtd(): Warning, '+a+' seems to be quoted already ***')
     return '\"'+str(a)+'\"'
     

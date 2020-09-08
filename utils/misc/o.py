@@ -60,6 +60,7 @@ def o(
             assert_as( k in D, d2s("k in D? No,",qtd(k),"not in",D))
             D = D[k]
         _zprint(zp,p,D,t,k)
+        cy(key_list)
         #if prune:
             #del [key_list[-1]]
             #print(D,key_list[-1],'prune')
@@ -76,6 +77,7 @@ def o(
         k = key_list[-1]
         D[k] = e
         _zprint(zp,p,D,t,k)
+        cg(key_list)
         return e
 
 
@@ -104,7 +106,7 @@ Q = {}
 
 o('x/y/z/',e=2,wD=Q,zp=1)
 
-o('',wD=Q,zp=1,t='Q')
+o('',wD=Q,zp=1,)#t='Q')
 
 o('a/b/c/d/f/',e=Q,zp=1)
 
@@ -112,11 +114,11 @@ o('a/b/g/',e=copy.deepcopy(o('x/y/',wD=Q)),zp=1)
 
 o('a/b/c/d/',zp=1)
 
-o('',zp=1,t='Last_D[0]')
+o('',zp=1,)#t='Last_D[0]')
 
 o('a/b/c/d/e/',prune=1)
 
-o('',zp=1,t='Last_D[0]')
+o('',zp=1,)#t='Last_D[0]')
 
 o('a/b/c/',prune=1)
 
