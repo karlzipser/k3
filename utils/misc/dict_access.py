@@ -7,11 +7,12 @@ def dict_access(D,name):
 
     name = cf('dictionary '+name,'`--u')
     print('name 0',name)
-    if '__menu_path__' not in D:
-        D['__menu_path__'] = None
-    if '__max_depth__' not in D:
-        D['__max_depth__'] = 10**3
-
+    if '__meta__' not in D:
+        D['__meta__'] = {
+            'menu_path':None,
+            'max_depth':10**6,
+            'ignore_underscore':False,
+        }
 
     def o(
         p=None,
@@ -25,20 +26,23 @@ def dict_access(D,name):
         ud=0,
         m=None,
         D=D,
+        Meta=D['__meta__'],
         name=name,
     ):
 
         def _zprint(z,p,D,t):
             if z:
                 if t is None: t = p
-                zprint(D,t,max_depth=10**3)
+                #if type(D) is dict and len(D) == 0:
+                #    D = cf('<empty dictionary>')
+                zprint(D,t,max_depth=Meta['max_depth']+1)
 
         if p == '':
             p = None
 
         if m is not None:
             assert_as(p is None,"p is None")
-            p = D['__menu_path__']
+            p = Meta['menu_path']
             m = None
 
         if ud in [-1,1]:
@@ -46,38 +50,50 @@ def dict_access(D,name):
 
         #print('name 0',name)
 
-        if ud == -1:
-            assert_as('__menu_path__' in D,"'__menu_path__' in D")
-            D['__menu_path__'] = pname_(D['__menu_path__'])
+        n = None
+        if ud == 'u':
+            assert_as('menu_path' in Meta,"'menu_path' in D")
+            Meta['menu_path'] = pname_(Meta['menu_path'])
                 #cm('zp0')
-            if D['__menu_path__'] is None:
+            if Meta['menu_path'] is None:
                 #cg(1)
                 n = '' #name
                 #cg(n)
             else:
                 #cg(2)
-                n = D['__menu_path__']
-            _zprint(1,None,o( D['__menu_path__'] ),name+'/'+n)
+                n = Meta['menu_path']
+            #_zprint(1,None,o( Meta['menu_path'] ),name+'/'+n)
 
-        elif ud == 1:
-            n = D['__menu_path__']
-            O = o( D['__menu_path__'] )
+        elif ud == 'd':
+            #cg(Meta)
+            n = Meta['menu_path']
+            O = o( Meta['menu_path'] )
             if type(O) is dict and len(O) > 0:# and not( len(O)==1 and not (type(O[kys(O)[0]]) is dict and len(O[kys(O)[0]]) == 0)):
                 #cg(type(O),len(O),O)
             #if type(O) is dict:
                 if len(O) > 1:
-                    k = select_from_list( kys(O))
+                    k = None
+                    while k is None:
+                        k = select_from_list( kys(O))
                     clear_screen()
                 else:
                     k = kys(O)[0]
-                if D['__menu_path__'] is None:
-                    D['__menu_path__'] = k + '/'
+                if Meta['menu_path'] is None:
+                    Meta['menu_path'] = k + '/'
                     n = ''
                 else:
-                    D['__menu_path__'] = D['__menu_path__'] + k + '/'
-                    n = D['__menu_path__']
+                    Meta['menu_path'] = Meta['menu_path'] + k + '/'
+                    n = Meta['menu_path']
                 #cm('zp1')
-            _zprint(1,None,o( D['__menu_path__'] ),name+'/'+n)
+            #_zprint(1,None,o( Meta['menu_path'] ),name+'/'+n)
+
+        if ud in ['u','d','-']:
+            if n is None:
+                if Meta['menu_path'] is None:
+                    n = ''
+                else:
+                    n = Meta['menu_path']
+            _zprint(1,None,o( Meta['menu_path'] ),name+'/'+n)
 
         assert_as(D is not None,"D is not None")
 
@@ -182,6 +198,8 @@ def select_from_list(lst,ignore_underscore=True):
         i = input_int_in_range(0,len(lst)-1,'>> ')
     else:
         i = 0
+    if i is None:
+        return None
     return lst[i]
 
 if __name__ == '__main__':
@@ -218,16 +236,24 @@ oD(z=1)
             exec(c)
 
 clear_screen()
-oD(z=1)
+oD(ud='-')
 c = None
 while c != 'q':
-    c = input_from_range(choices=[1,-1,'q','m'])
+    c = input_from_range(choices=['u','d','q','m'])
     if c == 'm':
-        D['__max_depth__']=1+input_int_in_range(0,99999,'>>> ')
+        i = input_int_in_range(0,10*10,d2n('max depth (',D['__meta__']['max_depth'],') >>> '))
+        if type(i) is int:
+            D['__meta__']['max_depth'] = i
+        #cm(0)
+        clear_screen()
+        oD(ud='-')
+        continue
     #cy(1)
-    clear_screen()
+    #clear_screen()
     #cy(2)
     if c is None:
+        cm(qtd(c),'not recognized.')
+        oD(ud='-')
         continue
     
     #try:

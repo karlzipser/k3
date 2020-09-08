@@ -66,199 +66,205 @@ def zprint(
 
 
 
-if True:
-
-    leaf = 'leaf|'
 
 
-    def _get_j_and_W(
-        item,
-        t='',
-        j=-1,
-        r=0,
-        p=0,
-        use_color=0,
-        ignore_keys=[],
-        only_keys=[],
-        ignore_types=[],
-        ignore_underscore=True,
-        max_items=999999,
-        _top=True,
-        _spaces='',
-        _space_increment='    ',
-        _W={},
-        _keylist=[],
-        depth=0,
-        max_depth=0,
-    ):
-        if _top:
-            _W = {}
+leaf = 'leaf|'
 
-        if 'init':
 
-            if type(item) in ignore_types:
-                return j,_W
+def _get_j_and_W(
+    item,
+    t='',
+    j=-1,
+    r=0,
+    p=0,
+    use_color=0,
+    ignore_keys=[],
+    only_keys=[],
+    ignore_types=[],
+    ignore_underscore=True,
+    max_items=999999,
+    _top=True,
+    _spaces='',
+    _space_increment='    ',
+    _W={},
+    _keylist=[],
+    depth=0,
+    max_depth=0,
+):
+    if _top:
+        _W = {}
 
-            _keylist_ = copy.deepcopy(_keylist)
+    if 'init':
 
-            if not _top:
-                _keylist_.append(t)
+        if type(item) in ignore_types:
+            return j,_W
 
-            
-            if j in _W:
-                cE(j,'in',kys(_W))
-            else:
-                pass
-            assert j not in _W
+        _keylist_ = copy.deepcopy(_keylist)
 
-            _W[j] = _keylist_
+        if not _top:
+            _keylist_.append(t)
 
-            if t is not None and type(t) is not tuple:
-                name = str(t)
-            elif type(t) is tuple and len(t) == 1:
-                name = d2n('(',t[0],')')
-            else:
-                name = t
-
-        j += 1
-
-        if type(item) == dict:
-            if depth < max_depth:
-                depth += 1
-                ctr = 0
-                for k in sorted(item.keys()):
-                    if k in ignore_keys:
-                        continue
-                    if ignore_underscore and k[0] == '_':
-                        continue
-                    if len(only_keys) > 0:
-                        if k not in only_keys:
-                            continue
-                    if type(item[k]) in [dict,list]:
-                        l = len(item[k])
-                    else:
-                        l = 1
-
-                    j,_ = _get_j_and_W(
-                        item[k],
-                        t=k,
-                        use_color=use_color,
-                        _top=False,
-                        _spaces=_spaces+_space_increment,
-                        _space_increment=_space_increment,
-                        ignore_keys=ignore_keys,
-                        only_keys=only_keys,
-                        ignore_types=ignore_types,
-                        ignore_underscore=ignore_underscore,
-                        j=j,
-                        _W=_W,
-                        _keylist=_keylist_,
-                        depth=depth,
-                        max_depth=max_depth,
-                    )
-                    ctr += 1
-                    if ctr >= max_items:
-                        break
+        
+        if j in _W:
+            cE(j,'in',kys(_W))
         else:
             pass
+        assert j not in _W
 
-        return j,_W
+        _W[j] = _keylist_
 
+        if t is not None and type(t) is not tuple:
+            name = str(t)
+        elif type(t) is tuple and len(t) == 1:
+            name = d2n('(',t[0],')')
+        else:
+            name = t
 
+    j += 1
 
-    def _preprocess(Q,use_color):
-
-        for k in kys(Q):
-
-            if type(Q[k]) is list:
-                D = {}
-                for i in rlen(Q[k]):
-                    D[(i,)] = Q[k][i]
-                Q[k] = D
-
-            if type(Q[k]) is dict:
-                Q[k] = _preprocess(Q[k],use_color)
-
-            elif type(Q[k]) is None:
-                pass
-
-            else:
-                if use_color:
-                    if is_number(Q[k]):
-                        s = cf(Q[k],'`g-b')
-                    elif type(Q[k]) is str:
-                        s = cf(Q[k],'`y-b')
-                    else:
-                        s = cf(Q[k],'`b-b')
-                else:
-                    s = str(Q[k])
-                Q[k] = { leaf+s : None }
-        return Q
-
-
-
-    def _post_process(Din,use_line_numbers,use_color):
-
-        D = copy.deepcopy(Din)
-
-        vert =  '|    '
-        blank = '     '
-        bend =  '────┐'
-
-        max_width = 0
-
-        for i in kys(D):
-            max_width = max(max_width,len(D[i]))
-
-        for u  in range(max_width):
-            for i in sorted(kys(D),reverse=True):
-                    try:
-                        if D[i][u] == D[i+1][u]:
-                            D[i+1][u] = vert
-                    except:
-                        pass
-            in_line = False
-            for i in sorted(kys(D),reverse=True):
-
-                    try:
-                        if D[i][u] != vert:
-                            in_line = True
-                        if not in_line and D[i][u] == vert:
-                            D[i][u] = blank
-                    except:
-                        in_line = False
-
-        for i in sorted(kys(D),reverse=False):
-            if len(D[i]):
-                #print(D[i][-1])
-                if leaf in str(D[i][-1]):
-                    D[i][-1] = D[i][-1].replace(leaf,'')
+    if type(item) == dict:
+        if depth < max_depth:
+            depth += 1
+            ctr = 0
+            if len(item.keys()) == 0:
+                item = {'<empty>':True}
+            for k in sorted(item.keys()):
+                if k in ignore_keys:
                     continue
-                l = len(str(D[i][-1]))
-                if type(D[i][-1]) is tuple and len(D[i][-1]) == 1:
-                    b = bend
-                elif l <= len(bend):
-                    b = bend[l-1:]
+                if ignore_underscore and k[0] == '_':
+                    continue
+                if len(only_keys) > 0:
+                    if k not in only_keys:
+                        continue
+                """
+                if type(item[k]) in [dict,list]:
+                    l = len(item[k])
                 else:
-                    b = ''
-                if use_line_numbers:
-                    if use_color:
-                        b += cf('',i,'`--d')
-                    else:
-                        b += ' '+str(i)
-                D[i].append(b)
+                    l = 1
+                """
+                #if type(item[k]) is dict and len(item[k]) == 0:
+                #    item[k] = 'empty'
 
-        print_lines = []
-        for i in sorted(kys(D),reverse=False):
-            w = []
-            for y in D[i]:
-                if type(y) is tuple:
-                    y = '└'# '•'
-                w.append(str(y))
-            print_lines.append(''.join(w))
-        
+                j,_ = _get_j_and_W(
+                    item[k],
+                    t=k,
+                    use_color=use_color,
+                    _top=False,
+                    _spaces=_spaces+_space_increment,
+                    _space_increment=_space_increment,
+                    ignore_keys=ignore_keys,
+                    only_keys=only_keys,
+                    ignore_types=ignore_types,
+                    ignore_underscore=ignore_underscore,
+                    j=j,
+                    _W=_W,
+                    _keylist=_keylist_,
+                    depth=depth,
+                    max_depth=max_depth,
+                )
+                ctr += 1
+                if ctr >= max_items:
+                    break
+    else:
+        pass
+    #print(_W)
+    return j,_W
 
-        return D, print_lines
+
+
+def _preprocess(Q,use_color):
+
+    for k in kys(Q):
+
+        if type(Q[k]) is list:
+            D = {}
+            for i in rlen(Q[k]):
+                D[(i,)] = Q[k][i]
+            Q[k] = D
+
+        if type(Q[k]) is dict:
+            Q[k] = _preprocess(Q[k],use_color)
+
+        elif type(Q[k]) is None:
+            pass
+
+        else:
+            if use_color:
+                if is_number(Q[k]):
+                    s = cf(Q[k],'`g-b')
+                elif type(Q[k]) is str:
+                    s = cf(Q[k],'`y-b')
+                else:
+                    s = cf(Q[k],'`b-b')
+            else:
+                s = str(Q[k])
+            Q[k] = { leaf+s : None }
+    return Q
+
+
+
+def _post_process(Din,use_line_numbers,use_color):
+
+    D = copy.deepcopy(Din)
+
+    vert =  '|    '
+    blank = '     '
+    bend =  '────┐'
+
+    max_width = 0
+
+    for i in kys(D):
+        max_width = max(max_width,len(D[i]))
+
+    for u  in range(max_width):
+        for i in sorted(kys(D),reverse=True):
+                try:
+                    if D[i][u] == D[i+1][u]:
+                        D[i+1][u] = vert
+                except:
+                    pass
+        in_line = False
+        for i in sorted(kys(D),reverse=True):
+
+                try:
+                    if D[i][u] != vert:
+                        in_line = True
+                    if not in_line and D[i][u] == vert:
+                        D[i][u] = blank
+                except:
+                    in_line = False
+
+    for i in sorted(kys(D),reverse=False):
+        if len(D[i]):
+            #print(D[i][-1])
+            if leaf in str(D[i][-1]):
+                D[i][-1] = D[i][-1].replace(leaf,'')
+                continue
+            l = len(str(D[i][-1]))
+            if type(D[i][-1]) is tuple and len(D[i][-1]) == 1:
+                b = bend
+            elif l <= len(bend):
+                b = bend[l-1:]
+            else:
+                b = ''
+            if use_line_numbers:
+                if use_color:
+                    b += cf('',i,'`--d')
+                else:
+                    b += ' '+str(i)
+            D[i].append(b)
+
+    print_lines = []
+    for i in sorted(kys(D),reverse=False):
+        w = []
+        for y in D[i]:
+            if type(y) is tuple:
+                y = '└'# '•'
+            w.append(str(y))
+        print_lines.append(''.join(w))
+    
+
+    return D, print_lines
 
 
 
