@@ -5,7 +5,7 @@ from k3.utils.misc.zprint import *
 
 def o_base(D):
     
-    D['__menu_path__'] = '<unspecified>'
+    D['__menu_path__'] = None
 
     def o(
         p=None,
@@ -16,9 +16,19 @@ def o_base(D):
         prune=False,
         z=False,
         t=None,
-        ud=0,        
+        ud=0,
+        m=None,
         D=D,
     ):
+        if p == '':
+            p = None
+
+        if m is not None:
+            assert_as(p is None,"p is None")
+            p = D['__menu_path__']
+            m = None
+
+
         def _zprint(z,p,D,t,k):
             if z:
                 if t is None: t = p
@@ -114,6 +124,45 @@ oD(z=1)
             exec(c)
 
 
+if False:
+    if ud == -1:
+        if D['__menu_path__'] == None:
+            #_message("already at top")
+            #return o() ###################
+            pass
+        D['__menu_path__'] = pname_(
+            D['__menu_path__']
+        ) + '/'
+        #_message('went up to '+Environment['current_prefix_path'])
+
+    elif ud == 1:
+        key_list = Environment['current_prefix_path'][:-1].split('/')
+        D = Environment['dictionary']
+        for k in key_list:
+            k = str_to_tuple_as_necessary(k)
+            D = D[k]
+        if type(D) == dict:
+            if has_form_of_alias(d):
+                if d in kys(D):
+                    Environment['current_prefix_path'] += d + '/'
+                    _message(d2s('down to',d))
+                    return o() ###################
+                else:
+                    assert False
+            if len(kys(D)) > 1:
+                k = select_from_list(kys(D))
+            else:
+                k = kys(D)[0]
+            Environment['current_prefix_path'] += k + '/'
+            _message(d2s('down to',k))
+        else:
+            _message("can't go down")
+        return o() ###################
+    elif d is None:
+        pass
+
+    else:
+        assert False
 #EOF
 
 #,b
