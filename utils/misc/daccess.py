@@ -3,11 +3,6 @@
 from k3.utils.misc.zprint import *
 
 
-
-
-
-
-
 def o_base(D):
 
     def o(
@@ -37,29 +32,32 @@ def o_base(D):
             p = D['__menu_path__']
             m = None
 
-        if ud:
+        if ud in [-1,1]:
             assert(p is None and e is None and prune is False and m is None)
             if '__menu_path__' not in D:
                 D['__menu_path__'] = None
+            cr(str(D['__menu_path__']))
 
         if ud == -1:
             assert('__menu_path__' in D)
             D['__menu_path__'] = pname_(D['__menu_path__'])
-            _zprint(1,None,o( D['__menu_path__'] ),'up','')
-            _zprint(1,None,o(  ),'<up>','')
+            _zprint(1,None,o( D['__menu_path__'] ),'','')
+            cg(D['__menu_path__'])
+            #_zprint(1,None,o(  ),'<up>','')
 
         elif ud == 1:
             O = o( D['__menu_path__'] )
             if type(O) is dict:
-                k = select_from_list( kys(O))
+                if len(O) > 1:
+                    k = select_from_list( kys(O))
+                else:
+                    k = kys(O)[0]
                 if D['__menu_path__'] is None:
                     D['__menu_path__'] = k + '/'
                 else:
                     D['__menu_path__'] = D['__menu_path__'] + k + '/'
                 _zprint(1,None,o( D['__menu_path__'] ),k,'')
-            _zprint(1,None,o(  ),'<down>','')
-
-
+            #_zprint(1,None,o(  ),'<down>','')
 
         assert_as(D is not None,"D is not None")
 
@@ -136,6 +134,14 @@ def input_int(s='> '):
     else:
         return None
 
+def input_from_range(s='> ',choices=[]):
+    c = input(s)
+    if str_is_int(c):
+        c = int(c)
+    if c in choices:
+        return c
+    else:
+        return None
 
 def input_int_in_range(a,b,s):
     c = input_int(s)
@@ -189,7 +195,17 @@ oD(z=1)
             clp(c,'`--u')
             exec(c)
 
-
+c = None
+while c != 'q':
+    c = input_from_range(choices=[1,-1,'q'])
+    clear_screen()
+    if c is None:
+        continue
+    
+    try:
+        oD(ud=c)
+    except:
+        print('oops!')
 #EOF
 
 #,b
