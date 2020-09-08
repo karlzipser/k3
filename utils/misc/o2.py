@@ -3,6 +3,49 @@
 from k3.utils.misc.zprint import *
 
 
+
+
+
+def pname_(path):
+    if path == None:
+        return None
+    assert has_form_of_path(path)
+    path = pname( path[:-1] ) + '/'
+    if path in ['/','']:
+        path = None
+    else:
+        assert has_form_of_path(path)
+    return path
+
+
+def input_int(s='> '):
+    c = input(s)
+    if str_is_int(c):
+        return int(c)
+    else:
+        return None
+
+
+def input_int_in_range(a,b,s):
+    c = input_int(s)
+    if c is None or c < a or c > b:
+        return None
+    else:
+        return c
+
+def select_from_list(lst,ignore_underscore=True):
+    ctr = 0
+    for i in rlen(lst):
+        if ignore_underscore and lst[i][0] != '_':
+            clp('    ',i,') ',lst[i],s0='')
+            ctr += 1
+    if ctr > 1:
+        i = input_int_in_range(0,len(lst)-1,'>> ')
+    else:
+        i = 0
+    return lst[i]
+
+
 def o_base(D):
     
     D['__menu_path__'] = None
@@ -20,6 +63,12 @@ def o_base(D):
         m=None,
         D=D,
     ):
+
+        def _zprint(z,p,D,t,k):
+            if z:
+                if t is None: t = p
+                zprint(D,t)
+
         if p == '':
             p = None
 
@@ -28,11 +77,23 @@ def o_base(D):
             p = D['__menu_path__']
             m = None
 
+        if ud == -1:
+            assert('__menu_path__' in D)
+            D['__menu_path__'] = pname_(D['__menu_path__'])
+            _zprint(1,None,o( D['__menu_path__'] ),'up','')
+            _zprint(1,None,o(  ),'<up>','')
 
-        def _zprint(z,p,D,t,k):
-            if z:
-                if t is None: t = p
-                zprint(D,t)
+        elif ud == 1:
+            O = o( D['__menu_path__'] )
+            if type(O) is dict:
+                k = select_from_list( kys(O))
+                if D['__menu_path__'] is None:
+                    D['__menu_path__'] = k + '/'
+                else:
+                    D['__menu_path__'] = D['__menu_path__'] + k + '/'
+                _zprint(1,None,o( D['__menu_path__'] ),k,'')
+            _zprint(1,None,o(  ),'<down>','')
+
 
 
         assert_as(D is not None,"D is not None")
@@ -113,7 +174,7 @@ oE(z=1)
 
 oD('Y/',e=oE('a/'))
 oD(z=1)  
-oD('a/',prune=1)
+#oD('a/',prune=1)
 oD(z=1)
 
     """
@@ -126,6 +187,7 @@ oD(z=1)
 
 if False:
     if ud == -1:
+        assert_as('__menu_path__' in D,"'__menu_path__' in D")
         if D['__menu_path__'] == None:
             #_message("already at top")
             #return o() ###################
@@ -136,6 +198,7 @@ if False:
         #_message('went up to '+Environment['current_prefix_path'])
 
     elif ud == 1:
+        assert_as('__menu_path__' in D,"'__menu_path__' in D")
         key_list = Environment['current_prefix_path'][:-1].split('/')
         D = Environment['dictionary']
         for k in key_list:
@@ -146,7 +209,7 @@ if False:
                 if d in kys(D):
                     Environment['current_prefix_path'] += d + '/'
                     _message(d2s('down to',d))
-                    return o() ###################
+                    #return o() ###################
                 else:
                     assert False
             if len(kys(D)) > 1:
@@ -157,7 +220,7 @@ if False:
             _message(d2s('down to',k))
         else:
             _message("can't go down")
-        return o() ###################
+        #return o() ###################
     elif d is None:
         pass
 

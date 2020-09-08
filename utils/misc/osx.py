@@ -3,8 +3,6 @@ from k3.utils.misc.sys import *
 
     
 
-
-
 def stowe_Desktop(suffix=''):
     if len(suffix) > 0:
         suffix = '__' + suffix
