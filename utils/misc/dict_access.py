@@ -32,9 +32,8 @@ def dict_access(D,name):
 
         def _zprint(z,p,D,t):
             if z:
-                if t is None: t = p
-                #if type(D) is dict and len(D) == 0:
-                #    D = cf('<empty dictionary>')
+                if t is None:
+                    t = p
                 zprint(D,t,max_depth=Meta['max_depth']+1)
 
         if p == '':
@@ -48,29 +47,22 @@ def dict_access(D,name):
         if ud in [-1,1]:
             assert(p is None and e is None and prune is False and m is None)
 
-        #print('name 0',name)
-
         n = None
         if ud == 'u':
             assert_as('menu_path' in Meta,"'menu_path' in D")
             Meta['menu_path'] = pname_(Meta['menu_path'])
-                #cm('zp0')
+
             if Meta['menu_path'] is None:
-                #cg(1)
-                n = '' #name
-                #cg(n)
+                n = ''
+
             else:
-                #cg(2)
+
                 n = Meta['menu_path']
-            #_zprint(1,None,o( Meta['menu_path'] ),name+'/'+n)
 
         elif ud == 'd':
-            #cg(Meta)
             n = Meta['menu_path']
             O = o( Meta['menu_path'] )
-            if type(O) is dict and len(O) > 0:# and not( len(O)==1 and not (type(O[kys(O)[0]]) is dict and len(O[kys(O)[0]]) == 0)):
-                #cg(type(O),len(O),O)
-            #if type(O) is dict:
+            if type(O) is dict and len(O) > 0:
                 if len(O) > 1:
                     k = None
                     while k is None:
@@ -84,8 +76,6 @@ def dict_access(D,name):
                 else:
                     Meta['menu_path'] = Meta['menu_path'] + k + '/'
                     n = Meta['menu_path']
-                #cm('zp1')
-            #_zprint(1,None,o( Meta['menu_path'] ),name+'/'+n)
 
         if ud in ['u','d','-']:
             if n is None:
@@ -116,10 +106,8 @@ def dict_access(D,name):
                     
                     assert_as( k in D, d2s("k in D? No,",qtd(k),"not in",D))
                     D = D[k]
-                #cm('zp2')
                 _zprint(z,p,D,'t')
             else:
-                #cm('zp3')
                 _zprint(z,p,D,'')
 
             return D 
@@ -138,7 +126,6 @@ def dict_access(D,name):
             k = key_list[-1]
             D[k] = e
             _zprint(z,p,D,t)
-            #cg(key_list)
             return e
     return o
 
@@ -244,13 +231,10 @@ while c != 'q':
         i = input_int_in_range(0,10*10,d2n('max depth (',D['__meta__']['max_depth'],') >>> '))
         if type(i) is int:
             D['__meta__']['max_depth'] = i
-        #cm(0)
         clear_screen()
         oD(ud='-')
         continue
-    #cy(1)
-    #clear_screen()
-    #cy(2)
+
     if c is None:
         cm(qtd(c),'not recognized.')
         oD(ud='-')
