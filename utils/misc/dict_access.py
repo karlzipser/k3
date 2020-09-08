@@ -3,7 +3,12 @@
 from k3.utils.misc.zprint import *
 
 
-def o_base(D):
+def o_base(D,name):
+
+    name = cf('dictionary '+name,'`--u')
+    print('name 0',name)
+    if '__menu_path__' not in D:
+        D['__menu_path__'] = None
 
     def o(
         p=None,
@@ -17,9 +22,10 @@ def o_base(D):
         ud=0,
         m=None,
         D=D,
+        name=name,
     ):
 
-        def _zprint(z,p,D,t,k):
+        def _zprint(z,p,D,t):
             if z:
                 if t is None: t = p
                 zprint(D,t)
@@ -34,30 +40,41 @@ def o_base(D):
 
         if ud in [-1,1]:
             assert(p is None and e is None and prune is False and m is None)
-            if '__menu_path__' not in D:
-                D['__menu_path__'] = None
-            cr(str(D['__menu_path__']))
+
+        #print('name 0',name)
 
         if ud == -1:
-            assert('__menu_path__' in D)
+            assert_as('__menu_path__' in D,"'__menu_path__' in D")
             D['__menu_path__'] = pname_(D['__menu_path__'])
-            _zprint(1,None,o( D['__menu_path__'] ),'','')
-            cg(D['__menu_path__'])
-            #_zprint(1,None,o(  ),'<up>','')
+                #cm('zp0')
+            if D['__menu_path__'] is None:
+                #cg(1)
+                n = '' #name
+                #cg(n)
+            else:
+                #cg(2)
+                n = D['__menu_path__']
+            _zprint(1,None,o( D['__menu_path__'] ),name+'/'+n)
 
         elif ud == 1:
+            n = D['__menu_path__']
             O = o( D['__menu_path__'] )
-            if type(O) is dict:
+            if type(O) is dict and len(O) > 0:# and not( len(O)==1 and not (type(O[kys(O)[0]]) is dict and len(O[kys(O)[0]]) == 0)):
+                #cg(type(O),len(O),O)
+            #if type(O) is dict:
                 if len(O) > 1:
                     k = select_from_list( kys(O))
+                    clear_screen()
                 else:
                     k = kys(O)[0]
                 if D['__menu_path__'] is None:
                     D['__menu_path__'] = k + '/'
+                    n = ''
                 else:
                     D['__menu_path__'] = D['__menu_path__'] + k + '/'
-                _zprint(1,None,o( D['__menu_path__'] ),k,'')
-            #_zprint(1,None,o(  ),'<down>','')
+                    n = D['__menu_path__']
+                #cm('zp1')
+            _zprint(1,None,o( D['__menu_path__'] ),name+'/'+n)
 
         assert_as(D is not None,"D is not None")
 
@@ -80,9 +97,11 @@ def o_base(D):
                     
                     assert_as( k in D, d2s("k in D? No,",qtd(k),"not in",D))
                     D = D[k]
-                _zprint(z,p,D,t,key_list)
+                #cm('zp2')
+                _zprint(z,p,D,'t')
             else:
-                _zprint(z,p,D,'','')
+                #cm('zp3')
+                _zprint(z,p,D,'')
 
             return D 
         else:
@@ -99,7 +118,7 @@ def o_base(D):
                 D = D[k]
             k = key_list[-1]
             D[k] = e
-            _zprint(z,p,D,t,k)
+            _zprint(z,p,D,t)
             #cg(key_list)
             return e
     return o
@@ -173,11 +192,11 @@ if '__file__' in locals(): eg(__file__)
 import copy
 
 D = {}
-oD = o_base(D)
+oD = o_base(D,'D')
 oD('a/b/c/d/e/',e=1,z=1)
 
 E = {}
-oE = o_base(E)
+oE = o_base(E,'E')
 oE('a/b/c/d/e/',e=2,z=1)
 
 oD(z=1)
@@ -198,14 +217,16 @@ oD(z=1)
 c = None
 while c != 'q':
     c = input_from_range(choices=[1,-1,'q'])
+    #cy(1)
     clear_screen()
+    #cy(2)
     if c is None:
         continue
     
-    try:
-        oD(ud=c)
-    except:
-        print('oops!')
+    #try:
+    oD(ud=c)
+    #except:
+    #    print('oops!')
 #EOF
 
 #,b
