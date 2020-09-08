@@ -3,12 +3,15 @@
 from k3.utils.misc.zprint import *
 
 
-def o_base(D,name):
+def dict_access(D,name):
 
     name = cf('dictionary '+name,'`--u')
     print('name 0',name)
     if '__menu_path__' not in D:
         D['__menu_path__'] = None
+    if '__max_depth__' not in D:
+        D['__max_depth__'] = 10**3
+
 
     def o(
         p=None,
@@ -28,7 +31,7 @@ def o_base(D,name):
         def _zprint(z,p,D,t):
             if z:
                 if t is None: t = p
-                zprint(D,t)
+                zprint(D,t,max_depth=10**3)
 
         if p == '':
             p = None
@@ -192,11 +195,11 @@ if '__file__' in locals(): eg(__file__)
 import copy
 
 D = {}
-oD = o_base(D,'D')
+oD = dict_access(D,'D')
 oD('a/b/c/d/e/',e=1,z=1)
 
 E = {}
-oE = o_base(E,'E')
+oE = dict_access(E,'E')
 oE('a/b/c/d/e/',e=2,z=1)
 
 oD(z=1)
@@ -214,9 +217,13 @@ oD(z=1)
             clp(c,'`--u')
             exec(c)
 
+clear_screen()
+oD(z=1)
 c = None
 while c != 'q':
-    c = input_from_range(choices=[1,-1,'q'])
+    c = input_from_range(choices=[1,-1,'q','m'])
+    if c == 'm':
+        D['__max_depth__']=1+input_int_in_range(0,99999,'>>> ')
     #cy(1)
     clear_screen()
     #cy(2)
