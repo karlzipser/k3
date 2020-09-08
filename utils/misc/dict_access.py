@@ -189,6 +189,22 @@ def select_from_list(lst,ignore_underscore=True):
         return None
     return lst[i]
 
+def files_to_dict(path,D={}):
+    D['.'] = []
+
+    fs = sggo(path,'*')
+    for f in fs:
+        if not os.path.isdir(f):
+            D['.'].append(fname(f))
+        else:
+            D[fname(f)] = files_to_dict(f,{})
+    return D
+
+
+
+
+
+
 if __name__ == '__main__':
  
     code = """
@@ -222,28 +238,31 @@ oD(z=1)
             clp(c,'`--u')
             exec(c)
 
-clear_screen()
-oD(ud='-')
-c = None
-while c != 'q':
-    c = input_from_range(choices=['u','d','q','m'])
-    if c == 'm':
-        i = input_int_in_range(0,10*10,d2n('max depth (',D['__meta__']['max_depth'],') >>> '))
-        if type(i) is int:
-            D['__meta__']['max_depth'] = i
-        clear_screen()
-        oD(ud='-')
-        continue
+    D=files_to_dict(opjh('Desktops_older'),D={})
+    oD = dict_access(D,'Desktops_older')
 
-    if c is None:
-        cm(qtd(c),'not recognized.')
-        oD(ud='-')
-        continue
-    
-    #try:
-    oD(ud=c)
-    #except:
-    #    print('oops!')
+    clear_screen()
+    oD(ud='-')
+    c = None
+    while c != 'q':
+        c = input_from_range(choices=['u','d','q','m'])
+        if c == 'm':
+            i = input_int_in_range(0,10*10,d2n('max depth (',D['__meta__']['max_depth'],') >>> '))
+            if type(i) is int:
+                D['__meta__']['max_depth'] = i
+            clear_screen()
+            oD(ud='-')
+            continue
+
+        if c is None:
+            cm(qtd(c),'not recognized.')
+            oD(ud='-')
+            continue
+        
+        #try:
+        oD(ud=c)
+        #except:
+        #    print('oops!')
 #EOF
 
 #,b
