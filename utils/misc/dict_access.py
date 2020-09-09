@@ -212,6 +212,8 @@ def files_to_dict(path,D={}):
     return D
 
 
+def pa(lst):
+    return d2f('/',*lst)+'/'
 
 
 
@@ -284,26 +286,38 @@ oD(z=1)
                 clear_screen()
 
                 n_prev = None
-                cb(kys(zD),len(zD))
-                cg(len(print_lines))
+                #cb(kys(zD),len(zD))
+                #cg(len(print_lines))
                 for i in rlen(print_lines):
                     j = i-1
-                    cy(i,j,zD[j])
+                    #cy(i,j,zD[j])
                     d = zD[j]
-                    n = None
+                    if len(d) > 0 and type(d[-1]) is tuple and len(d[-1]) == 1:
+                        indx = d[-1][0]
+                        #cm(d[:-1],indx)
+                        #d = d[:-1]
+                    else:
+                        indx = ''
+                    n = ''
+                    n_show = ''
                     try:
-                        n = d[-1]#[0]
-                        print(n)
+                        n = pa(d)#d[-1]#[0]
+                        #print(n)
                     except:
                         pass
                     if n != n_prev:
                         n_prev = n
+                        n_show = n.split('(')[0]
                         s = str(i)
                     else:
                         s = ''
                     while len(s) < 4:
                         s = s+' '
-                    print(s,' ',d,print_lines[i])
+                    if n_show == '':
+                        indx = ''
+                    if False:
+                        print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
+                    print(print_lines[i]+'\t'+s)
                 #kprint(print_lines)
             else:#except:
                 print('oops!')
