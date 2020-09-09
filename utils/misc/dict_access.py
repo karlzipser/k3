@@ -31,7 +31,7 @@ def dict_access(D,name):
     ):
 
         def _zprint(z,p,D,t,do_return=0,do_print=1):
-            #a,b=zprint(D,do_return=1) 
+
             if z:
                 if t is None:
                     t = p
@@ -39,14 +39,6 @@ def dict_access(D,name):
                     return zprint(D,max_depth=Meta['max_depth']+1,do_return=do_return,do_print=do_print)
                 else:
                     return zprint(D,t,max_depth=Meta['max_depth']+1,do_return=do_return,do_print=do_print)
-                """
-                if do_return:
-                    cy(do_return)
-                    zD,print_lines = zprint(D,t,max_depth=Meta['max_depth']+1,do_return=1,do_print=do_print)
-                    return zD,print_lines
-                else:
-                    zprint(D,t,max_depth=Meta['max_depth']+1,do_print=do_print)
-                """
 
         if p == '':
             p = None
@@ -93,7 +85,7 @@ def dict_access(D,name):
                     n = ''
                 else:
                     n = Meta['menu_path']
-            #clear_screen()
+
             zD,print_lines = _zprint(1,None,o( Meta['menu_path'] ),name+'/'+n,do_return=1,do_print=1)
 
             return zD,print_lines
@@ -163,42 +155,6 @@ def pname_(path):
     return path
 
 
-def input_int(s='> '):
-    c = input(s)
-    if str_is_int(c):
-        return int(c)
-    else:
-        return None
-
-def input_from_range(s='> ',choices=[]):
-    c = input(s)
-    if str_is_int(c):
-        c = int(c)
-    if c in choices:
-        return c
-    else:
-        return None
-
-def input_int_in_range(a,b,s):
-    c = input_int(s)
-    if c is None or c < a or c > b:
-        return None
-    else:
-        return c
-
-def select_from_list(lst,ignore_underscore=False):
-    ctr = 0
-    for i in rlen(lst):
-        if True:#ignore_underscore and lst[i][0] != '_':
-            clp('    ',i,') ',lst[i],s0='')
-            ctr += 1
-    if ctr > 1:
-        i = input_int_in_range(0,len(lst)-1,'>> ')
-    else:
-        i = 0
-    if i is None:
-        return None
-    return lst[i]
 
 def files_to_dict(path,D={}):
     D['.'] = []
@@ -260,7 +216,7 @@ oD(z=1)
         c = None
         U = {}
         while c != 'q':
-            c = input_from_range(choices=['u','d','q','m'])
+            c = input_from_choices(choices=['u','d','q','m'])
 
             if c is None:
                 c = '-'

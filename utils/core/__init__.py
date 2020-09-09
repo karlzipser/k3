@@ -18,6 +18,8 @@ from k3.utils.core.strings import *
 
 from k3.utils.core.arrays import *
 
+from k3.utils.core.input_ import *
+
 from k3.utils.core.printing import *
 
 #EOF
