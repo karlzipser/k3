@@ -229,8 +229,8 @@ if '__file__' in locals(): eg(__file__)
 import copy
 
 D = {}
-oD = dict_access(D,'D')
-oD('a/b/c/d/e/',e=1,z=1)
+oD = dict_access(D,'D/')
+oD('a/b/c/d/e/',e=['x','y','z'],z=1)
 
 E = {}
 oE = dict_access(E,'E')
@@ -241,7 +241,7 @@ oE(z=1)
 
 oD('Y/',e=oE('a/'))
 oD(z=1)  
-oD('a/b/c/d/',prune=1)
+#oD('a/b/c/d/',prune=1)
 oD(z=1)
 
     """
@@ -252,12 +252,13 @@ oD(z=1)
             exec(c)
 
     if True:
-        D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
-        oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
+        #D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
+        #oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
 
         clear_screen()
         #oD(ud='-')
         c = None
+        U = {}
         while c != 'q':
             c = input_from_range(choices=['u','d','q','m'])
 
@@ -288,7 +289,9 @@ oD(z=1)
                 n_prev = None
                 #cb(kys(zD),len(zD))
                 #cg(len(print_lines))
-                for i in rlen(print_lines):
+                U = {}
+                ctr = 0
+                for i in range(1,len(print_lines)):
                     j = i-1
                     #cy(i,j,zD[j])
                     d = zD[j]
@@ -315,12 +318,55 @@ oD(z=1)
                         s = s+' '
                     if n_show == '':
                         indx = ''
+
+                    
+                    #print(n_show)
+
+                    if len(n_show.split('/')) == 2:
+                        n_show = '/'
+                    else:
+                        n_show = '/'.join(n_show.split('/')[1:])
+                    #print(n_show)
+                    if len(n_show) > 0:
+                        if n_show[-1] != '/':
+                            n_show = n_show+'/'
+                    else:
+                        n_show = ''
+
                     if False:
                         print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
-                    print(print_lines[i]+'\t'+s)
-                #kprint(print_lines)
+                    if n_show != '':
+                        if type(indx) is int:
+                            U[ctr] = (n_show,indx)
+                        else:
+                            U[ctr] = (n_show,None)
+                        ctr_show = cf(ctr,'`--d')#d2n('(',ctr,')')
+                        U_ctr_show = U[ctr]
+                        ctr += 1
+                    else:
+                        ctr_show = ''
+                        U_ctr_show = ''
+                    #print(i,print_lines[i]+'\t',ctr_show,U_ctr_show,s+'   '+cf(n_show,indx,'`b'))
+                    print(print_lines[i],ctr_show)#,U_ctr_show,cf(indx,'`b'))
+                #kprint(U,'U')
             else:#except:
                 print('oops!')
+
+            i = input_int('>>> ')
+            if i in U:
+                if U[i][1] is None:
+                    print(i,U[i][0])
+                    cm(oD(U[i][0]))
+                else:
+                    print(i,U[i][0],U[i][1])
+                    cy(oD('__meta__/menu_path/'))
+                    if oD('__meta__/menu_path/'):
+
+                        p = oD('__meta__/menu_path/')+ U[i][0]
+                    else:
+                        p = U[i][0]
+                    cr(oD(p)[U[i][1]])
+
 #EOF
 
 #,b

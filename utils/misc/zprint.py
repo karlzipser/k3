@@ -24,7 +24,7 @@ def zprint(
         if len(t) > 0:
             n = t
         else:
-            n = type(Dictionary).__name__
+            n = d2n('<',type(Dictionary).__name__,'>')
         Dictionary = {n:Dictionary}
 
     V = _preprocess( copy.deepcopy(Dictionary), use_color )

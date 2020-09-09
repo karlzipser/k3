@@ -17,8 +17,7 @@ def intr(n):
     return np.int(np.round(n))
 
 
-def as_pct(a,b):
-    return d2n(intr(100*a/b),'%')
+
 
 
 

@@ -162,4 +162,7 @@ def lines_to_html_str(print_lines):
     return h
 
 
+def as_pct(a,b):
+    return d2n(intr(100*a/b),'%')
+    
 #EOF
