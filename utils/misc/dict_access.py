@@ -14,6 +14,16 @@ def dict_access(D,name):
             'ignore_underscore':False,
         }
 
+    def _____zprint(z,p,D_,t,do_return=0,do_print=1):
+
+        if z:
+            if t is None:
+                t = p
+            if do_return:
+                return zprint(D_,max_depth=D['__meta__']['max_depth']+1,do_return=do_return,do_print=do_print)
+            else:
+                return zprint(D_,t,max_depth=D['__meta__']['max_depth']+1,do_return=do_return,do_print=do_print)
+
     def o(
         p=None,
         e=None,
@@ -30,6 +40,7 @@ def dict_access(D,name):
         name=name,
     ):
 
+
         def _zprint(z,p,D,t,do_return=0,do_print=1):
 
             if z:
@@ -40,6 +51,8 @@ def dict_access(D,name):
                 else:
                     return zprint(D,t,max_depth=Meta['max_depth']+1,do_return=do_return,do_print=do_print)
 
+
+
         if p == '':
             p = None
 
@@ -47,6 +60,9 @@ def dict_access(D,name):
             assert_as(p is None,"p is None")
             p = Meta['menu_path']
             m = None
+
+
+
 
 
         if ud in ['u','d','-']:
@@ -86,13 +102,92 @@ def dict_access(D,name):
                 else:
                     n = Meta['menu_path']
 
-            zD,print_lines = _zprint(1,None,o( Meta['menu_path'] ),name+'/'+n,do_return=1,do_print=1)
+            zD,print_lines = _zprint(z=1,p=None,D=o( Meta['menu_path'] ),t=name+'/'+n,do_return=1,do_print=1)
+
+
+
+            n_prev = None
+
+            U = {}
+            ctr = 0
+            for i in range(1,len(print_lines)):
+                j = i-1
+
+                d = zD[j]
+                if len(d) > 0 and type(d[-1]) is tuple and len(d[-1]) == 1:
+                    indx = d[-1][0]
+                else:
+                    indx = ''
+                n = ''
+                n_show = ''
+                try:
+                    n = pa(d)
+                except:
+                    pass
+                if n != n_prev:
+                    n_prev = n
+                    n_show = n.split('(')[0]
+                    s = str(i)
+                else:
+                    s = ''
+                while len(s) < 4:
+                    s = s+' '
+                if n_show == '':
+                    indx = ''
+                if len(n_show.split('/')) == 2:
+                    n_show = '/'
+                else:
+                    n_show = '/'.join(n_show.split('/')[1:])
+
+                if len(n_show) > 0:
+                    if n_show[-1] != '/':
+                        n_show = n_show+'/'
+                else:
+                    n_show = ''
+
+                if False:
+                    print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
+                if n_show != '':
+                    if type(indx) is int:
+                        U[ctr] = (n_show,indx)
+                    else:
+                        U[ctr] = (n_show,None)
+                    ctr_show = cf(ctr,'`--d')
+                    U_ctr_show = U[ctr]
+                    ctr += 1
+                else:
+                    ctr_show = ''
+                    U_ctr_show = ''
+                
+                print(print_lines[i],ctr_show)
+
+            if False:
+                i = input_int('>>> ')
+                if i in U:
+                    if U[i][1] is None:
+                        print(i,U[i][0])
+                        cm(oD(U[i][0]))
+                    else:
+                        print(i,U[i][0],U[i][1])
+                        cy(oD('__meta__/menu_path/'))
+                        if oD('__meta__/menu_path/'):
+
+                            p = oD('__meta__/menu_path/')+ U[i][0]
+                        else:
+                            p = U[i][0]
+                        cr(oD(p)[U[i][1]])
+
+                return U[i],print_lines
 
             return zD,print_lines
 
+
+
+
+
         assert_as(D is not None,"D is not None")
 
-        assert_as(p is None or has_form_of_path(p),d2s(qtd(p),"is None or has_form_of_path(",qtd(p),")"))
+        assert_as(p is None or has_form_of_path(p), d2s(qtd(p),"is None or has_form_of_path(",qtd(p),")"))
 
         if p is not None:
             key_list = p[:-1].split('/')
@@ -142,7 +237,6 @@ def has_form_of_path(s):
     return False 
 
 
-
 def pname_(path):
     if path == None:
         return None
@@ -153,19 +247,6 @@ def pname_(path):
     else:
         assert has_form_of_path(path)
     return path
-
-
-
-def files_to_dict(path,D={}):
-    D['.'] = []
-
-    fs = sggo(path,'*')
-    for f in fs:
-        if not os.path.isdir(f):
-            D['.'].append(fname(f))
-        else:
-            D[fname(f)] = files_to_dict(f,{})
-    return D
 
 
 def pa(lst):
@@ -240,88 +321,79 @@ oD(z=1)
                 #print(qtd(c))
                 assert_as(c in ['u','d','-'],d2s(c,"in ['u','d','-']"))
                 zD,print_lines = oD(ud=c)
-                clear_screen()
+                #clear_screen()
 
-                n_prev = None
-                #cb(kys(zD),len(zD))
-                #cg(len(print_lines))
-                U = {}
-                ctr = 0
-                for i in range(1,len(print_lines)):
-                    j = i-1
-                    #cy(i,j,zD[j])
-                    d = zD[j]
-                    if len(d) > 0 and type(d[-1]) is tuple and len(d[-1]) == 1:
-                        indx = d[-1][0]
-                        #cm(d[:-1],indx)
-                        #d = d[:-1]
-                    else:
-                        indx = ''
-                    n = ''
-                    n_show = ''
-                    try:
-                        n = pa(d)#d[-1]#[0]
-                        #print(n)
-                    except:
-                        pass
-                    if n != n_prev:
-                        n_prev = n
-                        n_show = n.split('(')[0]
-                        s = str(i)
-                    else:
-                        s = ''
-                    while len(s) < 4:
-                        s = s+' '
-                    if n_show == '':
-                        indx = ''
-
-                    
-                    #print(n_show)
-
-                    if len(n_show.split('/')) == 2:
-                        n_show = '/'
-                    else:
-                        n_show = '/'.join(n_show.split('/')[1:])
-                    #print(n_show)
-                    if len(n_show) > 0:
-                        if n_show[-1] != '/':
-                            n_show = n_show+'/'
-                    else:
-                        n_show = ''
-
-                    if False:
-                        print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
-                    if n_show != '':
-                        if type(indx) is int:
-                            U[ctr] = (n_show,indx)
+                if False:
+                    n_prev = None
+                    #cb(kys(zD),len(zD))
+                    #cg(len(print_lines))
+                    U = {}
+                    ctr = 0
+                    for i in range(1,len(print_lines)):
+                        j = i-1
+                        #cy(i,j,zD[j])
+                        d = zD[j]
+                        if len(d) > 0 and type(d[-1]) is tuple and len(d[-1]) == 1:
+                            indx = d[-1][0]
+                            #cm(d[:-1],indx)
+                            #d = d[:-1]
                         else:
-                            U[ctr] = (n_show,None)
-                        ctr_show = cf(ctr,'`--d')#d2n('(',ctr,')')
-                        U_ctr_show = U[ctr]
-                        ctr += 1
-                    else:
-                        ctr_show = ''
-                        U_ctr_show = ''
-                    #print(i,print_lines[i]+'\t',ctr_show,U_ctr_show,s+'   '+cf(n_show,indx,'`b'))
-                    print(print_lines[i],ctr_show)#,U_ctr_show,cf(indx,'`b'))
+                            indx = ''
+                        n = ''
+                        n_show = ''
+                        try:
+                            n = pa(d)#d[-1]#[0]
+                            #print(n)
+                        except:
+                            pass
+                        if n != n_prev:
+                            n_prev = n
+                            n_show = n.split('(')[0]
+                            s = str(i)
+                        else:
+                            s = ''
+                        while len(s) < 4:
+                            s = s+' '
+                        if n_show == '':
+                            indx = ''
+
+                        
+                        #print(n_show)
+
+                        if len(n_show.split('/')) == 2:
+                            n_show = '/'
+                        else:
+                            n_show = '/'.join(n_show.split('/')[1:])
+                        #print(n_show)
+                        if len(n_show) > 0:
+                            if n_show[-1] != '/':
+                                n_show = n_show+'/'
+                        else:
+                            n_show = ''
+
+                        if False:
+                            print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
+                        if n_show != '':
+                            if type(indx) is int:
+                                U[ctr] = (n_show,indx)
+                            else:
+                                U[ctr] = (n_show,None)
+                            ctr_show = cf(ctr,'`--d')#d2n('(',ctr,')')
+                            U_ctr_show = U[ctr]
+                            ctr += 1
+                        else:
+                            ctr_show = ''
+                            U_ctr_show = ''
+                        #print(i,print_lines[i]+'\t',ctr_show,U_ctr_show,s+'   '+cf(n_show,indx,'`b'))
+                        #print(print_lines[i],ctr_show)#,U_ctr_show,cf(indx,'`b'))
                 #kprint(U,'U')
             else:#except:
                 print('oops!')
 
-            i = input_int('>>> ')
-            if i in U:
-                if U[i][1] is None:
-                    print(i,U[i][0])
-                    cm(oD(U[i][0]))
-                else:
-                    print(i,U[i][0],U[i][1])
-                    cy(oD('__meta__/menu_path/'))
-                    if oD('__meta__/menu_path/'):
 
-                        p = oD('__meta__/menu_path/')+ U[i][0]
-                    else:
-                        p = U[i][0]
-                    cr(oD(p)[U[i][1]])
+
+
+
 
 #EOF
 

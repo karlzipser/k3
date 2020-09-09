@@ -29,7 +29,7 @@ def select_from_list(lst,ignore_underscore=False):
     ctr = 0
     for i in rlen(lst):
         if True:#ignore_underscore and lst[i][0] != '_':
-            clp('    ',i,') ',lst[i],s0='')
+            d2n('    ',i,') ',lst[i])
             ctr += 1
     if ctr > 1:
         i = input_int_in_range(0,len(lst)-1,'>> ')
