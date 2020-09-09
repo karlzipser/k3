@@ -1,7 +1,7 @@
-#,a
+# ,a
 
 from k3.utils.misc.zprint import *
-
+from k3.utils.misc.clipcode import *
 
 def dict_access(D,name):
 
@@ -255,37 +255,26 @@ def pa(lst):
 
 
 
+
 if __name__ == '__main__':
- 
-    code = """
 
-clear_screen()
 
-if '__file__' in locals(): eg(__file__)
+    if '__file__' in locals(): eg(__file__)
 
-import copy
 
-D = {}
-oD = dict_access(D,'D/')
-oD('a/b/c/d/e/',e=['x','y','z'],z=1)
-
-E = {}
-oE = dict_access(E,'E')
-oE('a/b/c/d/e/',e=2,z=1)
-
-oD(z=1)
-oE(z=1)
-
-oD('Y/',e=oE('a/'))
-oD(z=1)  
-#oD('a/b/c/d/',prune=1)
-oD(z=1)
-
-    """
-
-    for c in code.split('\n'):
+    raw_code = get_code_snippet_(__file__,start='#,---a',stop='#,---b')
+    v = raw_code.split('\n')[1:]
+    q = []
+    indent_spaces = 4
+    for r in v:
+        q.append(r[indent_spaces:])
+    raw_code = '\n'.join( q )
+    
+    
+    for c in raw_code.split('#.'):
         if not c.isspace():
-            clp(c,'`--u')
+            clp(c,'`--r')
+            #clp(c[indent_spaces:],indent_spaces,'`---')
             exec(c)
 
     if True:
@@ -296,8 +285,11 @@ oD(z=1)
         #oD(ud='-')
         c = None
         U = {}
-        while c != 'q':
+        while True:
             c = input_from_choices(choices=['u','d','q','m'])
+
+            if c == 'q':
+                break
 
             if c is None:
                 c = '-'
@@ -309,95 +301,45 @@ oD(z=1)
                 clear_screen()
                 oD(ud='-')
                 continue
-
-            """
-            if c is None:
-                cm(qtd(c),'not recognized.')
-                oD(ud='-')
-                continue
-            """
             
             if True:#try:
-                #print(qtd(c))
                 assert_as(c in ['u','d','-'],d2s(c,"in ['u','d','-']"))
                 zD,print_lines = oD(ud=c)
                 #clear_screen()
 
-                if False:
-                    n_prev = None
-                    #cb(kys(zD),len(zD))
-                    #cg(len(print_lines))
-                    U = {}
-                    ctr = 0
-                    for i in range(1,len(print_lines)):
-                        j = i-1
-                        #cy(i,j,zD[j])
-                        d = zD[j]
-                        if len(d) > 0 and type(d[-1]) is tuple and len(d[-1]) == 1:
-                            indx = d[-1][0]
-                            #cm(d[:-1],indx)
-                            #d = d[:-1]
-                        else:
-                            indx = ''
-                        n = ''
-                        n_show = ''
-                        try:
-                            n = pa(d)#d[-1]#[0]
-                            #print(n)
-                        except:
-                            pass
-                        if n != n_prev:
-                            n_prev = n
-                            n_show = n.split('(')[0]
-                            s = str(i)
-                        else:
-                            s = ''
-                        while len(s) < 4:
-                            s = s+' '
-                        if n_show == '':
-                            indx = ''
 
-                        
-                        #print(n_show)
-
-                        if len(n_show.split('/')) == 2:
-                            n_show = '/'
-                        else:
-                            n_show = '/'.join(n_show.split('/')[1:])
-                        #print(n_show)
-                        if len(n_show) > 0:
-                            if n_show[-1] != '/':
-                                n_show = n_show+'/'
-                        else:
-                            n_show = ''
-
-                        if False:
-                            print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
-                        if n_show != '':
-                            if type(indx) is int:
-                                U[ctr] = (n_show,indx)
-                            else:
-                                U[ctr] = (n_show,None)
-                            ctr_show = cf(ctr,'`--d')#d2n('(',ctr,')')
-                            U_ctr_show = U[ctr]
-                            ctr += 1
-                        else:
-                            ctr_show = ''
-                            U_ctr_show = ''
-                        #print(i,print_lines[i]+'\t',ctr_show,U_ctr_show,s+'   '+cf(n_show,indx,'`b'))
-                        #print(print_lines[i],ctr_show)#,U_ctr_show,cf(indx,'`b'))
-                #kprint(U,'U')
             else:#except:
                 print('oops!')
 
 
+if False:
+#############################
+#,---a
+    D = {} #.
+    oD = dict_access(D,'D/') #.
+    oD('a/b/c/d/e/',e=['x','y','z'],z=1) #.
 
+    E = {} #.
+    oE = dict_access(E,'E') #.
+    oE('a/b/c/d/e/',e=2,z=1) #.
 
+    oD(z=1)
+    oE(z=1)
 
+    oD('Y/',e=oE('a/'))#.
+    oD(z=1)  #.
+    #oD('a/b/c/d/',prune=1)
+    oD(z=1) #.
+    for i in range(3):
+        print(i)
+        #.
+    raw_enter()
+#,---b
+#############################
 
 #EOF
 
-#,b
+# ,b
 
 
 

@@ -7,19 +7,19 @@ try:
 except:
     print("Failed: import pyperclip")
 
-def get_code_snippet_():
-    code_file = most_recent_py_file()
+def get_code_snippet_(code_file=None,start='#,a',stop='#,b'):
+    if code_file is None:
+        code_file = most_recent_py_file()
     code_lst = txt_file_to_list_of_strings(code_file)
     snippet_lst = []
     started = False
     for c in code_lst:
-        if not started and c == '#,a':
+        if not started and c == start:
             started = True
-        if started and c == '#,b':
+        if started and c == stop:
             break
         if started:
             snippet_lst.append(c)
-
     code_str = '\n'.join(snippet_lst)
     return code_str
 gcsp = get_code_snippet_

@@ -27,10 +27,13 @@ def input_int_in_range(a,b,s):
 
 def select_from_list(lst,ignore_underscore=False):
     ctr = 0
+    #print('aaa',len(lst))
     for i in rlen(lst):
+        #print(i)
         if True:#ignore_underscore and lst[i][0] != '_':
-            d2n('    ',i,') ',lst[i])
+            pd2n('    ',i,') ',lst[i])
             ctr += 1
+    #print('bbb')
     if ctr > 1:
         i = input_int_in_range(0,len(lst)-1,'>> ')
     else:
