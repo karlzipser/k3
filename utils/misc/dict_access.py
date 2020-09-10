@@ -231,6 +231,34 @@ def dict_access(D,name):
     return o
 
 
+
+if False:
+    A = {'a':{'b':{'c':1}}}
+
+    def condense_dict(D):
+        if type(D) is not dict:
+            return D
+        ks = kys(D)
+        for k in ks:
+            if type(D[k]) is dict:
+                if len(D[k]) == 1:
+                    if type(D[k][kys(D[k])[0]]) == dict:
+                        if len(D[k][kys(D[k])[0]]) == 1:
+                            D[k] = D[k][kys(D[k])[0]]
+                    else:
+                        D[k] = D[k][kys(D[k])[0]]
+                        cg(D[k])
+            else:
+                #cg(D[k])
+                return D
+                    #D[k] = D[k][kys(D[k])[0]]
+            D[k] = condense_dict(D[k])
+        return D
+
+    condense_dict(A)
+            
+
+
 def has_form_of_path(s):
     if type(s) == str:
         if len(s) > 1:
