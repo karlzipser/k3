@@ -33,7 +33,7 @@ def dict_access(D,name):
         prune=False,
         z=False,
         t=None,
-        ud=0,
+        ud=None,
         m=None,
         D=D,
         Meta=D['__meta__'],
@@ -102,9 +102,7 @@ def dict_access(D,name):
                 else:
                     n = Meta['menu_path']
 
-            zD,print_lines = _zprint(z=1,p=None,D=o( Meta['menu_path'] ),t=name+'/'+n,do_return=1,do_print=1)
-
-
+            zD,print_lines = _zprint(z=1,p=None,D=o( Meta['menu_path'] ),t=name+'/'+n,do_return=1,do_print=0)
 
             n_prev = None
 
@@ -147,11 +145,16 @@ def dict_access(D,name):
 
                 if False:
                     print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
+
                 if n_show != '':
-                    if type(indx) is int:
-                        U[ctr] = (n_show,indx)
+                    if Meta['menu_path'] is None:
+                        mp = ''
                     else:
-                        U[ctr] = (n_show,None)
+                        mp = Meta['menu_path']
+                    if type(indx) is int:
+                        U[ctr] = {'path':mp+n_show,'lst_indx':indx}
+                    else:
+                        U[ctr] = {'path':mp+n_show,'lst_indx':None}
                     ctr_show = cf(ctr,'`--d')
                     U_ctr_show = U[ctr]
                     ctr += 1
@@ -179,7 +182,7 @@ def dict_access(D,name):
 
                 return U[i],print_lines
 
-            return zD,print_lines
+            return U,print_lines
 
 
 
@@ -286,7 +289,7 @@ if __name__ == '__main__':
         c = None
         U = {}
         while True:
-            c = input_from_choices(choices=['u','d','q','m'])
+            c = input('>>>>')#_from_choices(choices=['u','d','q','m'])
 
             if c == 'q':
                 break
@@ -303,9 +306,33 @@ if __name__ == '__main__':
                 continue
             
             if True:#try:
-                assert_as(c in ['u','d','-'],d2s(c,"in ['u','d','-']"))
-                zD,print_lines = oD(ud=c)
+                assert_as(c in ['u','d','-'] or str_is_int(c),d2s(c,"in ['u','d','-'] or str_is_int(c)"))
+                cr(c)
+                if c in ['u','d']:
+                    cc = c
+                else:
+                    cc = '-'
+                U,print_lines = oD(ud=cc)
+                cr(U)
                 #clear_screen()
+                if str_is_int(c):
+                    i = int(c)
+                    cb(i)
+                #i = input_int('>>> ')
+                    if i in U:
+                        if U[i]['lst_indx'] is None:
+                            print(i,U[i])
+                            cm(oD(U[i]['path']))
+                        else:
+                            print(i,U[i])
+                            cy(oD('__meta__/menu_path/'))
+                            if oD('__meta__/menu_path/'):
+
+                                p = oD('__meta__/menu_path/')+ U[i]['path']
+                            else:
+                                p = U[i]['path']
+                            cr(oD(p)[U[i]['lst_indx']])
+
 
 
             else:#except:
