@@ -236,7 +236,8 @@ def errPrint(*s,**kwargs):
         del kwargs['f']
         s = cf('*** Error: ','`wrb',' ',*s,' ','`wrbr',' ***','`wrb',s1='')
     clp(s,**kwargs)
-    sys.exit(0) #raise Exception(fline()) #os._exit(1)
+    #sys.exit(0) #
+    raise Exception(fline()) #os._exit(1)
 cE = errPrint
 
 def assert_as(a,s):
