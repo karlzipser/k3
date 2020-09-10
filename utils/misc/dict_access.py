@@ -3,10 +3,10 @@
 from k3.utils.misc.zprint import *
 from k3.utils.misc.clipcode import *
 
+
 def dict_access(D,name):
 
     name = cf(name,'`--u')
-    print('name 0',name)
     if '__meta__' not in D:
         D['__meta__'] = {
             'menu_path':None,
@@ -14,15 +14,6 @@ def dict_access(D,name):
             'ignore_underscore':False,
         }
 
-    def _____zprint(z,p,D_,t,do_return=0,do_print=1):
-
-        if z:
-            if t is None:
-                t = p
-            if do_return:
-                return zprint(D_,max_depth=D['__meta__']['max_depth']+1,do_return=do_return,do_print=do_print)
-            else:
-                return zprint(D_,t,max_depth=D['__meta__']['max_depth']+1,do_return=do_return,do_print=do_print)
 
     def o(
         p=None,
@@ -33,54 +24,47 @@ def dict_access(D,name):
         prune=False,
         z=False,
         t=None,
-        ud=None,
-        m=None,
+        up_down=None,
+        use_meta_path=False,
         D=D,
         Meta=D['__meta__'],
         name=name,
     ):
 
 
-        def _zprint(z,p,D,t,do_return=0,do_print=1):
-
+        def _zprint(z=0,p=None,D=None,t=None,do_return=0,do_print=1):
             if z:
                 if t is None:
                     t = p
-                if do_return:
-                    return zprint(D,max_depth=Meta['max_depth']+1,do_return=do_return,do_print=do_print)
+                if Meta['menu_path'] is None:
+                    mp = ''
                 else:
-                    return zprint(D,t,max_depth=Meta['max_depth']+1,do_return=do_return,do_print=do_print)
-
-
-
+                    mp = Meta['menu_path']
+                return zprint(
+                        D,
+                        t=name+'/'+mp,
+                        max_depth=Meta['max_depth']+1,
+                        do_return=do_return,
+                        do_print=do_print
+                        )
         if p == '':
             p = None
 
-        if m is not None:
+        if use_meta_path:
             assert_as(p is None,"p is None")
             p = Meta['menu_path']
-            m = None
 
 
+        if up_down in ['u','d','-']:
 
+            assert(p is None and e is None \
+                and prune is False and use_meta_path is False)
 
-
-        if ud in ['u','d','-']:
-
-            assert(p is None and e is None and prune is False and m is None)
-
-            n = None
-
-            if ud == 'u':
+            if up_down == 'u':
                 assert_as('menu_path' in Meta,"'menu_path' in D")
                 Meta['menu_path'] = pname_(Meta['menu_path'])
-                if Meta['menu_path'] is None:
-                    n = ''
-                else:
-                    n = Meta['menu_path']
 
-            elif ud == 'd':
-                n = Meta['menu_path']
+            elif up_down == 'd':
                 O = o( Meta['menu_path'] )
                 if type(O) is dict and len(O) > 0:
                     if len(O) > 1:
@@ -91,106 +75,66 @@ def dict_access(D,name):
                         k = kys(O)[0]
                     if Meta['menu_path'] is None:
                         Meta['menu_path'] = k + '/'
-                        n = ''
                     else:
                         Meta['menu_path'] = Meta['menu_path'] + k + '/'
-                        n = Meta['menu_path']
 
-            if n is None:
-                if Meta['menu_path'] is None:
-                    n = ''
-                else:
-                    n = Meta['menu_path']
+            zD,print_lines = _zprint(
+                z=1,
+                p=None,
+                D=o( Meta['menu_path'] ),
+                do_return=1,
+                do_print=0
+            )
 
-            zD,print_lines = _zprint(z=1,p=None,D=o( Meta['menu_path'] ),t=name+'/'+n,do_return=1,do_print=0)
-
-            n_prev = None
+            dpath_prev = None
+            indx_prev = None
 
             U = {}
             ctr = 0
+
             for i in range(1,len(print_lines)):
                 j = i-1
 
                 d = zD[j]
+
+                n = ''
+                n_show = ''  
+
+                indx = None
+                d = d[1:]
                 if len(d) > 0 and type(d[-1]) is tuple and len(d[-1]) == 1:
                     indx = d[-1][0]
-                else:
-                    indx = ''
-                n = ''
-                n_show = ''
-                try:
-                    n = pa(d)
-                except:
-                    pass
-                if n != n_prev:
-                    n_prev = n
-                    n_show = n.split('(')[0]
-                    s = str(i)
-                else:
-                    s = ''
-                while len(s) < 4:
-                    s = s+' '
-                if n_show == '':
-                    indx = ''
-                if len(n_show.split('/')) == 2:
-                    n_show = '/'
-                else:
-                    n_show = '/'.join(n_show.split('/')[1:])
+                    d = d[:-1]
 
-                if len(n_show) > 0:
-                    if n_show[-1] != '/':
-                        n_show = n_show+'/'
+                dpath = pa(d)
+                if dpath == '/':
+                    dpath = ''
+                if Meta['menu_path'] is None:
+                    mp = ''
                 else:
-                    n_show = ''
-
-                if False:
-                    print(s,print_lines[i],cf(n_show,'`b',indx,'`g'))
-
-                if n_show != '':
-                    if Meta['menu_path'] is None:
-                        mp = ''
-                    else:
-                        mp = Meta['menu_path']
-                    if type(indx) is int:
-                        U[ctr] = {'path':mp+n_show,'lst_indx':indx}
-                    else:
-                        U[ctr] = {'path':mp+n_show,'lst_indx':None}
+                    mp = Meta['menu_path']
+                dpath = mp + dpath
+                U[ctr] = {'path':dpath,'lst_indx':indx}
+                
+                if d2s(dpath,indx) != d2s(dpath_prev,indx_prev):
                     ctr_show = cf(ctr,'`--d')
-                    U_ctr_show = U[ctr]
                     ctr += 1
                 else:
                     ctr_show = ''
-                    U_ctr_show = ''
-                
+                dpath_prev = dpath
+                indx_prev = indx
                 print(print_lines[i],ctr_show)
 
-            if False:
-                i = input_int('>>> ')
-                if i in U:
-                    if U[i][1] is None:
-                        print(i,U[i][0])
-                        cm(oD(U[i][0]))
-                    else:
-                        print(i,U[i][0],U[i][1])
-                        cy(oD('__meta__/menu_path/'))
-                        if oD('__meta__/menu_path/'):
-
-                            p = oD('__meta__/menu_path/')+ U[i][0]
-                        else:
-                            p = U[i][0]
-                        cr(oD(p)[U[i][1]])
-
-                return U[i],print_lines
 
             return U,print_lines
 
 
-
-
-
         assert_as(D is not None,"D is not None")
 
-        assert_as(p is None or has_form_of_path(p), d2s(qtd(p),"is None or has_form_of_path(",qtd(p),")"))
+        assert_as(
+            p is None or has_form_of_path(p), d2s(qtd(p),
+            "is None or has_form_of_path(",qtd(p),")"))
+
 
         if p is not None:
             key_list = p[:-1].split('/')
@@ -201,9 +145,9 @@ def dict_access(D,name):
                 for i in rlen(key_list):
                     k = key_list[i]
                     if prune and i == len(key_list)-1:
-                        print(key_list)
                         del D[k]
                         break
+                    
                     assert_as( k in D, d2s("k in D? No,",qtd(k),"not in",D))
                     D = D[k]
                 _zprint(z,p,D,'t')
@@ -232,30 +176,19 @@ def dict_access(D,name):
 
 
 
-if False:
-    A = {'a':{'b':{'c':1}}}
 
-    def condense_dict(D):
-        if type(D) is not dict:
-            return D
-        ks = kys(D)
-        for k in ks:
-            if type(D[k]) is dict:
-                if len(D[k]) == 1:
-                    if type(D[k][kys(D[k])[0]]) == dict:
-                        if len(D[k][kys(D[k])[0]]) == 1:
-                            D[k] = D[k][kys(D[k])[0]]
-                    else:
-                        D[k] = D[k][kys(D[k])[0]]
-                        cg(D[k])
-            else:
-                #cg(D[k])
-                return D
-                    #D[k] = D[k][kys(D[k])[0]]
-            D[k] = condense_dict(D[k])
+
+def condense_dict(D):
+    if type(D) is not dict:
         return D
+    ks = kys(D)
+    if len(ks) == 1:
+        return condense_dict(D[ks[0]])
+    for k in ks:
+        D[k] = condense_dict(D[k])
+    return D
 
-    condense_dict(A)
+
             
 
 
@@ -309,15 +242,16 @@ if __name__ == '__main__':
             exec(c)
 
     if True:
-        #D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
-        #oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
+        D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
+        D = condense_dict(D)
+        oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
 
-        clear_screen()
-        #oD(ud='-')
+        #clear_screen()
+        oD(up_down='-')
         c = None
         U = {}
         while True:
-            c = input('>>>>')#_from_choices(choices=['u','d','q','m'])
+            c = input('-> ')#_from_choices(choices=['u','d','q','m'])
 
             if c == 'q':
                 break
@@ -326,41 +260,45 @@ if __name__ == '__main__':
                 c = '-'
 
             if c == 'm':
-                i = input_int_in_range(0,10*10,d2n('max depth (',D['__meta__']['max_depth'],') >>> '))
+                i = input_int_in_range(
+                    0,
+                    10*10,
+                    d2n('max depth (',D['__meta__']['max_depth'],') >>> ')
+                )
                 if type(i) is int:
                     D['__meta__']['max_depth'] = i
-                clear_screen()
-                oD(ud='-')
+
+                oD(up_down='-')
                 continue
             
-            if True:#try:
-                assert_as(c in ['u','d','-'] or str_is_int(c),d2s(c,"in ['u','d','-'] or str_is_int(c)"))
-                cr(c)
+            if True:
+
                 if c in ['u','d']:
                     cc = c
                 else:
                     cc = '-'
-                U,print_lines = oD(ud=cc)
-                cr(U)
-                #clear_screen()
-                if str_is_int(c):
-                    i = int(c)
-                    cb(i)
-                #i = input_int('>>> ')
+                U,print_lines = oD(up_down=cc)
+
+                if str_is_int(c.split(' ')[0]):
+                    i = int(c.split(' ')[0])
                     if i in U:
-                        if U[i]['lst_indx'] is None:
-                            print(i,U[i])
-                            cm(oD(U[i]['path']))
-                        else:
-                            print(i,U[i])
-                            cy(oD('__meta__/menu_path/'))
-                            if oD('__meta__/menu_path/'):
-
-                                p = oD('__meta__/menu_path/')+ U[i]['path']
+                        p = U[i]['path']
+                        oD('__meta__/menu_path/',e=p)
+                        if False:
+                            clp(p,'`ybb') #oD('__meta__/menu_path/'),U[i]['path'],p,'`yb')
+                            if U[i]['lst_indx'] is None:
+                                cy('out:',oD(p))
                             else:
-                                p = U[i]['path']
-                            cr(oD(p)[U[i]['lst_indx']])
-
+                                cg('out:',oD(p)[U[i]['lst_indx']])
+            
+                    oD(up_down='-')
+                    if U[i]['lst_indx'] is None:
+                        cy('out:',oD(p))
+                    else:
+                        cg('out:',oD(p)[U[i]['lst_indx']])
+                    if len(c.split(' ')[0]) > 1:
+                        if c.split(' ')[1] == 'o':
+                            cg('open',opjh('Desktops_older/Desktop_30Jan19_10h14m01s',p),r=1)
 
 
             else:#except:
@@ -371,7 +309,7 @@ if False:
 #############################
 #,---a
     D = {} #.
-    oD = dict_access(D,'D/') #.
+    oD = dict_access(D,'D') #.
     oD('a/b/c/d/e/',e=['x','y','z'],z=1) #.
 
     E = {} #.
@@ -385,10 +323,11 @@ if False:
     oD(z=1)  #.
     #oD('a/b/c/d/',prune=1)
     oD(z=1) #.
+    print(oD('a/b/c/d/e/'))
     for i in range(3):
         print(i)
         #.
-    raw_enter()
+    #raw_enter()
 #,---b
 #############################
 

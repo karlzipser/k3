@@ -48,16 +48,7 @@ def percent_disk_free(disk='/'):
 
 
 
-def files_to_dict(path,D={}):
-    D['.'] = []
 
-    fs = sggo(path,'*')
-    for f in fs:
-        if not os.path.isdir(f):
-            D['.'].append(fname(f))
-        else:
-            D[fname(f)] = files_to_dict(f,{})
-    return D
 
 
 #EOF
