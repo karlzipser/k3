@@ -12,35 +12,31 @@ Arguments = get_Arguments(
     }
 )
 
-
 if not interactive() and __name__ == '__main__':
-
 
     if '__file__' in locals():
         eg(__file__)
 
-    if False:
-        D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
-        D = condense_dict(D)
-        oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
     name = Arguments['path']#k3'
     D = files_to_dict(opjh(name),D={})
     if Arguments['condense_dict']:
         D = condense_dict(D)
     oD = dict_access(D,name)
 
-    #clear_screen()
-    oD(up_down='-')
-    c = None
-    U = {}
+    clear_screen()
 
+    oD(up_down='-')
+
+    c = None
+
+    U = {}
 
     _re = r'^\s*(\d+)\s*(\w*)$'
 
 
     while True:
         c = input('-> ')#_from_choices(choices=['u','d','q','m'])
-
+        clear_screen()
         if c == 'q':
             break
 
@@ -64,21 +60,21 @@ if not interactive() and __name__ == '__main__':
             cc = c
         else:
             cc = '-'
-        U,print_lines = oD(up_down=cc)
 
+        clear_screen()
+        U,print_lines = oD(up_down=cc)
+        
         m = re.match(_re,c)
-        #cg(m.groups())
+
         if m:
             if str_is_int(m.groups()[0]):
                 i = int(m.groups()[0])
-                #cb(i)
-        #if str_is_int(c.split(' ')[0]):
-            #i = int(c.split(' ')[0])
+
                 if i in U:
                     p = U[i]['path']
                     oD('__meta__/menu_path/',e=p)
                     if False:
-                        clp(p,'`ybb') #oD('__meta__/menu_path/'),U[i]['path'],p,'`yb')
+                        clp(p,'`ybb')
                         if U[i]['lst_indx'] is None:
                             cy('out:',oD(p))
                         else:
@@ -87,11 +83,11 @@ if not interactive() and __name__ == '__main__':
                     oD(up_down='-')
                     oDp = oD(p)
                     if type(oDp) is dict:
-                        oDp_show = '{...}'
+                        oDp_show = '' # '{...}'
                     elif type(oDp) is list:
-                        oDp_show = '[...]'
+                        oDp_show = '' # '[...]'
                     elif type(oDp) is tuple:
-                        oDp_show = '(...)'
+                        oDp_show = '' # '(...)'
                     elif type(oDp) is str:
                         oDp_show = oDp
                     else:
@@ -104,17 +100,9 @@ if not interactive() and __name__ == '__main__':
                         out_ = p+str(oDp[U[i]['lst_indx']])
                         cg('out:',out_)
 
-                    #cm(qtd(m.groups()),r=1)
                     if len(m.groups()[1]) > 0:
                         if m.groups()[1] == 'o':
-                    #if len(c.split(' ')) > 1:
-                        #cm(0)
-                        #if c.split(' ')[1] == 'o':
-                            #cm(1,out,type(oDp))
-                            if True:#type(oDp) is str:
-                                #cm(2)
-                                #cb('open',name,out_,r=1)
-                                os_system('open',qtd(name+'/'+out_))
+                            os_system('open',qtd(name+'/'+out_))
 
                             # o open, e execute, for individual files or for lists of files, c copy to clipboard
                             # 219 o,  219o
