@@ -89,8 +89,11 @@ if not interactive() and __name__ == '__main__':
                         #cm(1,out,type(oDp))
                         if True:#type(oDp) is str:
                             #cm(2)
-                            cb('open',name,out_,r=1)
+                            #cb('open',name,out_,r=1)
                             os_system('open',name+'/'+out_)
+
+                            # o open, e execute, for individual files or for lists of files, c copy to clipboard
+                            # 219 o,  219o
 
 
 #EOF
