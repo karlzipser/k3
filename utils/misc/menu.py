@@ -1,6 +1,7 @@
 # ,a
 
 from k3.utils.misc.dict_access import *
+from k3.utils.misc.sys import *
 
 
 if not interactive() and __name__ == '__main__':
@@ -13,9 +14,10 @@ if not interactive() and __name__ == '__main__':
         D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
         D = condense_dict(D)
         oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
-    D=files_to_dict(opjk(),D={})
+    name = 'k3'
+    D=files_to_dict(opjh(name),D={})
     D = condense_dict(D)
-    oD = dict_access(D,opjk()+'/')
+    oD = dict_access(D,name)
 
     #clear_screen()
     oD(up_down='-')
@@ -61,21 +63,34 @@ if not interactive() and __name__ == '__main__':
                     else:
                         cg('out:',oD(p)[U[i]['lst_indx']])
     
-            oD(up_down='-')
-            if U[i]['lst_indx'] is None:
-                cy('out:',oD(p))
-            else:
-                cg('out:',oD(p)[U[i]['lst_indx']])
-            if False:
-                if len(c.split(' ')[0]) > 1:
+                oD(up_down='-')
+                oDp = oD(p)
+                if type(oDp) is dict:
+                    oDp_show = '{...}'
+                elif type(oDp) is list:
+                    oDp_show = '[...]'
+                elif type(oDp) is tuple:
+                    oDp_show = '(...)'
+                elif type(oDp) is str:
+                    oDp_show = oDp
+                else:
+                    oDp_show = str(oDp)
+
+                if U[i]['lst_indx'] is None:
+                    out_ = p + oDp_show
+                    cy('out:',out_)
+                else:
+                    out_ = p+str(oDp[U[i]['lst_indx']])
+                    cg('out:',out_)
+
+                if len(c.split(' ')) > 1:
+                    #cm(0)
                     if c.split(' ')[1] == 'o':
-                        cg('open',
-                            opjh('Desktops_older/Desktop_30Jan19_10h14m01s',
-                                p),
-                            r=1)
-
-
-
+                        #cm(1,out,type(oDp))
+                        if True:#type(oDp) is str:
+                            #cm(2)
+                            cb('open',name,out_,r=1)
+                            os_system('open',name+'/'+out_)
 
 
 #EOF

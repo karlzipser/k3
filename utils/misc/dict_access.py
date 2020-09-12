@@ -200,7 +200,7 @@ def condense_dict(D):
             
 
 
-def has_form_of_path(s):
+def __has_form_of_path(s):
     if type(s) == str:
         if len(s) > 1:
             if s[0] != '/':
@@ -208,9 +208,11 @@ def has_form_of_path(s):
                     return True
     return False 
 
-def _has_form_of_path(s):
+_re = r'^([\s|\w|_|\d|\.|\-|`|~|\!|@|#|\$|%|\^|&|*|\(|\)|\[|\]|\{|\}]+/)+$'
+def has_form_of_path(s):
     if type(s) == str:
-        if re.match( r'^(\w+/)+$', s ):
+        if re.match(
+            _re, s ):
             return True
     return False 
 
