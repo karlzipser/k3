@@ -12,6 +12,7 @@ def dict_access(D,name):
             'menu_path':None,
             'max_depth':10**6,
             'ignore_underscore':False,
+            'ignore_keys':[],
         }
 
 
@@ -45,7 +46,8 @@ def dict_access(D,name):
                         t=name+'/'+mp,
                         max_depth=Meta['max_depth']+1,
                         do_return=do_return,
-                        do_print=do_print
+                        do_print=do_print,
+                        ignore_keys=Meta['ignore_keys'],
                         )
         if p == '':
             p = None
