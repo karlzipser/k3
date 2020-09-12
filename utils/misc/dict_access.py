@@ -177,6 +177,14 @@ def dict_access(D,name):
 
 
 
+def count_nodes(D):
+    if type(D) is not dict:
+        return 1
+    n = 1    
+    ks = kys(D)
+    for k in ks:
+        n += count_nodes(D[k])
+    return n
 
 def condense_dict(D):
     if type(D) is not dict:
@@ -225,8 +233,7 @@ def pa(lst):
 
 
 
-
-if __name__ == '__main__':
+if not interactive() and __name__ == '__main__':
 
 
     if '__file__' in locals(): eg(__file__)
@@ -240,14 +247,16 @@ if __name__ == '__main__':
         q.append(r[indent_spaces:])
     raw_code = '\n'.join( q )
     
-    
+    #import matplotlib.pyplot as plt
     for c in raw_code.split('#.'):
         if not c.isspace():
             clp(c,'`--r')
             #clp(c[indent_spaces:],indent_spaces,'`---')
             exec(c)
+            #plt.pause(3)
+            time.sleep(3)
 
-    if True:
+    if False:
         D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
         D = condense_dict(D)
         oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
@@ -327,13 +336,10 @@ if False:
 
     oD('Y/',e=oE('a/'))#.
     oD(z=1)  #.
-    #oD('a/b/c/d/',prune=1)
+    oD('a/b/c/d/',prune=1)
     oD(z=1) #.
-    print(oD('a/b/c/d/e/'))
-    for i in range(3):
-        print(i)
-        #.
-    #raw_enter()
+    print(oD('a/b/'))
+
 #,---b
 #############################
 

@@ -104,4 +104,8 @@ def natural_keys(text):
     return [ atoi(c) for c in re.split('(\d+)', text) ]
 
 
+def interactive():
+    import __main__ as main
+    return not hasattr(main, '__file__')
+    
 #EOF
