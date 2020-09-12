@@ -88,9 +88,9 @@ if not interactive() and __name__ == '__main__':
                     oD(up_down='-')
                     oDp = oD(p)
                     if type(oDp) is dict:
-                        oDp_show = '{...}'
+                        oDp_show = '' # '{...}'
                     elif type(oDp) is list:
-                        oDp_show = '[...]'
+                        oDp_show = '' # '[...]'
                         if len(m.groups()[1]) > 0:
                             if m.groups()[1] == 'o':
                                 for e in oDp:
