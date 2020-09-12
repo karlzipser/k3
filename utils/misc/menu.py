@@ -8,6 +8,7 @@ Arguments = get_Arguments(
         'path':'k3',
         'condense_dict':False,
         'ignore_meta':True,
+        #'ignore_underscore':False,
         'max_depth':1,
     }
 )
@@ -30,17 +31,18 @@ if not interactive() and __name__ == '__main__':
         oD('__meta__/ignore_keys/', e=['__meta__'])
     if Arguments['max_depth']:
         oD('__meta__/max_depth/', e=Arguments['max_depth'])
-
+    #if Arguments['ignore_underscore']:
+    #    oD('__meta__/max_depth/', e=Arguments['ignore_underscore'])
 
     clear_screen()
-
     oD(up_down='-')
 
     c = None
 
     U = {}
 
-
+    # fix up opening dirs, opening single files
+    # set up 
     while True:
 
         c = input('-> ')
@@ -66,6 +68,7 @@ if not interactive() and __name__ == '__main__':
                     )
                 if type(i) is int:
                     D['__meta__']['max_depth'] = i
+                clear_screen()
                 oD(up_down='-')
                 continue
         
@@ -73,7 +76,6 @@ if not interactive() and __name__ == '__main__':
                 cc = m.groups()[0]
 
         clear_screen()
-
         U,print_lines = oD(up_down=cc)
         
         m = re.match( r'^\s*(\d+)\s*(\w*)$', c)
@@ -84,11 +86,20 @@ if not interactive() and __name__ == '__main__':
 
                 if i in U:
                     p = U[i]['path']
-                    oD('__meta__/menu_path/',e=p)        
+                    oD('__meta__/menu_path/',e=p)
+
+                    clear_screen()      
                     oD(up_down='-')
+
                     oDp = oD(p)
+
                     if type(oDp) is dict:
-                        oDp_show = '' # '{...}'
+                        oDp_show = '{...}'
+                        if len(m.groups()[1]) > 0:
+                            if m.groups()[1] == 'o':
+                                os_system('open',qtd(name+'/'+p))
+                                #os_system("""osascript -e 'tell application "Terminal" to activate'""")
+
                     elif type(oDp) is list:
                         oDp_show = '' # '[...]'
                         if len(m.groups()[1]) > 0:
