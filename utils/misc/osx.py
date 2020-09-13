@@ -33,5 +33,5 @@ def close_Finder_windows():
     os_system(""" osascript -e 'tell application "Finder" to close every window' """)
     return
 
-
+    
 #EOF
