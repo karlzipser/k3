@@ -19,7 +19,10 @@ def lines_from_hist_file(path):
 			cr(l,r=1)
 	return q
 
-q = lines_from_hist_file( opjD('hist.txt') )
+histfile = opjD('hist.txt')
+#os_system('rm',histfile)
+#os_system('history >',histfile)
+q = lines_from_hist_file(histfile)
 
 D = {}
 oD = dict_access(D,'D')
