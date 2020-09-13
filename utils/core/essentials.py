@@ -12,13 +12,8 @@ def eg(file,cs=True):
     print('') 
 
 
-
 def intr(n):
     return np.int(np.round(n))
-
-
-
-
 
 
 def qtd(a):

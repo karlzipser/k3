@@ -2,16 +2,22 @@
 from k3.utils.collections_.arguments import *
 from k3.utils.misc.dict_access import *
 from k3.utils.misc.sys import *
+from k3.utils.misc.osx import *
 
 Arguments = get_Arguments(
     Defaults={
         'path':'k3',
         'condense_dict':False,
         'ignore_meta':True,
-        #'ignore_underscore':False,
         'max_depth':1,
     }
 )
+
+# python k3/utils/misc/file_menu.py --path /Users/karlzipser/Library/Mobile\ Documents/com\~apple\~CloudDocs/pictures --max_depth 9
+
+close_Finder_windows()
+quit_Preview()
+
 
 if not interactive() and __name__ == '__main__':
 
@@ -31,8 +37,6 @@ if not interactive() and __name__ == '__main__':
         oD('__meta__/ignore_keys/', e=['__meta__'])
     if Arguments['max_depth']:
         oD('__meta__/max_depth/', e=Arguments['max_depth'])
-    #if Arguments['ignore_underscore']:
-    #    oD('__meta__/max_depth/', e=Arguments['ignore_underscore'])
 
     clear_screen()
     oD(up_down='-')
@@ -41,8 +45,7 @@ if not interactive() and __name__ == '__main__':
 
     U = {}
 
-    # fix up opening dirs, opening single files
-    # set up 
+
     while True:
 
         c = input('-> ')
@@ -54,7 +57,13 @@ if not interactive() and __name__ == '__main__':
         if m:
 
             if m.groups()[0] == 'q':
+                close_Finder_windows()
+                quit_Preview()
                 break
+
+            elif m.groups()[0] == 'c':
+                close_Finder_windows()
+                quit_Preview()
 
             elif m and m.groups()[0] == 'm':
                 cr(m.groups()[1], str_is_int(m.groups()[1]))
@@ -98,13 +107,23 @@ if not interactive() and __name__ == '__main__':
                         if len(m.groups()[1]) > 0:
                             if m.groups()[1] == 'o':
                                 os_system('open',qtd(name+'/'+p))
-                                #os_system("""osascript -e 'tell application "Terminal" to activate'""")
 
                     elif type(oDp) is list:
+                        
                         oDp_show = '' # '[...]'
                         if len(m.groups()[1]) > 0:
                             if m.groups()[1] == 'o':
-                                for e in oDp:
+
+                                rng = []
+
+                                if U[i]['lst_indx'] is None:
+                                    
+                                        rng = range(len(oDp))
+                                else:
+                                    rng = [U[i]['lst_indx']]
+
+                                for j in rng:
+                                    e = oDp[j]
                                     n = qtd(name+'/'+p+e)
                                     if exname(e.lower()) in [
                                         '',
@@ -131,13 +150,13 @@ if not interactive() and __name__ == '__main__':
                     else:
                         oDp_show = str(oDp)
 
+                    
                     if U[i]['lst_indx'] is None:
                         out_ = p + oDp_show
                         cy('out:',out_)
                     else:
                         out_ = p+str(oDp[U[i]['lst_indx']])
                         cg('out:',out_)
-
 
 
 #EOF
