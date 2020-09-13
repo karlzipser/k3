@@ -1,10 +1,10 @@
 from k3 import *
 
-
 Arguments = get_Arguments(
     Defaults={
         'maxdaysold':7,
         'src':opjD(),
+        'multisrc':False,
         'dst':opjh('stowed'),
         'ignore_underscore':True,
     }
@@ -18,8 +18,7 @@ def stowe(
     clear_screen()
     clp(Arguments['src'],'`--rb')
     print('')
-    #for k in A:
-    #    print(k,A[k])
+
     fs = sggo(A['src'],'*')
     for f in fs:
         if A['ignore_underscore'] and fname(f)[0] == '_':
@@ -40,8 +39,18 @@ def stowe(
 
 
 
-if __name__ == '__main__':
-    stowe(**Arguments)
 
+if __name__ == '__main__':
+
+    if Arguments['multisrc']:
+
+        ds = sggo(Arguments['src'],'*')
+
+        for d in ds: 
+            Arguments['src'] = d 
+            stowe(**Arguments)
+
+    else:
+        stowe(**Arguments)
 
 #EOF
