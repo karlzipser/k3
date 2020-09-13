@@ -111,36 +111,36 @@ if not interactive() and __name__ == '__main__':
                     elif type(oDp) is list:
                         
                         oDp_show = '' # '[...]'
-                        if len(m.groups()[1]) > 0:
-                            if m.groups()[1] == 'o':
+                        if True:#len(m.groups()[1]) > 0:
+                            #if m.groups()[1] == 'o':
 
-                                rng = []
+                            rng = []
 
-                                if U[i]['lst_indx'] is None:
-                                    
-                                        rng = range(len(oDp))
+                            if U[i]['lst_indx'] is None:
+                                if m.groups()[1] == 'o':
+                                    rng = range(len(oDp))
+                            else:
+                                rng = [U[i]['lst_indx']]
+
+                            for j in rng:
+                                e = oDp[j]
+                                n = qtd(name+'/'+p+e)
+                                if exname(e.lower()) in [
+                                    '',
+                                    'txt','rtf','xml','html','doc',
+                                    'py','c','cpp','c++',
+                                    'jpg','jpeg',
+                                    'png',
+                                    'gif','giff',
+                                    'tiff','tif',
+                                ]:
+                                    os_system('open',n)
                                 else:
-                                    rng = [U[i]['lst_indx']]
-
-                                for j in rng:
-                                    e = oDp[j]
-                                    n = qtd(name+'/'+p+e)
-                                    if exname(e.lower()) in [
-                                        '',
-                                        'txt','rtf','xml','html','doc',
-                                        'py','c','cpp','c++',
-                                        'jpg','jpeg',
-                                        'png',
-                                        'gif','giff',
-                                        'tiff','tif',
-                                    ]:
-                                        os_system('open',n)
-                                    else:
-                                        if exname(e) != 'pyc':
-                                            cr(
-                                                'ignorning',
-                                                n,
-                                                'because of extension'
+                                    if exname(e) != 'pyc':
+                                        cr(
+                                            'ignorning',
+                                            n,
+                                            'because of extension'
                                             )
                     elif type(oDp) is tuple:
                         oDp_show = '(...)'
