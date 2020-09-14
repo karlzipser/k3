@@ -1,5 +1,5 @@
 
-from k3.vis3 import *
+from k3 import *
 
 clear_screen()
 cr('r')

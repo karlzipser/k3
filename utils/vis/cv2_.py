@@ -17,6 +17,7 @@ except:
 
 try:
     def function_close_all_windows():
+        import matplotlib.pyplot as plt
         plt.close('all')
         try:
             cv2.destroyAllWindows()

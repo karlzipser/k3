@@ -268,4 +268,34 @@ if __name__ == '__main__':
     kprint(Q,'This is a test of kprint()')
     print('')
 
+
+
+
+def Percent(title='',prefix='',end_prefix=None):
+    D = {
+        'first':True,
+        'prefix':prefix
+    }
+    def show(a=None,b=None):
+        end = '\r'
+        flush = True
+        if a is None and b is None:
+            a,b = 100,100
+            end = '\n'
+            flush = False
+            if end_prefix is not None:
+                D['prefix'] = end_prefix
+        if D['first']:
+            D['first'] = False
+            try:
+                clp(title,'`wbb')
+            except:
+                print(title)
+        print(D['prefix']+' '+as_pct(a,b),end=end,flush=flush)
+    return namedtuple(
+        '_',
+        'show')(
+        show
+    )
+
 #EOF
