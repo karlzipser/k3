@@ -168,7 +168,17 @@ if False:
         mi(o[i]['face'],101)
         spause()
 
-
+if False:
+    o = loD('data')
+    r = zeros((len(o),len(o)))
+    P = Percent()
+    for i in rlen(o):
+        P.show(i,len(o))
+        a = o[i]['embedding']
+        for j in rlen(o):
+            b = o[j]['embedding']
+            r[i][j] = np.corrcoef(a,b)[0,1]
+    mi(r)
 
 
 #,b
