@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from k3 import *
 
 Arguments = get_Arguments(
@@ -5,7 +7,7 @@ Arguments = get_Arguments(
         'maxdaysold':7,
         'src':opjD(),
         'multisrc':False,
-        'dst':opjh('stowed'),
+        'dst':opjh('Stowed'),
         'ignore_underscore':True,
     }
 )

@@ -8,7 +8,7 @@ pip install facenet-pytorch
 
 """
 
-from k3.vis3 import *
+from k3 import *
 
 
 def Facenet():
