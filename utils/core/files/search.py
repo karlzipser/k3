@@ -147,6 +147,18 @@ def get_list_of_files_recursively2(
         files2.append(opj(src,f))
     return files2
 
+IMAGE_EXTENSIONS = ['jpg','jpeg','JPG','JPEG','png','PNG','tif','tiff','TIF','TIFF']
+def get_list_of_image_files_recursively(src):
+    lst = []
+    for e in IMAGE_EXTENSIONS:
+        l = get_list_of_files_recursively2(
+            src,
+            pattern='*.'+e,
+            FILES_ONLY=True
+        )
+        lst += l
+    return lst
+
 def get_list_of_files_recursively(
     src,
     pattern,

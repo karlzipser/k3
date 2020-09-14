@@ -26,105 +26,131 @@ FN = Facenet()
 RN = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
 
-frame = zimread(Arguments['src'])
-frame_size = shape(frame)
-width = frame_size[1]
-height = frame_size[0]
-larger_frame = zeros((frame_size[0]*2,width*2,3),np.uint8) + 127
-larger_frame[
-    height//2:int(1.5*height),
-    width//2:int(1.5*width),
-    :] = frame
 
-boxes, probs, landmarks = FN.get_boxes( frame )
 
-#mci( frame, title='frame',delay=1 )
-mi(frame,0)
+def xyz(frame,boxes,landmarks,RN):
 
-if boxes is not None and landmarks is not None:
-    ctr = 0
-    data = []
-    for box, landmark in zip(boxes, landmarks):
-        x0,x1,y0,y1 = \
-            intr(box[0]),intr(box[2]),intr(box[1]),intr(box[3])
-        dx = x1 - x0
-        dy = y1 - y0
-        if Arguments['show_boxes']:
-            #mi(frame,0)
-            figure(0)
-            plot((x0,x1),(y0,y0),'r')
-            plot((x0,x1),(y1,y1),'r')
-            plot((x0,x0),(y0,y1),'r')
-            plot((x1,x1),(y0,y1),'r')
-            #plt.scatter(*np.meshgrid(box[[0, 2]], box[[1, 3]]))
-            #plt.scatter(landmark[:, 0], landmark[:, 1], s=8)
-            cx = (x0+x1)//2
-            cy = (y0+y1)//2
-            dmax = max(dx,dy)
+    
+    frame_size = shape(frame)
+    width = frame_size[1]
+    height = frame_size[0]
+    larger_frame = zeros((frame_size[0]*2,width*2,3),np.uint8) + 127
+    larger_frame[
+        height//2:int(1.5*height),
+        width//2:int(1.5*width),
+        :] = frame
 
-        if True:#try:
-            if False:
+    #mci( frame, title='frame',delay=1 )
+
+    mi(frame,0)
+
+    if boxes is not None and landmarks is not None:
+        ctr = 0
+        data = []
+        for box, landmark in zip(boxes, landmarks):
+            x0,x1,y0,y1 = \
+                intr(box[0]),intr(box[2]),intr(box[1]),intr(box[3])
+            dx = x1 - x0
+            dy = y1 - y0
+            if Arguments['show_boxes']:
+                #mi(frame,0)
+                figure(0)
+                plot((x0,x1),(y0,y0),'r')
+                plot((x0,x1),(y1,y1),'r')
+                plot((x0,x0),(y0,y1),'r')
+                plot((x1,x1),(y0,y1),'r')
+                #plt.scatter(*np.meshgrid(box[[0, 2]], box[[1, 3]]))
+                #plt.scatter(landmark[:, 0], landmark[:, 1], s=8)
+                cx = (x0+x1)//2
+                cy = (y0+y1)//2
+                dmax = max(dx,dy)
+
+            if True:#try:
+                if False:
+                    face = larger_frame[
+                                height//2+y0-dy//4:height//2+y1+dy//4,
+                                width//2+x0-dx//4:width//2+x1+dx//4,
+                                :
+                            ].copy()
+
                 face = larger_frame[
-                            height//2+y0-dy//4:height//2+y1+dy//4,
-                            width//2+x0-dx//4:width//2+x1+dx//4,
+                            height//2+cy-dmax//2:height//2+cy+dmax//2,
+                            width//2+cx-dmax//2:width//2+cx+dmax//2,
                             :
                         ].copy()
 
-            face = larger_frame[
-                        height//2+cy-dmax//2:height//2+cy+dmax//2,
-                        width//2+cx-dmax//2:width//2+cx+dmax//2,
-                        :
-                    ].copy()
+                #mci(face,title=str(6+ctr),delay=1)
 
-            mci(face,title=str(6+ctr),delay=1)
+                #embeddings = [0]
+                
+                a = face.copy()
+                
+                a = cv2.resize(a, dsize=(160,160))
+                mci(a,title=d2s('resized',ctr))
+                #cg(shape(a),r=1)
+                a = a.transpose(2,0,1)
+                #a = a.transpose(2,1,0)
+                #cg(shape(a),r=1)
+                b = torch.from_numpy(a).float()
+                #cb(b.size(),r=1)
+                c = torch.stack([b]).to(device)
+                cm(c.size())
+                if True:#try:
+                    embeddings = RN(
+                        c,#torch.stack([b]).to(device)
+                    ).detach().cpu()
 
-            embeddings = [0]
-            #face_ = face.transpose(2,0,1).copy()
-            
+                    data.append(
+                        {
+                            'x0':x0,
+                            'x0':x1,
+                            'y0':y0,
+                            'y1':y1,
+                            'face':face.copy(),
+                            'file':Arguments['src'],
+                            'landmark':landmark,
+                            'embedding':embeddings[0],
+                        }
+                    )
+                else:#except:
+                    cr('failure')
 
-            a = face.copy()
-            
-            a = cv2.resize(a, dsize=(160,160))
-            mci(a,title=d2s('resized',ctr))
-            #cg(shape(a),r=1)
-            #a = a.transpose(2,0,1)
-            a = a.transpose(2,1,0)
-            #cg(shape(a),r=1)
-            b = torch.from_numpy(a).float()
-            #cb(b.size(),r=1)
-            c = torch.stack([b]).to(device)
-            cm(c.size())
-            if True:#try:
-                embeddings = RN(
-                    c,#torch.stack([b]).to(device)
-                ).detach().cpu()
-
-                data.append(
-                    {
-                        'x0':x0,
-                        'x0':x1,
-                        'y0':y0,
-                        'y1':y1,
-                        'face':face.copy(),
-                        #'frame':i,
-                        'file':Arguments['src'],
-                        'landmark':landmark,
-                        'embedding':embeddings[0],
-                    }
-                )
             else:#except:
-                cr('failure')
+                cg('failure')
+            ctr += 1
+    spause()
+    #raw_enter()
+    CA()
+    return data
 
-        else:#except:
-            cg('failure')
-        ctr += 1
-spause()
-raw_enter()
+
+paths = get_list_of_image_files_recursively('Pictures')   
+
+data = []
+timer = Timer(60)
+
+for p in paths:
+    p = 'Pictures/'+p.replace('Pictures/','') 
+    try:
+        frame = zimread(p)
+
+        boxes, probs, landmarks = FN.get_boxes( frame )
+
+        data += xyz(frame,boxes,landmarks,RN)
+
+        if Arguments['save_faces'] and timer.check():
+            timer.reset()
+            soD(data,'data')
+    except KeyboardInterrupt:
+        cE('*** KeyboardInterrupt ***')
+        sys.exit()
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        pd2s(exc_type,file_name,exc_tb.tb_lineno) 
 
 if Arguments['save_faces']:
     soD(data,'data')
-
-
 
 if False:
     o = loD('data')
