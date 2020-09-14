@@ -110,6 +110,7 @@ def navigate(D,oD,name,Arguments):
                             for j in rng:
                                 e = oDp[j]
                                 n = qtd(name+'/'+p+e)
+                                cg(qtd(exname(e.lower())))
                                 if exname(e.lower()) in [
                                     '',
                                     'txt','rtf','xml','html','doc',

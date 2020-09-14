@@ -43,7 +43,10 @@ def exname(path):
     filename, no extension
     """
     try:
-        return fname(path).split('.')[-1]
+        a = fname(path).split('.')
+        if len(a) == 1:
+            return ''
+        return a[-1]
     except:
         return ''
 

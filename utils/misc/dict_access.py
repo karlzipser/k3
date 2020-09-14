@@ -30,9 +30,12 @@ def dict_access(D,name):
         D=D,
         Meta=D['__meta__'],
         name=name,
+        getdict=False,
     ):
 
-
+        if getdict:
+            return D
+            
         def _zprint(z=0,p=None,D=None,t=None,do_return=0,do_print=1):
             if z:
                 if t is None:
@@ -210,7 +213,8 @@ def __has_form_of_path(s):
                     return True
     return False 
 
-_re = r'^([\s|\w|_|\d|\.|\-|`|~|\!|@|#|\$|%|\^|&|*|\(|\)|\[|\]|\{|\}]+/)+$'
+_re = r'^([\s|\w|_|\d|\.|-|`|~|!|@|#|\$|%|^|&|\+|\||\*|\(|\)|\[|\]|\{|\}|<|>|,]+/)+$'
+#_re = r'^(\S+/)+$'
 def has_form_of_path(s):
     if type(s) == str:
         if re.match(
