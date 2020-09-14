@@ -28,7 +28,7 @@ RN = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
 
 
-def xyz(frame,boxes,landmarks,RN):
+def get_face_embedding_data(frame,boxes,landmarks,RN):
 
     
     frame_size = shape(frame)
@@ -136,7 +136,7 @@ for p in paths:
 
         boxes, probs, landmarks = FN.get_boxes( frame )
 
-        data += xyz(frame,boxes,landmarks,RN)
+        data += get_face_embedding_data(frame,boxes,landmarks,RN)
 
         if Arguments['save_faces'] and timer.check():
             timer.reset()
@@ -179,6 +179,21 @@ if False:
             b = o[j]['embedding']
             r[i][j] = np.corrcoef(a,b)[0,1]
     mi(r)
+
+    rng = list(rlen(r))
+    random.shuffle(rng)
+    for i in rng:#rlen(r):#i = 100
+        s = np.argsort(r[i])
+        mi(o[i]['face'],1);spause()
+        for j in range(len(s)-1,len(s)-10,-1):
+            c = r[i][s[j]]
+            if c < 0.97 or c > 0.99:
+                pass
+            else:
+                print(i,r[i][s[j]])
+                mi(o[s[j]]['face'],2);spause()
+                time.sleep(1)
+
 
 
 #,b
