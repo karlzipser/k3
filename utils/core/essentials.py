@@ -1,7 +1,15 @@
 
 from k3.utils.core.imports import *
 
+def print_dic_simple(D,title=''):
+    print(title)
+    if type(D) is not dict:
+        print(D)
+    else:
+        for k in D:
+            print('   ',k+':',D[k])
 
+            
 def clear_screen():
     print(chr(27) + "[2J")
     

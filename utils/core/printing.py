@@ -8,13 +8,7 @@ from k3.utils.core.renaming import *
 from termcolor import cprint
 from termcolor import colored
 
-def print_dic_simple(D,title=''):
-    print(title)
-    if type(D) is not dict:
-        print(D)
-    else:
-        for k in D:
-            pd2s('   ',k+':',D[k])
+
 
 def d2s_spacer(args,spacer=' '):
     lst = []

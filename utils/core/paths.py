@@ -1,8 +1,6 @@
 
 from k3.utils.core.renaming import *
 
-
-
 def opj(*args):
     if len(args) == 0:
         args = ['']
@@ -55,7 +53,6 @@ def pname(path):
 pn = pname
 
 
-
 def main(**A):
     p = opjk('test.py')
     print(p)
@@ -64,6 +61,8 @@ def main(**A):
     print(exname(p))
     print(pname(p))
     print(fname(pname(p)))
+    print_dic_simple(A,'**A')
+
 
 if __name__ == '__main__':
     eg(__file__)
