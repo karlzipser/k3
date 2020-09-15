@@ -42,7 +42,7 @@ class MyServer(BaseHTTPRequestHandler):
             return
 
         else:
-            Z = {}
+            URL_args = {}
             a = self.path
             b = a.split('?')
             if len(b) > 1:
@@ -56,9 +56,9 @@ class MyServer(BaseHTTPRequestHandler):
                         f[1] = f[1].replace('+',' ')
                         f[1] = unquote(f[1])
                         print(f[1])
-                        Z[f[0]] = f[1]
+                        URL_args[f[0]] = f[1]
             clear_screen()
-            zprint(Z)
+            zprint(URL_args)
 
             
             t0=time.time()
@@ -67,7 +67,7 @@ class MyServer(BaseHTTPRequestHandler):
                 with redirect_stdout(f):
                     if False:
                         importlib.reload(k3_utils_core_paths)
-                    k3_utils_core_paths.main(**Z)
+                    k3_utils_core_paths.main(**URL_args)
             print(time.time()-t0)
 
 
@@ -78,10 +78,10 @@ class MyServer(BaseHTTPRequestHandler):
 
             self.end_headers()
  
-            if 'get_page' not in Z:
-                Z['get_page'] = 'get_page0'
+            if 'get_page' not in URL_args:
+                URL_args['get_page'] = 'get_page0'
 
-            s = G[Z['get_page']](self.path,Z)
+            s = G[URL_args['get_page']](self.path,URL_args)
 
             s += lines_to_html_str(file_to_text("k3/__private__/__private.temp.txt"))
 

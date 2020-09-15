@@ -4,7 +4,7 @@ from k3 import *
 
 Arguments = get_Arguments(
     Defaults={
-        'maxdaysold':7,
+        'days':7,
         'src':opjD(),
         'multisrc':False,
         'dst':opjh('Stowed'),
@@ -28,7 +28,7 @@ def stowe(
             continue
         try:
             mt = os.path.getmtime(f)
-            if time.time()-A['maxdaysold']*days < mt:
+            if time.time()-A['days']*days < mt:
                 dt = datetime.datetime.fromtimestamp(mt)
                 path = qtd(d2f('/',A['dst'],dt.year,dt.month,dt.day))
                 os_system('mkdir -p',path)

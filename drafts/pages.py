@@ -18,7 +18,7 @@ select = """
 
 # python k3/utils/core/paths.py | tee Desktop/out.txt
 
-def get_page1(path,Z):
+def get_page1(path,URL_args):
     
     s = head_('this is the title')
 
@@ -50,7 +50,7 @@ def get_page1(path,Z):
     s += br
 
     s += href_(
-        '?this_images_points_to=this_text&q=w&n=1&get_page=get_page1',
+        '?this_images_points_to=this_text&q=w&n=1&get_page=get_page2&code=k3/scripts/gen/temperature.py',
         img_('/Pictures/me.png',"width:100px;"), 
     )
 
@@ -73,7 +73,7 @@ def get_page1(path,Z):
     return s
 
 
-def get_page0(path,Z):
+def get_page0(path,URL_args):
     s = head_('this is the title')
     s += select
 
@@ -90,9 +90,13 @@ def get_page0(path,Z):
     return s
 
 # importlib.reload(module)
+kin = k_in_D
+def get_page2(path,URL_args):
 
-def get_page2(path,Z):
+    if kin('code',URL_args):
+        code = highlight(file_to_text(URL_args['code']), PythonLexer(), HtmlFormatter())
     s = head_('this is the title')
+    s += style
     s += select
     s += br*2
     s += l2h(d2n("You accessed path: ",path,''))
@@ -100,6 +104,9 @@ def get_page2(path,Z):
     s += 'end'
     #s += select
     #s += end_()
+    if kin('code',URL_args):
+        s += '<h1>'+URL_args['code']+'</h1>'
+        s += code
     return s
 
 G = {

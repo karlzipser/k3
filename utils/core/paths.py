@@ -61,7 +61,8 @@ def main(**A):
     print(exname(p))
     print(pname(p))
     print(fname(pname(p)))
-    print_dic_simple(A,'**A')
+    if type(A) is dict:
+        print_dic_simple(A,'**A')
 
 
 if __name__ == '__main__':
