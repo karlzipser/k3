@@ -1,5 +1,6 @@
 from k3 import *
 from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
+from contextlib import redirect_stdout
 from urllib.parse import unquote
 from k3.drafts.htmltemp import *
 from k3.drafts.pages import *
@@ -64,9 +65,21 @@ class MyServer(BaseHTTPRequestHandler):
 
             self.end_headers()
  
+            t0=time.time()
+            import k3.utils.core.paths as k3_utils_core_paths
+            with open("k3/__private__/__private.temp.txt", 'w') as f:
+                with redirect_stdout(f):
+                    print(time.time())
+                    k3_utils_core_paths.main()
+
+            print(time.time()-t0)
+
+
             if 'get_page' not in Z:
                 Z['get_page'] = 'get_page0'
             s = G[Z['get_page']](self.path,Z)
+
+            s += lines_to_html_str(file_to_text("k3/__private__/__private.temp.txt"))
             
             self.wfile.write(bytes(s, "utf-8"))
 

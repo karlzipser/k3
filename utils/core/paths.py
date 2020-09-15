@@ -55,8 +55,8 @@ def pname(path):
 pn = pname
 
 
-if __name__ == '__main__':
-    #eg(__file__)
+
+def main(**A):
     p = opjk('test.py')
     print(p)
     print(fname(p))
@@ -64,4 +64,9 @@ if __name__ == '__main__':
     print(exname(p))
     print(pname(p))
     print(fname(pname(p)))
+
+if __name__ == '__main__':
+    eg(__file__)
+    main()
+
 #EOF

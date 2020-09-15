@@ -68,7 +68,7 @@ def get_page1(path,Z):
 
     
 
-    s += end_()
+    #s += end_()
 
     return s
 
@@ -84,7 +84,7 @@ def get_page0(path,Z):
     s += br*2
     s += form_('get_page')
     #s += select
-    s += end_()
+    #s += end_()
 
 
     return s
@@ -99,7 +99,7 @@ def get_page2(path,Z):
     s += br*2
     s += 'end'
     #s += select
-    s += end_()
+    #s += end_()
     return s
 
 G = {
