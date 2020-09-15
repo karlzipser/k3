@@ -3,7 +3,7 @@ from k3.utils.torch_.facenet import *
 
 Arguments = get_Arguments(
     Defaults={
-        'src':REQUIRED,
+        'src':None, #REQUIRED,s
         'save_faces':True,
         'show_boxes':True,
     }
@@ -28,7 +28,7 @@ RN = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
 
 
-def get_face_embedding_data(frame,boxes,landmarks,RN):
+def get_face_embedding_data(frame,path,boxes,landmarks,RN):
 
     
     frame_size = shape(frame)
@@ -107,7 +107,7 @@ def get_face_embedding_data(frame,boxes,landmarks,RN):
                             'y0':y0,
                             'y1':y1,
                             'face':face.copy(),
-                            'file':Arguments['src'],
+                            'file':path,#Arguments['src'],
                             'landmark':landmark,
                             'embedding':embeddings[0],
                         }
@@ -136,7 +136,7 @@ for p in paths:
 
         boxes, probs, landmarks = FN.get_boxes( frame )
 
-        data += get_face_embedding_data(frame,boxes,landmarks,RN)
+        data += get_face_embedding_data(frame,p,boxes,landmarks,RN)
 
         if Arguments['save_faces'] and timer.check():
             timer.reset()
@@ -196,6 +196,17 @@ if False:
 
 
 
+    o = loD('data')
+    rp = 'Pictures'
+    dst = opjD('links')
+    for a in o:
+
+        f = a['file'].replace(rp,dst)
+        f = get_safe_name(f,safe_chars=['/','.'])
+        #cg(a['file'],f,r=0)
+        os_system('mkdir -p',pname(f))
+        os_system('ln -s',qtd('~/'+a['file']),f,e=1)
+    
 #,b
 
 #EOF

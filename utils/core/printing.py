@@ -153,6 +153,9 @@ if __name__ == '__main__':
 
 
 def lines_to_html_str(print_lines):
+    if type(print_lines) == str:
+        print_lines = [print_lines]
+    assert type(print_lines) == list
     h = ' <br>'.join(print_lines).replace(' ','&nbsp').encode('ascii', 'xmlcharrefreplace').decode('utf8')
     replace_list = list(range(100))
     for i in rlen(replace_list):
