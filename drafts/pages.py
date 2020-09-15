@@ -38,18 +38,18 @@ def get_page1(path,Z):
 
     s += href_(
         '/',
-        img_('Desktop/a.png',"width:200px;"), 
+        img_('/Pictures/IMG_5362.jpeg',"width:200px;"), 
     )
 
     s += br
 
-    s += href_('?path=ads/bfe/ca/&get_page=get_page1','suck it up')
+    s += href_('/page1/?path=ads/bfe/ca/&get_page=get_page1','suck it up')
 
     s += br
 
     s += href_(
         '?this_images_points_to=this_text&q=w&n=1&get_page=get_page1',
-        img_('Desktop/b.jpeg',"width:100px;"), 
+        img_('/Pictures/me.png',"width:100px;"), 
     )
 
     s += br
