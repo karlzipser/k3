@@ -16,6 +16,8 @@ select = """
 """
 
 
+# python k3/utils/core/paths.py | tee Desktop/out.txt
+
 def get_page1(path,Z):
     
     s = head_('this is the title')

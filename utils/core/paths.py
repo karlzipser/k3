@@ -56,7 +56,7 @@ pn = pname
 
 
 if __name__ == '__main__':
-    eg(__file__)
+    #eg(__file__)
     p = opjk('test.py')
     print(p)
     print(fname(p))

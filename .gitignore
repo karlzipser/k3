@@ -1,6 +1,7 @@
 ## General (from caffe .gitignore)
 __local__
 __pycache__
+
 *.lock
 *.h5py
 *.hdf5
@@ -19,6 +20,10 @@ Icon?
 *.lo
 *.o
 *.cuo
+
+__private.*
+__private*
+__private__
 
 # Compiled Dynamic libraries
 *.so

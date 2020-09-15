@@ -1,3 +1,7 @@
+#import builtins
+#def __print(*a,**b): 
+#    builtins.print('lmptbs...')
+#    builtins.print(*a,**b) 
 
 from k3.utils.core.renaming import *
 
