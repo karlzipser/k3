@@ -1,0 +1,111 @@
+from k3 import *
+from urllib.parse import unquote
+from k3.drafts.htmltemp import *
+
+select = """
+
+<form>
+<select name='get_page' onchange='this.form.submit()'>
+  <option>get_page</option>
+  <option>get_page0</option>
+  <option>get_page1</option>
+  <option>get_page2</option>
+</select>
+<noscript><input type="submit" value="Submit"></noscript>
+</form>
+"""
+
+
+def get_page1(path,Z):
+    
+    s = head_('this is the title')
+
+    s += select
+
+    s += br*2
+
+    s += l2h(d2n("You accessed path: ",path,''))
+
+    s += br*2
+
+    s += l2h(d2n("You accessed path: ",unquote(path)))
+        
+    s += br*2
+    
+    s += l2h('   some text! •¶§∞¢')
+
+    s += br
+
+    s += href_(
+        '/',
+        img_('Desktop/a.png',"width:200px;"), 
+    )
+
+    s += br
+
+    s += href_('?path=ads/bfe/ca/&get_page=get_page1','suck it up')
+
+    s += br
+
+    s += href_(
+        '?this_images_points_to=this_text&q=w&n=1&get_page=get_page1',
+        img_('Desktop/b.jpeg',"width:100px;"), 
+    )
+
+    s += br
+
+    s += href_("?a=a/b/c/&get_page=get_page1",'suck it up 2')
+
+    s += br
+
+    s += form_('get_page')
+
+    s += br
+
+    s += br
+
+    
+
+    s += end_()
+
+    return s
+
+
+def get_page0(path,Z):
+    s = head_('this is the title')
+    s += select
+
+    s += br*2
+    s += l2h(d2n("You accessed path: ",path,''))
+    s += br*2
+    s += 'begin'
+    s += br*2
+    s += form_('get_page')
+    #s += select
+    s += end_()
+
+
+    return s
+
+# importlib.reload(module)
+
+def get_page2(path,Z):
+    s = head_('this is the title')
+    s += select
+    s += br*2
+    s += l2h(d2n("You accessed path: ",path,''))
+    s += br*2
+    s += 'end'
+    #s += select
+    s += end_()
+    return s
+
+G = {
+    'get_page0':get_page0,
+    'get_page1':get_page1,
+    'get_page2':get_page2,
+}
+
+
+
+#EOF

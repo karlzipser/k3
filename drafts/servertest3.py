@@ -2,86 +2,11 @@ from k3 import *
 from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 from urllib.parse import unquote
 from k3.drafts.htmltemp import *
+from k3.drafts.pages import *
 
 hostName = "localhost"
 hostPort = 9000
 Images = {}
-
-
-def get_page1(path,Z):
-    
-    s = head_('this is the title')
-
-    s += l2h(d2n("You accessed path: ",path,''))
-
-    s += br*2
-
-    s += l2h(d2n("You accessed path: ",unquote(path)))
-        
-    s += br*2
-    
-    s += l2h('   some text! •¶§∞¢')
-
-    s += br
-
-    s += href_(
-        '/',
-        img_('Desktop/a.png',"width:200px;"), 
-    )
-
-    s += br
-
-    s += href_('?path=ads/bfe/ca/&get_page=get_page1','suck it up')
-
-    s += br
-
-    s += href_(
-        '?this_images_points_to=this_text&q=w&n=1&get_page=get_page1',
-        img_('Desktop/b.jpeg',"width:100px;"), 
-    )
-
-    s += br
-
-    s += href_("?a=a/b/c/&get_page=get_page1",'suck it up 2')
-
-    s += br
-
-    s += form_('get_page')
-
-    s += br
-
-    s += br
-
-    s += end_()
-
-    return s
-
-
-def get_page0(path,Z):
-    s = head_('this is the title')
-    s += l2h(d2n("You accessed path: ",path,''))
-    s += br*2
-    s += 'begin'
-    s += br*2
-    s += form_('get_page')
-    s += end_()
-    return s
-
-
-def get_page2(path,Z):
-    s = head_('this is the title')
-    s += l2h(d2n("You accessed path: ",path,''))
-    s += br*2
-    s += 'end'
-    s += end_()
-    return s
-
-G = {
-    'get_page0':get_page0,
-    'get_page1':get_page1,
-    'get_page2':get_page2,
-}
-
 
 
 class MyServer(BaseHTTPRequestHandler):
