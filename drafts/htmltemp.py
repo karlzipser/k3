@@ -18,6 +18,8 @@ def urlparse(url):
                 f[1] = unquote(f[1])
                 #print(f[1])
                 URL_args[f[0]] = f[1]
+    if path[0] == '/':
+        path = path[1:]
     return path,URL_args
 
 
@@ -73,7 +75,7 @@ from pygments.formatters import HtmlFormatter
 style = """
 <style>
 .highlight .hll { background-color: #ffffcc }
-.highlight  { background: #f8f8f8; }
+.highlight  { background: #ffebcd; } /*#f8f8f8; }*/
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */

@@ -40,31 +40,22 @@ class MyServer(BaseHTTPRequestHandler):
             return
 
         else:
-            path,URL_args = urlparse(self.path)
-            if path[0] == '/':
-                path = path[1:]
-            clear_screen()
-            #d2s('url_path =',url_path)
-            #zprint(URL_args)
-            
+
+
+            script = 'k3/drafts/pages4.py'
+            #clear_screen()
             out = 'k3/__private__/__private.temp.txt'
 
-            t0=time.time()
+            os_system('python3',script,'--url',qtd(self.path),'>',out)
 
-            os_system('python3',path,'--url',qtd(self.path),'>',out,e=1)
-
-            #os_system("python3  k3/drafts/pages4.py --path k3/drafts/pages4.py --URL_args asd=vda >",out)
-
-            print(time.time()-t0)
-
-            self.send_response(200)
-
-            self.send_header("Content-type", "text/html")
-
-            self.end_headers()
- 
             s = file_to_text("k3/__private__/__private.temp.txt")
 
+
+
+
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
             self.wfile.write(bytes(s, "utf-8"))
 
 

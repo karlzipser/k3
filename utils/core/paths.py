@@ -53,20 +53,39 @@ def pname(path):
 pn = pname
 
 
-def main(**A):
-    p = opjk('test.py')
-    print(p)
-    print(fname(p))
-    print(fnamene(p))
-    print(exname(p))
-    print(pname(p))
-    print(fname(pname(p)))
-    if type(A) is dict:
-        print_dic_simple(A,'**A')
 
+code = \
+"""
+p = opjk('test.py')#
+p               #
+fname(p)        #
+fnamene(p)      #
+exname(p)       #
+fname(p)        #
+pname(p)        #
+fname(pname(p)) #
+"""
+
+def main(**A):
+    a = 0
+    for c in code.split('#\n'):
+        if c is None or len(c.replace(' ','')) == 0:
+            continue
+        print("IN["+str(a)+"]: "+c)
+        
+        if '=' not in c:
+            d = "print('      OUT["+str(a)+"]:',"+c+")"
+        else:
+            d = c
+        exec(d)
+        print('')
+        a += 1
 
 if __name__ == '__main__':
-    eg(__file__)
     main()
+
+
+#if type(A) is dict:
+#    print_dic_simple(A,'**A')#
 
 #EOF
