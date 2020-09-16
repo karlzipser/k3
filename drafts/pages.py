@@ -45,7 +45,7 @@ def get_page1(path,URL_args):
 
     s += br
 
-    s += href_('/page1/?path=ads/bfe/ca/&get_page=get_page1','suck it up')
+    s += href_('/k3/scripts/gen/temperature.py/?get_page=get_page2','get_page2')
 
     s += br
 
@@ -56,7 +56,7 @@ def get_page1(path,URL_args):
 
     s += br
 
-    s += href_("?a=a/b/c/&get_page=get_page1",'suck it up 2')
+    s += href_("/k3/scripts/gen/?a=a/b/c/&get_page=get_page1",'get_page1')
 
     s += br
 
