@@ -2,7 +2,6 @@ from k3 import *
 from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 from contextlib import redirect_stdout
 import importlib
-from urllib.parse import unquote
 from k3.drafts.htmltemp import *
 
 hostName = "localhost"
@@ -41,35 +40,18 @@ class MyServer(BaseHTTPRequestHandler):
             return
 
         else:
-            URL_args = {}
-            a = self.path
-            b = a.split('?')
-            url_path = b[0]
-            if len(b) > 1:
-                c = b[-1]
-                cg(c)
-                d = c.split('&')
-                for e in d:
-                    if e is not None:
-                        f = e.split('=')
-                        print(f)
-                        f[1] = f[1].replace('+',' ')
-                        f[1] = unquote(f[1])
-                        print(f[1])
-                        URL_args[f[0]] = f[1]
+            path,URL_args = urlparse(self.path)
+            if path[0] == '/':
+                path = path[1:]
             clear_screen()
-            d2s('url_path =',url_path)
-            zprint(URL_args)
+            #d2s('url_path =',url_path)
+            #zprint(URL_args)
             
-            py = 'k3/drafts/pages4.py'
             out = 'k3/__private__/__private.temp.txt'
-            args = ''
-            for u in URL_args:
-                args += ' --'+u +' '+URL_args[u]
 
             t0=time.time()
 
-            os_system('python3 ',py,args,'>',out,e=1)
+            os_system('python3',path,'--url',qtd(self.path),'>',out,e=1)
 
             #os_system("python3  k3/drafts/pages4.py --path k3/drafts/pages4.py --URL_args asd=vda >",out)
 

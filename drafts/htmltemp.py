@@ -1,4 +1,26 @@
 from k3 import *
+from urllib.parse import unquote
+
+def urlparse(url):
+    URL_args = {}
+    a = url
+    b = a.split('?')
+    path = b[0]
+    if len(b) > 1:
+        c = b[-1]
+        #cg(c)
+        d = c.split('&')
+        for e in d:
+            if e is not None:
+                f = e.split('=')
+                #print(f)
+                f[1] = f[1].replace('+',' ')
+                f[1] = unquote(f[1])
+                #print(f[1])
+                URL_args[f[0]] = f[1]
+    return path,URL_args
+
+
 br = '<br>\n'
 def lines_to_html_str(print_lines):
     if type(print_lines) == str:
