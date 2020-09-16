@@ -74,11 +74,13 @@ def getch():
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     return ch
 
+
 def k_in_D(k,D):
     if k not in D:
         return False
     else:
         return D[k]
+kin = k_in_D
 
 
 def is_number(n):
