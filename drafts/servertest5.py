@@ -81,15 +81,21 @@ class MyServer(BaseHTTPRequestHandler):
         else:
 
             path, URL_args = urlparse(self.path)
+            p = path
+            if p[0] == '/':
+                p = p[1:]
+            if 'save_code' in URL_args:
+                sc = URL_args['save_code'].replace('\r','')
+                p2 = opjD(p)
+                os_system('mkdir -p',pname(p2))
+                text_to_file(p2,sc)  
 
             if path not in paths:
                 path = paths[0]
                 redirect = """<meta http-equiv="Refresh" content="0; url='"""+path+"""'" />"""
             else:
                 redirect = ''
-            p = path
-            if p[0] == '/':
-                p = p[1:]
+
             
 
             raw_code = file_to_text(p)
@@ -149,6 +155,28 @@ class MyServer(BaseHTTPRequestHandler):
 
             s += '<h2>'+'code'+'</h2>'
             s += code
+
+
+            #s += form_('raw_code',v=raw_code.replace('\n','<br>\n'))
+            rows = len(raw_code.split('\n'))
+            cols = 80
+            s += """
+
+<form action="" method="GET">
+<textarea id="save_code" name="save_code" rows="30" cols="80" style="font-family:'Courier New';font-size:14px">
+""" + raw_code +"""
+  </textarea>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
+
+<p>Click the "Submit" button and the form-data will be sent to a page on the 
+server called "action_page.php".</p>
+
+"""
+#.replace('ROWS',str(rows)).replace('COLS',str(cols))
+
+
             s += redirect
 
             s += "</div>"

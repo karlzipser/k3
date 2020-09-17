@@ -60,9 +60,9 @@ def href_(dst,s):
 	return d2n('\n<a href=',qtd(dst),'>',s,'</a>\n')
 
 
-def form_(s):
+def form_(s,v=''):
 	return """\n<form action="" method="GET">\n""" + \
-		s + " <input type='text' name='"+get_safe_name(s)+"''>\n" + \
+		s + " <input size='50' type='text' name='"+get_safe_name(s)+"' value='"+v+"''>\n" +\
 		"</form>\n"
 
 
