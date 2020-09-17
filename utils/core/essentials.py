@@ -114,7 +114,8 @@ def interactive():
     return not hasattr(main, '__file__')
     
 def main(**A):
-    pass
+    print("main()")
+
 if __name__ == '__main__':
     eg(__file__)
     main()

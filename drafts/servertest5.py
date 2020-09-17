@@ -8,9 +8,23 @@ hostName = "localhost"
 hostPort = 9000
 Images = {}
 
+import re
 
+# 7-bit C1 ANSI sequences
+ansi_escape = re.compile(r"""
+    \x1B  # ESC
+    (?:   # 7-bit C1 Fe (except CSI)
+        [@-Z\\-_]
+    |     # or [ for CSI, followed by a control sequence]
+        \[
+        [0-?]*  # Parameter bytes
+        [ -/]*  # Intermediate bytes
+        [@-~]   # Final byte
+    )
+""", re.VERBOSE)
+#result = ansi_escape.sub('', sometext)
 
-a = get_list_of_files_recursively(opjk('utils/core'),'*.py')
+a = get_list_of_files_recursively(opjk('utils'),'*.py')
 b = []
 for c in a:
     #if fname(a)[0] == '_':
@@ -19,13 +33,17 @@ for c in a:
 paths = sorted(b)
 
 Imports = {}
+print('Sart Imports...')
 for p in paths:
-    if p[0] == '/':
-        p = p[1:]
-    m = opj(pname(p),fnamene(p)).replace('/','.')
-    Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
-    Imports[p+':time'] = time.time()
-
+    try:
+        if p[0] == '/':
+            p = p[1:]
+        m = opj(pname(p),fnamene(p)).replace('/','.')
+        Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
+        Imports[p+':time'] = time.time()
+    except:
+        print(p,'failed')
+print('Imports done.')
 class MyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -80,7 +98,7 @@ class MyServer(BaseHTTPRequestHandler):
 
             if 'def main(**' in raw_code:
 
-                with open("k3/__private__/__private2.temp.txt", 'w') as f:
+                with open(out, 'w') as f:
                     with redirect_stdout(f):
                         if os.path.getmtime(p) > Imports[p+':time']:
                             importlib.reload( Imports[p] )
@@ -104,7 +122,12 @@ class MyServer(BaseHTTPRequestHandler):
             ctr = 0
             q = 40
             for p in paths:
-                s += href_(p+"?a=b&c=d",p[:min(q,len(p))]) + max(0,(q-len(p)))*sp
+                if 'has' in URL_args:
+                    if URL_args['has'] not in p:
+                        continue
+                # +"?a=b&c=d"
+                url = p+'?has=utils/core'
+                s += href_(p,p[:min(q,len(p))]) + max(0,(q-len(p)))*sp
                 ctr += 1
                 if ctr%3 ==0:
                     s += br
@@ -112,7 +135,7 @@ class MyServer(BaseHTTPRequestHandler):
             s += '<h2>'+'output'+'</h2>'
 
             s += highlight(
-                file_to_text(out),
+                ansi_escape.sub('', file_to_text(out)),
                 PythonLexer(),
                 HtmlFormatter())
 

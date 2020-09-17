@@ -157,7 +157,7 @@ def main(**A):
         t = 0.05
     else:
         t = float(A['t'])
-    print('example animation (note, delay built into display)')
+    print('Example animation (note, delay built into display)')
     for i in range(0,100,2):
         j = 99-i
         print(format_row([('i',i),('j',j)]))

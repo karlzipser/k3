@@ -184,7 +184,8 @@ def get_list_of_files_recursively(
     return files
 
 def main(**A):
-    pass
+    print("main()")
+    
 if __name__ == '__main__':
     eg(__file__)
     main()

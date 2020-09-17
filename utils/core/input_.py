@@ -43,7 +43,8 @@ def select_from_list(lst,ignore_underscore=False):
     return lst[i]
 
 def main(**A):
-    pass
+    print("main()")
+    
 if __name__ == '__main__':
     eg(__file__)
     main()

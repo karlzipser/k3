@@ -30,7 +30,8 @@ gg = glob.glob
 
 
 def main(**A):
-    pass
+    print("main()")
+    
 if __name__ == '__main__':
     eg(__file__)
     main()

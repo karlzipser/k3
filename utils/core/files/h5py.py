@@ -38,6 +38,7 @@ def save_as_h5py(file_path,D,dtype='float16'):
 
 
 def main(**A):
+    print("main()")
     pass
 if __name__ == '__main__':
     eg(__file__)
