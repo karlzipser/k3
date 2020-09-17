@@ -86,9 +86,10 @@ class MyServer(BaseHTTPRequestHandler):
                 p = p[1:]
             if 'save_code' in URL_args:
                 sc = URL_args['save_code'].replace('\r','')
-                p2 = opjD(p)
-                os_system('mkdir -p',pname(p2))
-                text_to_file(p2,sc)  
+                #p2 = opjD(p)
+                #os_system('mkdir -p',pname(p2))
+                os_system('mv',p,d2p(p,time.time()))
+                text_to_file(p,sc)  
 
             if path not in paths:
                 path = paths[0]
