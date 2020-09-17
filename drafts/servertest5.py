@@ -151,7 +151,14 @@ class MyServer(BaseHTTPRequestHandler):
             s += '<h3>'+'URL_args'+'</h3>'
             s_ = 'path: '+path +'\n'
             for u in URL_args:
-                s_ += d2n(u,': ',URL_args[u]) +'\n'
+                if u == 'save_code':
+                    s_ += d2n(
+                        'save_code: <holds ',
+                        len(URL_args['save_code'].split('\n')),
+                        ' lines>'
+                    )
+                else:
+                    s_ += d2n(u,': ',URL_args[u]) +'\n'
             s += highlight(s_, PythonLexer(), HtmlFormatter())
 
             s += '<h2>'+'code'+'</h2>'
@@ -171,9 +178,6 @@ class MyServer(BaseHTTPRequestHandler):
   <input type="submit" value="Submit">
 </form>
 
-<p>Click the "Submit" button and the form-data will be sent to a page on the 
-server called "action_page.php".</p>
-
 """
 #.replace('ROWS',str(rows)).replace('COLS',str(cols))
 
@@ -181,7 +185,7 @@ server called "action_page.php".</p>
             s += redirect
 
             s += "</div>"
-            s += 'end.'
+            #s += 'end.'
 
             s += end_()
 

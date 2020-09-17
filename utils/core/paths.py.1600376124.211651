@@ -53,6 +53,7 @@ def pname(path):
 pn = pname
 
 
+
 code = \
 """
 p = opjk('test.py')#
@@ -66,7 +67,7 @@ fname(pname(p)) #
 """
 
 def main(**A):
-    print("<===> :^)")
+    print("===")
     a = 0
     for c in code.split('#\n'):
         if c is None or len(c.replace(' ','')) == 0:
@@ -84,5 +85,8 @@ def main(**A):
 if __name__ == '__main__':
     main()
 
-#EOF
 
+#if type(A) is dict:
+#    print_dic_simple(A,'**A')#
+
+#EOF
