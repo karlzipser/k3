@@ -60,5 +60,10 @@ def mean_exclude_outliers(data,n,min_proportion,max_proportion):
 def meo(data,n):
     return mean_exclude_outliers(data,n,1/3.0,2/3.0)
 
-
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
+    
 #EOF

@@ -13,7 +13,7 @@ def print_dic_simple(D,title=''):
 def clear_screen():
     print(chr(27) + "[2J")
     
-def eg(file,cs=True):
+def eg(file,cs=False):
     if cs:
         clear_screen()
     print('Examples from '+file+':')
@@ -112,5 +112,11 @@ def natural_keys(text):
 def interactive():
     import __main__ as main
     return not hasattr(main, '__file__')
+    
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
     
 #EOF

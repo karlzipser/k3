@@ -29,6 +29,10 @@ sys = os.sys
 gg = glob.glob
 
 
-
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
 
 #EOF

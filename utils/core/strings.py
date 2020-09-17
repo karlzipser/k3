@@ -49,8 +49,7 @@ def str_contains_one(st,str_list):
             return True
     return False
 
-if __name__ == '__main__':
-    eg(__file__)         
+def main(**A):         
     s = "Is this name: @ safe for a file!!!!"
     print('unsafe name:',s)
     print('get_safe_name():',get_safe_name(s))
@@ -61,4 +60,8 @@ if __name__ == '__main__':
     print(str_contains(s,['abcd','xyz']))
     print(str_contains_one(s,['abcd','xyz']))
 
+if __name__ == '__main__':
+    eg(__file__)
+    main()
+    
 #EOF

@@ -143,8 +143,7 @@ def format_seconds(time):
     return "%d:%d:%d:%d" % (day, hour, minutes, seconds)
 
 
-if __name__ == '__main__':
-    eg(__file__)
+def main(**A):
     t = 2
     pd2s('Setting timer for',t,'second:')
     timer = Timer(t)
@@ -156,4 +155,11 @@ if __name__ == '__main__':
     pd2s('format',t,'seconds:',format_seconds(t))
     pd2s('current, file safe:',time_str())
     pd2s('current, nice looking:',time_str('Pretty2',t=time.time()))
+
+
+
+if __name__ == '__main__':
+    eg(__file__)
+    main()
+
 #EOF

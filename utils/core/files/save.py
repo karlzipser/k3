@@ -74,6 +74,10 @@ def soD(arg1,arg2,noisy=True):
         print("exec(EXCEPT_STR)")
 
 
-
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
 
 #EOF

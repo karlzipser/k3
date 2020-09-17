@@ -183,5 +183,9 @@ def get_list_of_files_recursively(
             files.append(opj(src,p,f))
     return files
 
-
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
 #EOF

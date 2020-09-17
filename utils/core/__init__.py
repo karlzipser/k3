@@ -22,4 +22,11 @@ from k3.utils.core.input_ import *
 
 from k3.utils.core.printing import *
 
+
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
+    
 #EOF

@@ -18,10 +18,11 @@ def urlparse(url):
                 f[1] = unquote(f[1])
                 #print(f[1])
                 URL_args[f[0]] = f[1]
-    if path[0] == '/':
-        path = path[1:]
+    #if path[0] == '/':
+    #    path = path[1:]
     return path,URL_args
 
+sp = '&nbsp'
 
 br = '<br>\n'
 def lines_to_html_str(print_lines):

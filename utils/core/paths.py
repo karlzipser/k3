@@ -67,6 +67,7 @@ fname(pname(p)) #
 """
 
 def main(**A):
+    print("===")
     a = 0
     for c in code.split('#\n'):
         if c is None or len(c.replace(' ','')) == 0:

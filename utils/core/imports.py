@@ -54,4 +54,9 @@ for im in imports:
                 pass
                 print('Failed to import '+im[1]+' as '+im[2]) 
 
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
 #EOF

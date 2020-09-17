@@ -43,14 +43,15 @@ class MyServer(BaseHTTPRequestHandler):
 
 
             script = 'k3/drafts/pages4.py'
+            #cb(script,r=1)
             #clear_screen()
             out = 'k3/__private__/__private.temp.txt'
-
-            os_system('python3',script,'--url',qtd(self.path),'>',out)
+            #self_path = 'k3/utils/core/paths.py'
+            os_system('python3',script,'--url',self.path,'>',out)
 
             s = file_to_text("k3/__private__/__private.temp.txt")
 
-
+            #cg('s',r=1)
 
 
             self.send_response(200)

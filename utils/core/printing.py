@@ -133,23 +133,6 @@ def format_row(list_of_sym_percent_pairs):
     return row_str
 
 
-if __name__ == '__main__':
-
-    eg(__file__)
-    
-    for i in range(0,100,2):
-        j = 99-i
-        print(format_row([('i',i),('j',j)]))
-        time.sleep(0.05)
-
-    cy(1,2,3)
-    cg(4,5,6)
-    cr("Example exception text:")
-    et()
-    print('example of d2s and d2n used together.')
-    print(d2s(1,2,3,d2n(4,5,6)))
-
-
 def lines_to_html_str(print_lines):
     if type(print_lines) == str:
         print_lines = [print_lines]
@@ -165,5 +148,32 @@ def lines_to_html_str(print_lines):
 
 def as_pct(a,b):
     return d2n(intr(100*a/b),'%')
+
+
+    
+
+def main(**A):
+    if 't' not in A:
+        t = 0.05
+    else:
+        t = float(A['t'])
+    print('example animation (note, delay built into display)')
+    for i in range(0,100,2):
+        j = 99-i
+        print(format_row([('i',i),('j',j)]))
+        time.sleep(t)
+
+    cy(1,2,3)
+    cg(4,5,6)
+    cr("Example exception text:")
+    et()
+    print('example of d2s and d2n used together.')
+    print(d2s(1,2,3,d2n(4,5,6)))
+
+
+if __name__ == '__main__':
+    eg(__file__)
+    main()
+
     
 #EOF

@@ -37,7 +37,11 @@ def save_as_h5py(file_path,D,dtype='float16'):
     clp('done.')
 
 
-
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
 
 
 

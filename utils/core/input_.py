@@ -42,4 +42,9 @@ def select_from_list(lst,ignore_underscore=False):
         return None
     return lst[i]
 
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
 #EOF

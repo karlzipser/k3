@@ -9,9 +9,16 @@ Arguments = get_Arguments(
         'url':None,
     }
 )
+paths = [
+    #'k3/scripts/gen/temperature.py',
+    'k3/utils/core/printing.py',
+    'k3/utils/core/paths.py',
+]
 
 def main(**A):
     path, URL_args = urlparse(A['url'])
+    cb(path)
+
     code = highlight(file_to_text(path), PythonLexer(), HtmlFormatter())
     #script = path
     #clear_screen()
@@ -20,6 +27,7 @@ def main(**A):
 
     s = head_('this is the title')
     s += style
+    s += href_("'/k3/utils/core/printing.py?a=b&c=d'",'k3/utils/core/printing.py')
     s += '<h1>'+path+'</h1>'
     s += '<h2>'+'output'+'</h2>'
 
@@ -44,6 +52,13 @@ def main(**A):
     s += code
 
     s += 'end.'
+
+    if False:#path not in paths:
+        cy('here',r=1)
+        path = 'k3/utils/core/paths.py'
+        #s += "<meta http-equiv='refresh' content='time; URL="+path+'/>'
+        
+
     s += end_()
 
     print(s)

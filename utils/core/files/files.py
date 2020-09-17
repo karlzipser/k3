@@ -46,7 +46,11 @@ def percent_disk_free(disk='/'):
     return percent_free
 
 
-
+def main(**A):
+    pass
+if __name__ == '__main__':
+    eg(__file__)
+    main()
 
 
 
