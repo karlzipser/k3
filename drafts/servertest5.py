@@ -125,7 +125,8 @@ class MyServer(BaseHTTPRequestHandler):
 
             s = head_('this is the title')
             s += style
-            s += """<div style="font-family:'Courier New';font-size:12px">"""
+            s += '<h3>'+p+'</h3>'
+            s += div(60)
             ctr = 0
             q = 40
             for p in paths:
@@ -138,17 +139,11 @@ class MyServer(BaseHTTPRequestHandler):
                 ctr += 1
                 if ctr%3 ==0:
                     s += br
-            s += '<h1>'+path+'</h1>'
-            s += '<h2>'+'output'+'</h2>'
+            s += "</div><hr>"
 
-            s += highlight(
-                ansi_escape.sub('', file_to_text(out)),
-                PythonLexer(),
-                HtmlFormatter())
-
-            s += br*2
+            s += div(150)
+            s += '<h2>'+'input/output'+'</h2>'
             
-            s += '<h3>'+'URL_args'+'</h3>'
             s_ = 'path: '+path +'\n'
             for u in URL_args:
                 if u == 'save_code':
@@ -161,9 +156,21 @@ class MyServer(BaseHTTPRequestHandler):
                     s_ += d2n(u,': ',URL_args[u]) +'\n'
             s += highlight(s_, PythonLexer(), HtmlFormatter())
 
+            s += highlight(
+                ansi_escape.sub('', file_to_text(out)),
+                PythonLexer(),
+                HtmlFormatter())
+            s += "</div><hr>"
+            #s += div()
+            
+            #s += '<h4>'+'URL_args'+'</h4>'
+            
+
+            
+            s += div(150)
             s += '<h2>'+'code'+'</h2>'
             s += code
-
+            s += "</div><hr>"
 
             #s += form_('raw_code',v=raw_code.replace('\n','<br>\n'))
             rows = len(raw_code.split('\n'))
@@ -175,7 +182,7 @@ class MyServer(BaseHTTPRequestHandler):
 """ + raw_code +"""
   </textarea>
   <br><br>
-  <input type="submit" value="Submit">
+  <input type="save_code" value="Save">
 </form>
 
 """

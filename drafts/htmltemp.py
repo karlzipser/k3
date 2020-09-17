@@ -146,6 +146,18 @@ style = """
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
 </style>
 """
-
+#border-color: coral;
+def div(px):
+    return """
+<div
+    style="
+        overflow-y: scroll;
+        height:"""+str(px)+"""px;
+        font-family:'Courier New';
+        font-size:12px"
+border-right: 1px solid #000;
+border-left: 1px solid #000;
+>
+    """
 #EOF
 
