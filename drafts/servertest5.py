@@ -24,6 +24,27 @@ ansi_escape = re.compile(r"""
 """, re.VERBOSE)
 #result = ansi_escape.sub('', sometext)
 
+
+def trim_paths(paths):
+    paths = sorted(paths)
+    q = []
+    for p in paths:
+        q.append(p.replace(opjk(),'').split('/'))
+
+    for i in range(len(q)-1,1,-1):
+        for j in rlen(q[i]):
+            print(i,j)
+            try:
+                if q[i][j] == q[i-1][j]:
+                    q[i][j] = ' '*len(q[i][j])
+            except:
+                pass
+    r = []
+    for u in q:
+        r.append('/'.join(u).replace('/ ','  ').replace(opjk(),'').replace(' /','  '))
+    return r
+
+
 a = get_list_of_files_recursively(opjk('utils'),'*.py')
 b = []
 for c in a:
@@ -82,6 +103,9 @@ class MyServer(BaseHTTPRequestHandler):
 
             path, URL_args = urlparse(self.path)
             p = path
+            out = 'k3/__private__/__private2.temp.txt'
+            code = ''
+            raw_code = ''
             if p[0] == '/':
                 p = p[1:]
             if 'save_code' in URL_args:
@@ -93,30 +117,28 @@ class MyServer(BaseHTTPRequestHandler):
 
             if path not in paths:
                 path = paths[0]
-                redirect = """<meta http-equiv="Refresh" content="0; url='"""+path+"""'" />"""
+                redirect = """<meta http-equiv="Refresh" content="0; url='"""+\
+                    path+"""'" />"""
             else:
                 redirect = ''
 
             
 
-            raw_code = file_to_text(p)
-            code = highlight(raw_code, PythonLexer(), HtmlFormatter())
-            out = 'k3/__private__/__private2.temp.txt'
+                raw_code = file_to_text(p)
+                code = highlight(raw_code, PythonLexer(), HtmlFormatter())
+                
 
-            if 'def main(**' in raw_code:
+                if 'def main(**' in raw_code:
 
-                with open(out, 'w') as f:
-                    with redirect_stdout(f):
-                        if os.path.getmtime(p) > Imports[p+':time']:
-                            importlib.reload( Imports[p] )
-                            Imports[p+':time'] = time.time()
-                        Imports[p].main(**URL_args)
-            else:
-                cm('python3',p,'--url',self.path,'>',out,r=0)
-                os_system('python3',p,'--url',qtd(self.path),'>',out)
-
-
-
+                    with open(out, 'w') as f:
+                        with redirect_stdout(f):
+                            if os.path.getmtime(p) > Imports[p+':time']:
+                                importlib.reload( Imports[p] )
+                                Imports[p+':time'] = time.time()
+                            Imports[p].main(**URL_args)
+                else:
+                    cm('python3',p,'--url',self.path,'>',out,r=0)
+                    os_system('python3',p,'--url',qtd(self.path),'>',out)
 
 
 
@@ -126,18 +148,37 @@ class MyServer(BaseHTTPRequestHandler):
             s = head_('this is the title')
             s += style
             s += '<h3>'+p+'</h3>'
+
+            s += """
+<div style="
+    margin:0;
+    width:280px;
+    height:790;
+    float: right !important;
+    margin-right:20px;
+    margin-left:20px;
+    position:relative;
+    padding: 0;
+    text-align: left;
+    font-family:'Courier New';
+    font-size:14px"
+    overflow-y: scroll;
+
+    "
+"""
+
             s += div(60)
             ctr = 0
             q = 40
-            for p in paths:
+            for pp in trim_paths(paths):
                 if 'has' in URL_args:
-                    if URL_args['has'] not in p:
+                    if URL_args['has'] not in pp:
                         continue
                 # +"?a=b&c=d"
-                url = p+'?has=utils/core'
-                s += href_(p,p[:min(q,len(p))]) + max(0,(q-len(p)))*sp
+                url = pp+'?has=utils/core'
+                s += href_(pp,pp[1:].replace(' ','&nbsp'),False)#min(q,len(p))])# + max(0,(q-len(p)))*sp
                 ctr += 1
-                if ctr%3 ==0:
+                if True:#ctr%3 ==0:
                     s += br
             s += "</div><hr>"
 
@@ -167,7 +208,7 @@ class MyServer(BaseHTTPRequestHandler):
             
 
             
-            s += div(150)
+            s += div(150*4)
             s += '<h2>'+'code'+'</h2>'
             s += code
             s += "</div><hr>"

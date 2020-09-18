@@ -39,35 +39,39 @@ def lines_to_html_str(print_lines):
 l2h = lines_to_html_str
 
 def head_(s):
-	a = """
+    a = """
 <html>
 <head>
 <title>
-		"""
-	b = """
+        """
+    b = """
 </title>
 </head>
 <body>
-		"""
-	return a + s + b
+        """
+    return a + s + b
 
 
 def img_(src,style):
-	return d2n('\n<img src=',qtd(src),' style=',qtd(style),'>\n')
+    return d2n('\n<img src=',qtd(src),' style=',qtd(style),'>\n')
 
 
-def href_(dst,s):
-	return d2n('\n<a href=',qtd(dst),'>',s,'</a>\n')
+def href_(dst,s,underline=False):
+    if not underline:
+        u = "style='text-decoration:none'"
+    else:
+        u = ''
+    return d2n('\n<a '+u+' href=',qtd(dst),'>',s,'</a>\n')
 
 
 def form_(s,v=''):
-	return """\n<form action="" method="GET">\n""" + \
-		s + " <input size='50' type='text' name='"+get_safe_name(s)+"' value='"+v+"''>\n" +\
-		"</form>\n"
+    return """\n<form action="" method="GET">\n""" + \
+        s + " <input size='50' type='text' name='"+get_safe_name(s)+"' value='"+v+"''>\n" +\
+        "</form>\n"
 
 
 def end_():
-	return "\n</body></html>\n\n"
+    return "\n</body></html>\n\n"
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
