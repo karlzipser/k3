@@ -1,6 +1,69 @@
 
 from k3.utils.collections_.collections_ import *
 
+# args_to_dictionary(arg_str_to_args(a))
+
+def arg_str_to_args(s):
+    r=r'(\S+)\s*'
+    return re.findall(r,s)
+
+def args_to_dictionary(*args):
+
+    for e in args:
+        if '--help' in e:
+            print_dic_simple(Defaults,'Defaults')
+            os.sys.exit()
+
+    if False:
+        if not is_even(len(args[0])):
+            print('def args_to_dictionary(*args): Warning, not is_even(len(args[0]))')
+            return
+
+    args_0 = []
+    for i in range(len(args[0])):
+
+        if '--' not in args[0][i]:
+            if i == 0 or '--' not in args[0][i-1]:
+                print("Error with",args[0])
+                return
+
+        """
+        if '--' in args[0][i] and args[0][i][-2:] == '--':
+            args_0.append(args[0][i])
+            args_0.append(0)
+        """
+
+        if '--' in args[0][i] and args[0][i][:2] == '--':
+            args_0.append(args[0][i])
+            if i+1 == len(args[0]) or '--' in args[0][i+1] and args[0][i+1][:2] == '--':
+                args_0.append(1)
+        else:
+            args_0.append(args[0][i])
+
+
+
+    ctr = 0
+    keys = []
+    values = []
+    for e in args_0:
+        if is_even(ctr):
+            keys.append(e)
+        else:
+            values.append(e)
+        ctr += 1
+    d = {}
+    if len(keys) != len(values):
+        print("args_to_dictionary(*args)")
+        print("given keys are:")
+        print(keys)
+        print("given values are:")
+        print(values)
+        raise ValueError('ERROR because: len(keys) != len(values)')
+    for k,v in zip(keys,values):
+        d[k] = v
+    return d
+
+
 def get_Arguments(Defaults={}):
     """
     Examples using get_Arguments:
@@ -8,61 +71,7 @@ def get_Arguments(Defaults={}):
         python FILE --src Desktop/temp.dat
         try using --help
     """#.replace('FILE',__file__)#.replace(opjh(),'')
-    def args_to_dictionary(*args):
 
-        for e in args:
-            if '--help' in e:
-                print_dic_simple(Defaults,'Defaults')
-                os.sys.exit()
-
-        if False:
-            if not is_even(len(args[0])):
-                print('def args_to_dictionary(*args): Warning, not is_even(len(args[0]))')
-                return
-
-        args_0 = []
-        for i in range(len(args[0])):
-
-            if '--' not in args[0][i]:
-                if i == 0 or '--' not in args[0][i-1]:
-                    print("Error with",args[0])
-                    return
-
-            """
-            if '--' in args[0][i] and args[0][i][-2:] == '--':
-                args_0.append(args[0][i])
-                args_0.append(0)
-            """
-
-            if '--' in args[0][i] and args[0][i][:2] == '--':
-                args_0.append(args[0][i])
-                if i+1 == len(args[0]) or '--' in args[0][i+1] and args[0][i+1][:2] == '--':
-                    args_0.append(1)
-            else:
-                args_0.append(args[0][i])
-
-
-
-        ctr = 0
-        keys = []
-        values = []
-        for e in args_0:
-            if is_even(ctr):
-                keys.append(e)
-            else:
-                values.append(e)
-            ctr += 1
-        d = {}
-        if len(keys) != len(values):
-            print("args_to_dictionary(*args)")
-            print("given keys are:")
-            print(keys)
-            print("given values are:")
-            print(values)
-            raise ValueError('ERROR because: len(keys) != len(values)')
-        for k,v in zip(keys,values):
-            d[k] = v
-        return d
 
     temp = args_to_dictionary(sys.argv[1:])
 

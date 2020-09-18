@@ -67,9 +67,8 @@ fname(pname(p)) #
 def main(**A):
     print("<===> :^)")
     print_dic_simple(A,title='A')
-    print(A['arguments'])
     try:
-        for i in range(int(A['n'])):
+        for i in range(A['n']):
             print(i)
     except:
         pass
@@ -91,7 +90,5 @@ if __name__ == '__main__':
     main()
 
 #EOF
-  
-  
   
   

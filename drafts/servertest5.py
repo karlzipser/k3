@@ -123,7 +123,7 @@ class MyServer(BaseHTTPRequestHandler):
                 redirect = ''
 
             
-
+                #cb(p,r=1)
                 raw_code = file_to_text(p)
                 code = highlight(raw_code, PythonLexer(), HtmlFormatter())
                 
@@ -147,6 +147,7 @@ class MyServer(BaseHTTPRequestHandler):
 
             s = head_('this is the title')
             s += style
+            s += form_('arguments')
             s += '<h3>'+p+'</h3>'
 
             s += """
@@ -170,13 +171,13 @@ class MyServer(BaseHTTPRequestHandler):
             s += div(60)
             ctr = 0
             q = 40
-            for pp in trim_paths(paths):
+            for pp,pr in zip(trim_paths(paths),paths):
                 if 'has' in URL_args:
                     if URL_args['has'] not in pp:
                         continue
                 # +"?a=b&c=d"
                 url = pp+'?has=utils/core'
-                s += href_(pp,pp[1:].replace(' ','&nbsp'),False)#min(q,len(p))])# + max(0,(q-len(p)))*sp
+                s += href_(pr,pp[1:].replace(' ','&nbsp'),False)#min(q,len(p))])# + max(0,(q-len(p)))*sp
                 ctr += 1
                 if True:#ctr%3 ==0:
                     s += br
