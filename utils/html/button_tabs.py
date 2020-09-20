@@ -77,8 +77,12 @@ def button_tabs(
 	buttons,div_content = '',''
 
 	for b in sorted(Buttons):
+		if Buttons[b][:2] == '#!':
+			onclick = Buttons[b][2:]
+		else:
+			onclick = "openCity(event, '"+b+"')"
 		buttons += button(class_=tablinks,
-					onclick="openCity(event, '"+b+"')",
+					onclick=onclick,
 					content=b)
 		div_content += div(id=b,class_=tabcontent,content=Buttons[b])+'\n'
 
@@ -91,21 +95,53 @@ def button_tabs(
 
 	return html
 
+Arguments = get_Arguments({})
 
 def main(**A):
-	html = button_tabs(
+
+	html = editor_head
+
+	html += editor
+
+
+	html += """
+
+<div class="sidebar" style="
+    margin:0;
+    width:500px;
+    height:790;
+    float: right !important;
+    margin-right:20px;
+    margin-left:20px;
+    position:relative;
+    padding: 0;
+    text-align: left;
+    font-family:'Courier New';
+    font-size:14px
+    overflow-y: scroll;"
+>
+
+
+	"""
+
+	html += button_tabs(
 		{
 			'London':'London is the capital city of England.London is the capital city of England.London is the capital city of England.London is the capital city of England.London is the capital city of England.London is the capital city of England.London is the capital city of England.London is the capital city of England.London is the capital city of England.London is the capital city of England.',
 			'New York':'New York pital city of England.',
 			'Berlin':'Berlin adsfasdfdsfd city of England.',
-			'Berlin2':'Berlin2 adsfasdfdsfd city of England.',
+			'Save':"#!alert('This could save data');",
 		},
 	)
+
+	html += save_button
+
+	html += '</div>'
+
 	text_to_file(opjD('temp3.html'),html)
 
 
 if __name__ == '__main__':
-	main()
+	main(**Arguments)
 
 
 #,b
