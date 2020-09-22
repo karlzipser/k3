@@ -62,9 +62,13 @@ def _trim_paths(paths):
 
 
 
+def handle_path_and_URL_args(path,URL_args):
+    pass
 
 def get_SubCode(url):
     path, URL_args = urlparse(url)
+    handle_path_and_URL_args(path,URL_args)
+
     p = path
     if p[0] == '/' and len(p) > 1:
         p = p[1:]
@@ -77,7 +81,7 @@ def get_SubCode(url):
 
     SubCode['---FILES---'] = _get_files()
     SubCode['---OUTPUT---'] = d2s(path,URL_args)
-    SubCode['---TITLE---'] = ' '+p+' ' # this so not treated as path
+    SubCode['---TITLE---'] = p # this so not treated as path
     return SubCode
 
 #EOF

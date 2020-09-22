@@ -52,7 +52,7 @@ class MyServer(BaseHTTPRequestHandler):
                 sc = SubCode[j]
                 sc_is_path = False
                 try:
-                    if len(sggo(sc)) == 1:
+                    if j != '---TITLE---' and len(sggo(sc)) == 1:
                         sc_is_path = True
                 except:
                     pass

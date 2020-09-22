@@ -20,7 +20,17 @@
     }
   </style>
 </head>
-<body>
+
+<script>
+function setURL() {
+  window.history.replaceState({}, document.title, "/" + "---TITLE---");
+}
+</script>
+
+<body onload="setURL()">
+
+
+
 
 
 
