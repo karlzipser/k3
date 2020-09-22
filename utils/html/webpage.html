@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Editor</title>
+  <title>
+---TITLE---
+  </title>
   <style type="text/css" media="screen">
     body {
         overflow: hidden;
@@ -22,10 +24,33 @@
 
 
 
+<div 
+style="
+    z-index: 1;
+    position:absolute;
+    bottom:0;
+    right:0;
+    opacity: 0.75;
+    background-color: lightblue
+    "
+>
+<p
+style="
+	color:red
+"
+>
+&nbsp<b>---TITLE---</b>&nbsp
+</p>
+</div>
 
-<pre id="editor">
----EDITOR---
-</pre>
+
+<!--
+<style>
+    z-index: -1;
+    position:relative;
+</style>
+-->
+<pre id="editor">---EDITOR---</pre>
 
 <script >
 ---ACE-ACE---
@@ -51,7 +76,7 @@ editor.session.setMode("ace/mode/python");
 class="sidebar"
 
 style="
-
+	opacity: 0.9;
     float: right !important;
     position:relative;
     /*
@@ -79,7 +104,7 @@ style="
 	  overflow: hidden;
 	  border: 1px solid #ccc;
 	  background-color: #f1f1f1;
-
+	  margin-left:50px;
 	}
 
 	/* Style the buttons inside the tab */
@@ -111,19 +136,20 @@ style="
 	  border: 1px solid #ccc;
 	  background-color: #ccc;
 	  border-top: none;
+	  margin-left:50px;
 	  height: 600px;
 	  overflow: scroll;
 	}
 	</style>
 	<div class="tab">
 	<form class='textareaform' action="" method="GET">
-	<textarea  hidden name="save0" rows="10" cols="5" style="font-family:'Courier New';font-size:14px">
+	<textarea  hidden name="SaveCode" rows="10" cols="5" style="font-family:'Courier New';font-size:14px">
 	</textarea>
 	<button type="button" class="tablinks" onclick="openTab(event, '-')">-</button>
 	<button type="button" class="tablinks" onclick="openTab(event, 'Output')">Output</button>
 	<button type="button" class="tablinks" onclick="openTab(event, 'Files')">Files</button>
 	<button type="button" class="tablinks" onclick="openTab(event, 'Figures')">Figures</button>
-	<button class="tablinks" onClick="this.form.save0.value = editor.getValue();this.form.submit()">Save</button>
+	<button class="tablinks" onClick="this.form.SaveCode.value = editor.getValue();this.form.submit()">Save</button>
 	</form>
 	</div>
 	<div id="-" class="tabcontent"></div>

@@ -1,66 +1,12 @@
 from k3 import *
 from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
-from contextlib import redirect_stdout
-import importlib
+Arguments = get_Arguments(
+    {'webpage':'k3.utils.html.webpage'}
+)
+exec(d2s('import',Arguments['webpage'],'as wp'))
 
-from htmlpy import *
-
-def trim_paths(paths):
-    paths = sorted(paths)
-    q = []
-    for p in paths:
-        q.append(p.replace(opjk(),'').split('/'))
-
-    for i in range(len(q)-1,1,-1):
-        for j in rlen(q[i]):
-            print(i,j)
-            try:
-                if q[i][j] == q[i-1][j]:
-                    q[i][j] = ' '*len(q[i][j])
-            except:
-                pass
-    r = []
-    for u in q:
-        r.append('/'.join(u).replace(
-            '/ ','  ').replace(opjk(),'').replace(' /','  '))
-    return r
-
-
-a = get_list_of_files_recursively(opjk(''),'*.py')
-b = []
-for c in a:
-    #if fname(a)[0] == '_':
-    #    continue
-    b.append('/'+c.replace(opjh(),''))
-paths = sorted(b)
-s = ''
-ctr = 0
-for pp,pr in zip(trim_paths(paths),paths):
-    url = pp
-    s += href_(pr,pp[1:].replace(' ','&nbsp'),False)
-    ctr += 1
-    if True:#ctr%3 ==0:
-        s += br
-files = s
-#text_to_file(opjD('paths.txt'),s)
-
-
-hostName = "localhost"
-hostPort = 9000
 Images = {}
-SubCode = {
-    '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
-    '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
-    '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),
-    '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-    '---EDITOR---':     opjk('utils/core/paths.py'),
-    '---FILES---':      (files,),
-    '---FIGURES---':    (
-"""<img src="/Desktop/Internet_dog.jpg" style="width:600px;">""",),
-    '---OUTPUT---':    (
-"""ELIZA is an early natural language processing computer program created from 1964 to 1966[1] at the MIT Artificial Intelligence Laboratory by Joseph Weizenbaum.[2] Created to demonstrate the superficiality of communication between humans and machines, Eliza simulated conversation by using a "pattern matching" and substitution methodology that gave users an illusion of understanding on the part of the program, but had no built in framework for contextualizing events.[3][4] Directives on how to interact were provided by "scripts", written originally in MAD-Slip, which allowed ELIZA to process user inputs and engage in discourse following the rules and directions of the script. The """,),
 
-}
 
 class MyServer(BaseHTTPRequestHandler):
 
@@ -94,22 +40,28 @@ class MyServer(BaseHTTPRequestHandler):
 
         else:
         
+            SubCode = wp.get_SubCode(self.path)
+
             html = '---WEBPAGE---'
 
             ks = kys(SubCode)
-            #cg(ks)
-            ks.remove(html)#('---WEBPAGE---')
-            #cb(ks)
-            ks = [html]+ks#['---WEBPAGE---'] + ks
+            ks.remove(html)
+            ks = [html] + ks
 
             for j in ks:
-                if type(SubCode[j]) is str:
-                    #cm(SubCode[j],r=1)
+                sc = SubCode[j]
+                sc_is_path = False
+                try:
+                    if len(sggo(sc)) == 1:
+                        sc_is_path = True
+                except:
+                    pass
+                if sc_is_path:
+                    cg('treating',j,sc,'as path')
                     r = file_to_text(SubCode[j])
                 else:
-                    #cb(SubCode[j],r=1)
-                    assert type(SubCode[j]) is tuple
-                    r = SubCode[j][0]
+                    cb('treating',j,'as text')
+                    r = SubCode[j]
                 html = html.replace(j,r)
             
             self.send_response(200)
@@ -119,21 +71,25 @@ class MyServer(BaseHTTPRequestHandler):
 
 
 
+def main(**A):
+
+    hostName = "localhost"
+    hostPort = 9000
+
+    myServer = ThreadingHTTPServer((hostName, hostPort), MyServer)
+    print(time.asctime(), "Server Starts - %s:%s" % (hostName, hostPort))
+
+    try:
+        myServer.serve_forever()
+    except KeyboardInterrupt:
+        pass
+
+    myServer.server_close()
+    print(time.asctime(), "Server Stops - %s:%s" % (hostName, hostPort))
 
 
-
-myServer = ThreadingHTTPServer((hostName, hostPort), MyServer)
-print(time.asctime(), "Server Starts - %s:%s" % (hostName, hostPort))
-
-try:
-    myServer.serve_forever()
-except KeyboardInterrupt:
-    pass
-
-myServer.server_close()
-print(time.asctime(), "Server Stops - %s:%s" % (hostName, hostPort))
-
-
+if __name__ == '__main__':
+    main()
 
 
 
