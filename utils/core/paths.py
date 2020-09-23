@@ -1,9 +1,3 @@
-"""
-  .
- .
-.
-"""
-
 from k3.utils.core.renaming import *
 
 def opj(*args):
@@ -43,7 +37,7 @@ def fnamene(path):
 
 def exname(path):
     """
-    filename, no extension
+    file extension
     """
     try:
         a = fname(path).split('.')
@@ -58,43 +52,21 @@ def pname(path):
 pn = pname
 
 
-code = \
-"""
-p = opjk('test.py')#
-p               #
-fname(p)        #
-fnamene(p)      #
-exname(p)       #
-fname(p)        #
-pname(p)        #
-fname(pname(p)) #
-"""
+
 
 def main(**A):
-    print("<===> :^)")
-    print_dic_simple(A,title='A')
-    
-    try:
-        print(A['arguments'])
-        for i in range(int(A['n'])):
-            print(i)
-    except:
-        pass
-    a = 0
-    for c in code.split('#\n'):
-        if c is None or len(c.replace(' ','')) == 0:
-            continue
-        print("IN["+str(a)+"]: "+c)
-        
-        if '=' not in c:
-            d = "print('      OUT["+str(a)+"]:',"+c+")"
-        else:
-            d = c
-        exec(d)
-        print('')
-        a += 1
+    p = opjk('test.py')
+    print(p)               
+    print(fname(p))     
+    print(fnamene(p))    
+    print(exname(p))       
+    print(fname(p))        
+    print(pname(p))        
+    print(fname(pname(p)))
 
 if __name__ == '__main__':
+    print(" :^)")
+    eg(__file__)
     main()
 
 #EOF

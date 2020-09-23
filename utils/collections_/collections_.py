@@ -6,54 +6,7 @@ REQUIRED = '__REQUIRED__'
 #,a
 
 
-if False:
-    def __di(path,e=None):
-        assert type(path) == str
-        kc = path.split('/')
-        return da(*kc,e=e)
-        
 
-    def __da(
-            *kc,
-            D=ENV.D,
-            e=None,
-            num_tuple_to_num=True,
-        ):
-        if e is None:
-            return use_keychain(kc,D,num_tuple_to_num)
-        else:
-            set_with_keychain(kc,D,e,num_tuple_to_num)
-
-
-
-
-
-
-    def use_keychain(kc,D,num_tuple_to_num=True):
-        if num_tuple_to_num:
-            kc = _untuple_keychain(kc)   
-        for k in kc:
-            D = D[k]
-        return D
-
-
-    def set_with_keychain(kc,D,e,num_tuple_to_num=True):
-        if num_tuple_to_num:
-            kc = _untuple_keychain(kc)
-        for i in range(len(kc)-1):
-            k = kc[i]
-            if type(k) is tuple and len(k) == 1:
-                k = k[0]
-            D = D[k]
-        D[kc[-1]] = e
-
-    def _untuple_keychain(kc):
-        kc_ = []
-        for k in kc:
-            if type(k) is tuple and len(k) == 1:
-                k = k[0]
-            kc_.append(k)
-        return kc_ 
 
 def kys(D):
     return list(sorted(D.keys()))
@@ -110,5 +63,52 @@ def files_to_dict(path,D={}):
 
 
 
+if False:
+    def __di(path,e=None):
+        assert type(path) == str
+        kc = path.split('/')
+        return da(*kc,e=e)
+        
 
+    def __da(
+            *kc,
+            D=ENV.D,
+            e=None,
+            num_tuple_to_num=True,
+        ):
+        if e is None:
+            return use_keychain(kc,D,num_tuple_to_num)
+        else:
+            set_with_keychain(kc,D,e,num_tuple_to_num)
+
+
+
+
+
+
+    def use_keychain(kc,D,num_tuple_to_num=True):
+        if num_tuple_to_num:
+            kc = _untuple_keychain(kc)   
+        for k in kc:
+            D = D[k]
+        return D
+
+
+    def set_with_keychain(kc,D,e,num_tuple_to_num=True):
+        if num_tuple_to_num:
+            kc = _untuple_keychain(kc)
+        for i in range(len(kc)-1):
+            k = kc[i]
+            if type(k) is tuple and len(k) == 1:
+                k = k[0]
+            D = D[k]
+        D[kc[-1]] = e
+
+    def _untuple_keychain(kc):
+        kc_ = []
+        for k in kc:
+            if type(k) is tuple and len(k) == 1:
+                k = k[0]
+            kc_.append(k)
+        return kc_ 
 #EOF

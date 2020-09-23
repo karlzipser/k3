@@ -49,6 +49,7 @@ class MyServer(BaseHTTPRequestHandler):
             ks = [html] + ks
 
             for j in ks:
+                cy(j)
                 sc = SubCode[j]
                 sc_is_path = False
                 try:
@@ -58,7 +59,11 @@ class MyServer(BaseHTTPRequestHandler):
                     pass
                 if sc_is_path:
                     cg('treating',j,sc,'as path')
-                    r = file_to_text(SubCode[j])
+                    try:
+                        r = file_to_text(SubCode[j])
+                    except:
+                        cr('failure with r = file_to_text(SubCode[j])')
+                        r = d2s(9*'\n'+j,": Error, unable to find or load",sc)
                 else:
                     cb('treating',j,'as text')
                     r = SubCode[j]

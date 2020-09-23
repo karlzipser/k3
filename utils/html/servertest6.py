@@ -115,7 +115,7 @@ class MyServer(BaseHTTPRequestHandler):
                 os_system('mv',p,d2p(p,time.time()))
                 text_to_file(p,sc)  
 
-            if path not in paths:
+            if False:#path not in paths:
                 path = paths[0]
                 redirect = """<meta http-equiv="Refresh" content="0; url='"""+\
                     path+"""'" />"""
