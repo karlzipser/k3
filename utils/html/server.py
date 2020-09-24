@@ -49,7 +49,6 @@ class MyServer(BaseHTTPRequestHandler):
             ks = [html] + ks
 
             for j in ks:
-                cy(j)
                 sc = SubCode[j]
                 sc_is_path = False
                 try:
@@ -65,8 +64,9 @@ class MyServer(BaseHTTPRequestHandler):
                         cr('failure with r = file_to_text(SubCode[j])')
                         r = d2s(9*'\n'+j,": Error, unable to find or load",sc)
                 else:
-                    cb('treating',j,'as text')
+                    cy('treating',j,'as text')
                     r = SubCode[j]
+
                 html = html.replace(j,r)
             
             self.send_response(200)

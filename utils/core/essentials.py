@@ -9,7 +9,22 @@ def print_dic_simple(D,title=''):
         for k in D:
             print('   ',k+':',D[k])
 
-            
+def print_dic_simple(D,title='',do_print=True,html=False):
+    el = '\n'
+    if html:
+        el +='<br>'
+    if title != '':
+        s = title+el
+    else:
+        s = ''
+    if type(D) is not dict:
+        print(D)
+    else:
+        for k in D:
+            s += '   '+k+':'+D[k]+el;
+    print(s)
+    return s
+
 def clear_screen():
     print(chr(27) + "[2J")
     

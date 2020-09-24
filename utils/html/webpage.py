@@ -1,3 +1,4 @@
+from k3 import *
 from htmlpy import *
 
 SubCode = {
@@ -10,7 +11,25 @@ SubCode = {
     '---REDIRECT---':   '',
     '---FIGURES---':    
             """<img src="/Desktop/Internet_dog.jpg" style="width:600px;">""",
-    '---OUTPUT---':"""<nothing>""",
+    #'---OUTPUT---':"""<nothing>""",
+    '---OUTPUT---':"""
+<form>
+  <input style="font-size:25px;font-weight:bold;" type="text" id="file" name="file" value="k3/utils/core/paths.py">
+  <label for="file">file</label>
+  <br>
+  <input style="font-size:14px;" type="text" id="src" name="src" value="Pictures/new">
+  <label for="src">--src</label>
+  <br>
+  <input style="font-size:14px;" type="text" id="dst" name="dst" value="Desktop/samples">
+  <label for="dst">--dst</label>
+  <br>
+  <input style="font-size:14px;" type="text" id="extra" name="extra" value="">
+  <label for="extra">additional cmd line str</label>
+  <br>
+  <input type="submit" value="Submit">
+</form>
+    """,
+    '---FILES---': opjD('temp.html'),
 }
 
 
@@ -63,23 +82,26 @@ def handle_path_and_URL_args(p,URL_args):
 
 def get_SubCode(url):
     path, URL_args = urlparse(url)
+    print('\n')
+    cm(path)
+    #zprint(URL_args)
     p = path
     if p[0] == '/' and len(p) > 1:
         p = p[1:]
     handle_path_and_URL_args(p,URL_args)
-
+    SubCode['---URL_args---'] = print_dic_simple(URL_args,'',html=True)
     try:
         if len(sggo(p)) == 1:
             SubCode['---EDITOR---'] = p
     except:
         pass
 
-    SubCode['---FILES---'],paths = _get_files()
+    #SubCode['---FILES---'],paths = _get_files()
     if False:#path not in paths:
         SubCode['---REDIRECT---'] = \
             """<meta http-equiv="Refresh" content="0; url='"""+ \
             path+"""'" />"""
-    SubCode['---OUTPUT---'] = d2s(path,URL_args)
+    #SubCode['---OUTPUT---'] = d2s(path,URL_args)
     SubCode['---TITLE---'] = p # this so not treated as path
     return SubCode
 

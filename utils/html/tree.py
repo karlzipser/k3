@@ -37,13 +37,13 @@ ul, #myUL {
   ;
 }
 
-/* Hide the nested list */
-.nested {
+/* Hide the tree_nested list */
+.tree_nested {
   display: block;
 }
 
-/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
-.active {
+/* Show the tree_nested list when the user clicks on the caret/arrow (with JavaScript) */
+.tree_active {
   display: none;
 }
 </style>
@@ -56,11 +56,19 @@ var i;
 
 for (i = 0; i < toggler.length; i++) {
   toggler[i].addEventListener("click", function() {
-    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.parentElement.querySelector(".tree_nested").classList.toggle("tree_active");
     this.classList.toggle("caret-down");
   });
 }
 </script>
+"""
+
+button = """
+<form action="" >
+  <label for="path">Top Path</label>
+  <input style="font-size:14px;" type="text" id="path" name="path" value="k3/utils">
+  <input  type="submit" value="Submit">
+</form>
 """
 
 def files_to_dict2(path,D={},use_fname=False,ignore_underscore=True):
@@ -81,7 +89,7 @@ def files_to_dict2(path,D={},use_fname=False,ignore_underscore=True):
             D[fname(f)] = files_to_dict2(f,{},use_fname,ignore_underscore)
     return D
 
-s = [style,"<ul id='myUL'>"]
+s = [style,button,"<ul id='myUL'>"]
 
 top = 'utils'
 
@@ -96,7 +104,7 @@ def a(D):
 				continue
 			if k != '.':
 				s.append(d2s("<li><span class='caret'>"+fname(k)+"</span>"))
-				s.append(d2s("<ul class='nested'>"))
+				s.append(d2s("<ul class='tree_nested'>"))
 				
 			a(D[k])
 			if k != '.':
@@ -105,13 +113,14 @@ def a(D):
 		for e in D:
 			if exname(e) not in ['js','py','html','txt','c','cpp']:
 				continue
-			s.append(d2s("<li><a href='"+e+"'>",fname(e),"</a></li>"))
+			s.append(d2s("<li><a href='"+e.replace(opjh(),'/')+"'>",fname(e),"</a></li>"))
 
 #d2n('\n<a '+u+' href=',qtd(dst),'>',s,'</a>\n')
 
 a(D)
 
 s.append(script)
+
 
 text_to_file(opjD('temp.html'),'\n'.join(s))
 
