@@ -1,5 +1,6 @@
 from k3 import *
 from urllib.parse import unquote
+from urllib.parse import urlencode
 
 def urlparse(url):
     URL_args = {}

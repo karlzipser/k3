@@ -1,18 +1,17 @@
 from k3 import *
 from htmlpy import *
+import tree_
 
 SubCode = {
-    '---TITLE---':      'page title',
     '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
     '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
     '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),
     '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-    '---EDITOR---':     opjk('utils/core/paths.py'),
+    #'---EDITOR---':     "nothing",#opjk('utils/core/paths.py'),
     '---REDIRECT---':   '',
-    '---FIGURES---':    
+    't--FIGURES---':    
             """<img src="/Desktop/Internet_dog.jpg" style="width:600px;">""",
-    #'---OUTPUT---':"""<nothing>""",
-    '---OUTPUT---':"""
+    't--OUTPUT---':"""
 <form>
   <input style="font-size:25px;font-weight:bold;" type="text" id="file" name="file" value="k3/utils/core/paths.py">
   <label for="file">file</label>
@@ -29,7 +28,7 @@ SubCode = {
   <input type="submit" value="Submit">
 </form>
     """,
-    '---FILES---': opjD('temp.html'),
+    
 }
 
 
@@ -82,14 +81,19 @@ def handle_path_and_URL_args(p,URL_args):
 
 def get_SubCode(url):
     path, URL_args = urlparse(url)
-    print('\n')
     cm(path)
-    #zprint(URL_args)
     p = path
+    del path
     if p[0] == '/' and len(p) > 1:
         p = p[1:]
+
+    if not os.path.isfile(p):
+        p_ = p
+        p = opjk('utils/__init__.py').replace(opjh(),'')
+        cr(p_,'-->',p,r=0)
+
     handle_path_and_URL_args(p,URL_args)
-    SubCode['---URL_args---'] = print_dic_simple(URL_args,'',html=True)
+    SubCode['t--URL_args---'] = print_dic_simple(URL_args,'',html=True)
     try:
         if len(sggo(p)) == 1:
             SubCode['---EDITOR---'] = p
@@ -98,11 +102,15 @@ def get_SubCode(url):
 
     #SubCode['---FILES---'],paths = _get_files()
     if False:#path not in paths:
-        SubCode['---REDIRECT---'] = \
+        SubCode['t--REDIRECT---'] = \
             """<meta http-equiv="Refresh" content="0; url='"""+ \
             path+"""'" />"""
     #SubCode['---OUTPUT---'] = d2s(path,URL_args)
-    SubCode['---TITLE---'] = p # this so not treated as path
+    SubCode['t--TITLE---'] = p # this so not treated as path
+    SubCode['t--FILES---'] = tree_.get_tree(p)
+    cm(SubCode['t--FILES---'])
+    SubCode['t--PATH-URL---'] = p + '?' + urlencode(URL_args)
+    clp(SubCode['t--PATH-URL---'],'`rwb')
     return SubCode
 
 #EOF

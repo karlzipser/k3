@@ -50,12 +50,21 @@ class MyServer(BaseHTTPRequestHandler):
 
             for j in ks:
                 sc = SubCode[j]
+                """
                 sc_is_path = False
                 try:
-                    if j != '---TITLE---' and len(sggo(sc)) == 1:
+                    #print(sc)
+                    if j != '---TITLE---' and j != '---PATH-URL---' and len(sggo(sc)) == 1:
                         sc_is_path = True
                 except:
                     pass
+                """
+                if j[0] == '-':
+                    sc_is_path = True
+                elif j[0] == 't':
+                    sc_is_path = False
+                else:
+                    assert False
                 if sc_is_path:
                     cg('treating',j,sc,'as path')
                     try:

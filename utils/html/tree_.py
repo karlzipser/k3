@@ -89,39 +89,42 @@ def files_to_dict2(path,D={},use_fname=False,ignore_underscore=True):
             D[fname(f)] = files_to_dict2(f,{},use_fname,ignore_underscore)
     return D
 
-s = [style,button,"<ul id='myUL'>"]
-
-top = 'utils'
-
-D = {}
-
-D = {opj('k3',top):files_to_dict2(opjk(top))}
-
-def a(D):
-	if type(D) is dict:
-		for k in kys(D):
-			if '__pycache__' in k:
-				continue
-			if k != '.':
-				s.append(d2s("<li><span class='caret'>"+fname(k)+"</span>"))
-				s.append(d2s("<ul class='tree_nested'>"))
-				
-			a(D[k])
-			if k != '.':
-				s.append(d2s('</ul></li>'))
-	elif type(D) is list:
-		for e in D:
-			if exname(e) not in ['js','py','html','txt','c','cpp']:
-				continue
-			s.append(d2s("<li><a href='"+e.replace(opjh(),'/')+"'>",fname(e),"</a></li>"))
-
-#d2n('\n<a '+u+' href=',qtd(dst),'>',s,'</a>\n')
-
-a(D)
-
-s.append(script)
+def get_tree(p):
+  s = [style,button,"<ul id='myUL'>"]
 
 
-text_to_file(opjD('temp.html'),'\n'.join(s))
+  D = {}
+  p = pname(p)
+  #cy(p,files_to_dict2(opjh(p)),r=1)
+  D = {p:files_to_dict2(opjh(p))}
+
+  def a(D):
+  	if type(D) is dict:
+  		for k in kys(D):
+  			if '__pycache__' in k:
+  				continue
+  			if k != '.':
+  				s.append(d2s("<li><span class='caret'>"+fname(k)+"</span>"))
+  				s.append(d2s("<ul class='tree_nested'>"))
+  				
+  			a(D[k])
+  			if k != '.':
+  				s.append(d2s('</ul></li>'))
+  	elif type(D) is list:
+  		for e in D:
+  			if exname(e) not in ['js','py','html','txt','c','cpp']:
+  				continue
+  			s.append(d2s("<li><a href='"+e.replace(opjh(),'/')+"'>",fname(e),"</a></li>"))
+
+  #d2n('\n<a '+u+' href=',qtd(dst),'>',s,'</a>\n')
+
+  a(D)
+
+  s.append(script)
+ 
+  #text_to_file(opjD('temp.html'),'\n'.join(s))
+
+  return '\n'.join(s)
+
 
 #EOF

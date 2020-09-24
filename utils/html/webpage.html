@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 ---REDIRECT---
   <title>
----TITLE---
+t--TITLE---
   </title>
   <style type="text/css" media="screen">
     body {
@@ -24,11 +24,13 @@
 
 <script>
 function setURL() {
-  ;/*window.history.replaceState({}, document.title, "/" + "---TITLE---");*/
+  ;//window.history.replaceState({}, document.title, "/" + "t--PATH-URL---")
 }
 </script>
 
-<body onload="setURL()">
+<body
+onload="setURL()"
+>
 
 
 
@@ -54,9 +56,9 @@ style="
 	padding-bottom,: 0px;
 "
 >
-<b>---TITLE---</b>
+<b>t--TITLE---</b>
 <br>
----URL_args---
+t--URL_args---
 </p>
 </div>
 
@@ -170,9 +172,9 @@ style="
 	</form>
 	</div>
 	<div id="-" class="tabcontent"></div>
-	<div id="Output" class="tabcontent">---OUTPUT---</div>
-	<div id="Files" class="tabcontent">---FILES---</div>
-	<div id="Figures" class="tabcontent">---FIGURES---</div>
+	<div id="Output" class="tabcontent">t--OUTPUT---</div>
+	<div id="Files" class="tabcontent">t--FILES---</div>
+	<div id="Figures" class="tabcontent">t--FIGURES---</div>
 	<div id="Save" class="tabcontent"></div>
 		<script>
 		function openTab(evt, cityName) {
