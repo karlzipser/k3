@@ -5,24 +5,20 @@ import importlib
 from contextlib import redirect_stdout
 import html
 
-D = {
-    'files_dir':opjk('utils'),
-}
+D = {'files_dir':opjk('utils'),}
+
 Imports = {}
+
 SubCode = {
     '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
     '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
     '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
     '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-    't--FIGURES---':    
-            """<img src="/Desktop/Internet_dog.jpg" ;">""",
-    
-    
+    't--FIGURES---':    """<img src="/Desktop/Internet_dog.jpg" ;">""",
 }
-# create dynamic output tab
-# add imports and mtime reloads
+
 # sort out problem with directory to dic
-# run
+
 
 
 def get_Output_form(p,A):
@@ -65,42 +61,42 @@ def get_Output_form(p,A):
 
 
 
+if False:
+    def _get_files(path=opjk('utils')):
+        a = get_list_of_files_recursively(path,'*.py')
+        b = []
+        for c in a:
+            b.append('/'+c.replace(opjh(),''))
+        paths = sorted(b)
+        files = ''
+        ctr = 0
+        for pp,pr in zip(_trim_paths(paths),paths):
+            url = pp
+            files += href_(pr+'abc'+'?city_tab=Files',pp[1:].replace(' ','&nbsp'),False)
+            ctr += 1
+            files += br
+        return files,paths
 
-def _get_files(path=opjk('utils')):
-    a = get_list_of_files_recursively(path,'*.py')
-    b = []
-    for c in a:
-        b.append('/'+c.replace(opjh(),''))
-    paths = sorted(b)
-    files = ''
-    ctr = 0
-    for pp,pr in zip(_trim_paths(paths),paths):
-        url = pp
-        files += href_(pr+'abc'+'?city_tab=Files',pp[1:].replace(' ','&nbsp'),False)
-        ctr += 1
-        files += br
-    return files,paths
 
+    def _trim_paths(paths):
+        paths = sorted(paths)
+        q = []
+        for p in paths:
+            q.append(p.replace(opjk(),'').split('/'))
 
-def _trim_paths(paths):
-    paths = sorted(paths)
-    q = []
-    for p in paths:
-        q.append(p.replace(opjk(),'').split('/'))
-
-    for i in range(len(q)-1,1,-1):
-        for j in rlen(q[i]):
-            #print(i,j)
-            try:
-                if q[i][j] == q[i-1][j]:
-                    q[i][j] = ' '*len(q[i][j])
-            except:
-                pass
-    r = []
-    for u in q:
-        r.append('/'.join(u).replace(
-            '/ ','  ').replace(opjk(),'').replace(' /','  '))
-    return r
+        for i in range(len(q)-1,1,-1):
+            for j in rlen(q[i]):
+                #print(i,j)
+                try:
+                    if q[i][j] == q[i-1][j]:
+                        q[i][j] = ' '*len(q[i][j])
+                except:
+                    pass
+        r = []
+        for u in q:
+            r.append('/'.join(u).replace(
+                '/ ','  ').replace(opjk(),'').replace(' /','  '))
+        return r
 
 
 
@@ -135,6 +131,7 @@ def handle_path_and_URL_args(p,URL_args):
     except:
         cb('p has no Arguments')
     #Imports[p].main(**URL_args)
+
 
 def get_SubCode(url):
     path, URL_args = urlparse(url)
@@ -182,7 +179,7 @@ def get_SubCode(url):
         if k.endswith('_output'):
             k_ = k.replace('_output','')
             A[k_] = URL_args[k]
-    zprint(A,'A')
+    #zprint(A,'A')
     out = 'k3/__private__/__private3.temp.txt'
     #print('def main(**' in file_to_text(SubCode['---EDITOR---']))
     #if True:#'def main(**' in SubCode['---EDITOR---']:
@@ -203,11 +200,12 @@ def get_SubCode(url):
             cr("could not run Imports[p].main(**A)")
 
     if 'city_tab' in URL_args:
-        SubCode['t--CITY_TAB---'] = """onload="openTab('event', '"""+URL_args['city_tab']+"""')" """
-        cr(SubCode['t--CITY_TAB---'])
+        SubCode['t--CITY_TAB---'] = \
+            """onload="openTab('event', '"""+URL_args['city_tab']+"""')" """
+        #cr(SubCode['t--CITY_TAB---'])
     else:
         SubCode['t--CITY_TAB---'] = """onload="openTab('event', '-')" """
-        cy(SubCode['t--CITY_TAB---'])
+        #cy(SubCode['t--CITY_TAB---'])
     # onload="setURL()"
 
     return SubCode
