@@ -2,6 +2,10 @@ from k3 import *
 from htmlpy import *
 import tree_
 
+D = {
+    'files_dir':opjk('utils'),
+}
+
 SubCode = {
     '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
     '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
@@ -107,10 +111,12 @@ def get_SubCode(url):
             path+"""'" />"""
     #SubCode['---OUTPUT---'] = d2s(path,URL_args)
     SubCode['t--TITLE---'] = p # this so not treated as path
-    SubCode['t--FILES---'] = tree_.get_tree(p)
-    cm(SubCode['t--FILES---'])
-    SubCode['t--PATH-URL---'] = p + '?' + urlencode(URL_args)
-    clp(SubCode['t--PATH-URL---'],'`rwb')
+    if 'files_dir' in URL_args and len(URL_args['files_dir']) > 0:
+        D['files_dir'] = URL_args['files_dir']
+    SubCode['t--FILES---'] = tree_.get_tree(D['files_dir'])
+    #cm(SubCode['t--FILES---'])
+    #SubCode['t--PATH-URL---'] = D['files_dir'] + '?' + urlencode(URL_args)
+    #clp(SubCode['t--PATH-URL---'],'`rwb')
     return SubCode
 
 #EOF

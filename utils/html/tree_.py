@@ -65,20 +65,31 @@ for (i = 0; i < toggler.length; i++) {
 
 button = """
 <form action="" >
-  <label for="path">Top Path</label>
-  <input style="font-size:14px;" type="text" id="path" name="path" value="k3/utils">
+  <label for="files_dir">Top Path</label>
+  <input style="font-size:14px;" type="text" id="files_dir" name="files_dir" value="FILES_DIR">
   <input  type="submit" value="Submit">
 </form>
 """
+
+def files_to_dict(path,D={}):
+    D['.'] = []
+
+    fs = sggo(path,'*')
+    for f in fs:
+        if not os.path.isdir(f):
+            D['.'].append(f)#fname(f))
+        else:
+            D[fname(f)] = files_to_dict(f,{})
+    return D
 
 def files_to_dict2(path,D={},use_fname=False,ignore_underscore=True):
     D['.'] = []
 
     fs = sggo(path,'*')
     for f in fs:
-        if ignore_underscore:
-          if fname(f)[0] == '_' and fname(f) != '__init__.py':
-            continue
+        #if ignore_underscore:
+        #    if fname(f)[0] == '_' and fname(f) != '__init__.py':
+        #    continue
         if not os.path.isdir(f):
             if use_fname:
               g = fname(f)
@@ -90,41 +101,44 @@ def files_to_dict2(path,D={},use_fname=False,ignore_underscore=True):
     return D
 
 def get_tree(p):
-  s = [style,button,"<ul id='myUL'>"]
+  s = [style,button.replace('FILES_DIR',p),"<ul id='myUL'>"]
 
 
   D = {}
-  p = pname(p)
+  #p = pname(p)
   #cy(p,files_to_dict2(opjh(p)),r=1)
-  D = {p:files_to_dict2(opjh(p))}
+  D = {p:files_to_dict(opjh(p))}
 
   def a(D):
-  	if type(D) is dict:
-  		for k in kys(D):
-  			if '__pycache__' in k:
-  				continue
-  			if k != '.':
-  				s.append(d2s("<li><span class='caret'>"+fname(k)+"</span>"))
-  				s.append(d2s("<ul class='tree_nested'>"))
-  				
-  			a(D[k])
-  			if k != '.':
-  				s.append(d2s('</ul></li>'))
-  	elif type(D) is list:
-  		for e in D:
-  			if exname(e) not in ['js','py','html','txt','c','cpp']:
-  				continue
-  			s.append(d2s("<li><a href='"+e.replace(opjh(),'/')+"'>",fname(e),"</a></li>"))
+    if type(D) is dict:
+        for k in kys(D):
+            if '__pycache__' in k:
+                continue
+            if k != '__init__.py' and k[0] == '_':
+                continue
+            if k != '.':
+                s.append(d2s("<li><span class='caret'>"+fname(k)+"</span>"))
+                s.append(d2s("<ul class='tree_nested'>"))
+                
+            a(D[k])
+            if k != '.':
+                s.append(d2s('</ul></li>'))
+    elif type(D) is list:
+        for e in D:
+            if exname(e) not in ['js','py','html','txt','c','cpp']:
+                continue
+            s.append(d2s("<li><a href='"+e.replace(opjh(),'/')+"'>",fname(e),"</a></li>"))
 
   #d2n('\n<a '+u+' href=',qtd(dst),'>',s,'</a>\n')
 
   a(D)
 
+  zprint(D)
   s.append(script)
  
-  #text_to_file(opjD('temp.html'),'\n'.join(s))
+  text_to_file(opjD('temp.html'),'\n'.join(s))
 
-  return '\n'.join(s)
+  return '\n'.join(s),D
 
 
 #EOF
