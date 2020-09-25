@@ -71,6 +71,7 @@ def main(**A):
     print(fname(p))        
     print(pname(p))        
     print(fname(pname(p)))
+    print('<h1>abc</h1>')
 
 if __name__ == '__main__':
     print(" :^)")

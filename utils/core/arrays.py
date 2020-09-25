@@ -1,4 +1,3 @@
-
 from k3.utils.core.renaming import *
 
 
@@ -61,7 +60,13 @@ def meo(data,n):
     return mean_exclude_outliers(data,n,1/3.0,2/3.0)
 
 def main(**A):
-    print("main()")
+    a = na([1.,3.,5.])
+    b = z2o(a)
+    print("a = na([1.,3.,5.])")
+    print(a)
+    print("b = z2o(a)")
+    print(b)
+
     
 if __name__ == '__main__':
     eg(__file__)

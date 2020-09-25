@@ -127,7 +127,7 @@ def _get_j_and_W(
             depth += 1
             ctr = 0
             if len(item.keys()) == 0:
-                item = {'<empty>':True}
+                item = {'':True}
             for k in sorted(item.keys()):
                 if k in ignore_keys:
                     continue
@@ -271,7 +271,9 @@ def _post_process(Din,use_line_numbers,use_color):
 #def type_to_str(a):
 #    return str(type(a)).split("'")[-2]
 
-if __name__ == '__main__':
+Arguments = {}
+
+def main(**A):
 
     A = get_Arguments(
         Defaults={
@@ -338,12 +340,13 @@ if __name__ == '__main__':
         text_to_file(
             opjD('zprint_test.html'),
             d2s(
-                """<p style="font-family: 'Courier New'">\n""",
+                """\n""",
                 html_str
             )
         )
 
-
+if __name__ == '__main__':
+    main()
 
 #EOF
 
