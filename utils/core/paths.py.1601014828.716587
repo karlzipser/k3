@@ -52,18 +52,10 @@ def pname(path):
 pn = pname
 
 
-Arguments = get_Arguments(
-    {
-        'p':opjk('test.py'),
-        's':'-',
-        
-    }
-)
-    
+
 
 def main(**A):
-    p = A['p']
-    print(A['s'])
+    p = opjk('test.py')
     print(p)               
     print(fname(p))     
     print(fnamene(p))    
@@ -75,7 +67,7 @@ def main(**A):
 if __name__ == '__main__':
     print(" :^)")
     eg(__file__)
-    main(**Arguments)
+    main()
 
 #EOF
   

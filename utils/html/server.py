@@ -28,12 +28,15 @@ class MyServer(BaseHTTPRequestHandler):
             self.send_header("Content-type", mimetype)
             self.send_header("Content-length", img_size)
             self.end_headers()
-            if path_to_image not in Images:
-                f = open(path_to_image, 'rb')
-                cg('loading',path_to_image)
-                Images[path_to_image] = f.read()
-                f.close()
-            self.wfile.write(Images[path_to_image])
+            try:
+                if path_to_image not in Images:
+                    f = open(path_to_image, 'rb')
+                    cg('loading',path_to_image)
+                    Images[path_to_image] = f.read()
+                    f.close()
+                self.wfile.write(Images[path_to_image])
+            except:
+                cr('failed to load',path_to_image,r=1)
 
         elif "favicon.ico" in self.path:
             return
@@ -72,10 +75,11 @@ class MyServer(BaseHTTPRequestHandler):
                     except:
                         cr('failure with r = file_to_text(SubCode[j])')
                         r = d2s(9*'\n'+j,": Error, unable to find or load",sc)
+                        cr(r)
                 else:
                     cy('treating',j,'as text')
                     r = SubCode[j]
-
+                #cy(j,r,r=1)
                 html = html.replace(j,r)
             
             self.send_response(200)

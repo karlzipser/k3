@@ -1,4 +1,4 @@
-from k3.utils.core import *
+from k3.utils.collections_ import *
 
 def kprint(
     item,

@@ -53,17 +53,11 @@ pn = pname
 
 
 Arguments = get_Arguments(
-    {
-        'p':opjk('test.py'),
-        's':'-',
-        
-    }
-)
-    
+        {'p':opjk('test.py')}
+    )
 
 def main(**A):
     p = A['p']
-    print(A['s'])
     print(p)               
     print(fname(p))     
     print(fnamene(p))    

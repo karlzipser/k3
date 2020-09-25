@@ -11,10 +11,9 @@ SubCode = {
     '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
     '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),
     '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-    #'---EDITOR---':     "nothing",#opjk('utils/core/paths.py'),
-    '---REDIRECT---':   '',
+    #'---REDIRECT---':   '',
     't--FIGURES---':    
-            """<img src="/Desktop/Internet_dog.jpg" style="width:600px;">""",
+            """<img src="/Desktop/Internet_dog.jpg" ;">""",
     't--OUTPUT---':"""
 <form>
   <input style="font-size:25px;font-weight:bold;" type="text" id="file" name="file" value="k3/utils/core/paths.py">
@@ -29,12 +28,14 @@ SubCode = {
   <input style="font-size:14px;" type="text" id="extra" name="extra" value="">
   <label for="extra">additional cmd line str</label>
   <br>
-  <input type="submit" value="Submit">
+  <input type="submit" value="Run">
 </form>
     """,
     
 }
-
+# create dynamic output tab
+# add imports and mtime reloads
+# sort out problem with directory to dic
 
 
 def _get_files(path=opjk('utils')):
@@ -80,7 +81,10 @@ def handle_path_and_URL_args(p,URL_args):
     if 'SaveCode' in URL_args:
         sc = URL_args['SaveCode'].replace('\r','')
         os_system('mv',p,d2p(p,time.time()))
-        text_to_file(p,sc) 
+        text_to_file(p,sc)
+        if len(URL_args['SaveCode']) > 50:
+            URL_args['SaveCode'] = URL_args['SaveCode'][:50]+' . . .'
+
 
 
 def get_SubCode(url):

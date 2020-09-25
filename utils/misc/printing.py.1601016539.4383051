@@ -1,4 +1,5 @@
-from k3.utils.core import *
+
+from k3.utils.collections_ import *
 
 def kprint(
     item,
@@ -248,8 +249,8 @@ if __name__ == '__main__':
     
     eg(__file__)
 
-    #cE('this is a test of cE()')
-    #print('')
+    cE('this is a test of cE()')
+    print('')
     clp('this','`','is a test of','`--r','clp()','`rgu','and fline():',fline())
 
     Q = {
