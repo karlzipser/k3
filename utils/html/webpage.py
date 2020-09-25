@@ -12,7 +12,7 @@ Imports = {}
 SubCode = {
     '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
     '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
-    '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),
+    '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
     '---WEBPAGE---':    opjk('utils/html/webpage.html'),
     't--FIGURES---':    
             """<img src="/Desktop/Internet_dog.jpg" ;">""",
@@ -107,15 +107,19 @@ def _trim_paths(paths):
 def handle_path_and_URL_args(p,URL_args):
 
     if 'SaveCode' in URL_args:
-        sc = URL_args['SaveCode'].replace('\r','')
-        n = opjh('bkps',p.replace(opjh(),''))
-        cr(n)
-        os_system('mkdir -p',pname(n))
-        os_system('mv',p,d2p(n,time.time()))
-        text_to_file(p,sc)
-        if len(URL_args['SaveCode']) > 50:
-            URL_args['SaveCode'] = URL_args['SaveCode'][:50]+' . . .'
-
+        from bs4 import BeautifulSoup
+        if not bool(BeautifulSoup(URL_args['SaveCode'], "html.parser").find()):
+            sc = URL_args['SaveCode'].replace('\r','')
+            n = opjh('bkps',p.replace(opjh(),''))
+            cr(n)
+            os_system('mkdir -p',pname(n))
+            os_system('mv',p,d2p(n,time.time()))
+            text_to_file(p,sc)
+            if len(URL_args['SaveCode']) > 50:
+                URL_args['SaveCode'] = URL_args['SaveCode'][:50]+' . . .'
+        else:
+            print("Can't save because URL_args['SaveCode'] contains html")
+            #print(qtd(URL_args['SaveCode']))
     if p not in Imports:
         Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
         Imports[p+':time'] = time.time()

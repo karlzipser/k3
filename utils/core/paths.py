@@ -1,3 +1,5 @@
+#
+####
 from k3.utils.core.renaming import *
 
 def opj(*args):
@@ -71,7 +73,7 @@ def main(**A):
     print(fname(p))        
     print(pname(p))        
     print(fname(pname(p)))
-    print('<h1>abc</h1>')
+    print('abc')
 
 if __name__ == '__main__':
     print(" :^)")

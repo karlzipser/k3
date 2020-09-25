@@ -1,0 +1,309 @@
+
+
+ 
+  
+  
+
+  
+k3/utils/html/webpage.html
+  
+  
+    body {
+        overflow: hidden;
+    }
+    #editor {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+  
+
+
+
+function setURL() {
+  ;//window.history.replaceState({}, document.title, "/" + "t--PATH-URL---")
+}
+
+
+
+
+
+
+
+
+
+
+
+---EDITOR---
+
+
+---ACE-ACE---
+
+
+
+var editor = ace.edit("editor");
+
+
+
+---ACE-MODE---
+---ACE-THEME---
+
+
+
+editor.setTheme("ace/theme/twilight");
+editor.session.setMode("ace/mode/python");
+
+
+
+
+
+	
+	body {font-family: Arial;}
+
+	/* Style the tab */
+	.tab {
+	  overflow: hidden;
+	  border: 1px solid #ccc;
+	  background-color: #f1f1f1;
+	  margin-left:50px;
+	}
+
+	/* Style the buttons inside the tab */
+	.tab button {
+	  background-color: inherit;
+	  float: right;
+	  border: none;
+	  outline: none;
+	  cursor: pointer;
+	  padding: 14px 16px;
+	  transition: 0.3s;
+	  font-size: 17px;
+	}
+
+	/* Change background color of buttons on hover */
+	.tab button:hover {
+	  background-color: #ddd;
+	}
+
+	/* Create an active/current tablink class */
+	.tab button.active {
+	  background-color: #ccc;
+	}
+
+	/* Style the tab content */
+	.tabcontent {
+	  display: none;
+	  padding: 6px 12px;
+	  border: 1px solid #ccc;
+	  background-color: #ccc;
+	  border-top: none;
+	  margin-left:50px;
+	  height: 500px;
+	  overflow: scroll;
+	}
+	
+
+
+
+
+k3/utils/html/webpage.html
+
+
+
+
+
+
+	
+	
+		
+	-
+	Output
+	Files
+	Figures
+	Save
+	
+	
+	
+	
+   
+   
+  
+  additional cmd line str
+  
+  
+  
+    
+  
+    
+  
+  
+    
+	
+
+/* Remove default bullets */
+ul, #myUL {
+  list-style-type: none;
+}
+
+/* Remove margins and padding from the parent ul */
+#myUL {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the caret/arrow */
+.caret {
+  cursor: pointer; 
+  user-select: none; /* Prevent text selection */
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+  -ms-transform: rotate(90deg); 
+  -webkit-transform: rotate(90deg); 
+  transform: rotate(90deg);
+}
+
+.caret-down::before {
+  -ms-transform: rotate(0deg); 
+  -webkit-transform: rotate(0deg); 
+  transform: rotate(0deg);  
+  ;
+}
+
+/* Hide the tree_nested list */
+.tree_nested {
+  display: block;
+}
+
+/* Show the tree_nested list when the user clicks on the caret/arrow (with JavaScript) */
+.tree_active {
+  display: none;
+}
+
+
+
+
+  Top Path
+  
+  
+
+
+
+utils
+
+ __init__.py 
+core
+
+ __init__.py 
+ arrays.py 
+ essentials.py 
+ imports.py 
+ input_.py 
+ paths.py 
+ printing.py 
+ renaming.py 
+ setup.py 
+ strings.py 
+ times.py 
+files
+
+ __init__.py 
+ files.py 
+ h5py.py 
+ save.py 
+ search.py 
+
+
+html
+
+ htmlpy.py 
+ server.py 
+ servertest6.py 
+ tree_.py 
+ webpage.html 
+ webpage.py 
+ace
+
+ Ace Kitchen Sink.html 
+ ace.js 
+ mode-python.js 
+ theme-iplastic.js 
+ theme-twilight.js 
+
+
+misc
+
+ Photos_menu.py 
+ __init__.py 
+ clipcode.py 
+ dict_access.py 
+ dict_nav.py 
+ have_using.py 
+ osx.py 
+ printing.py 
+ save_globals.py 
+ sys.py 
+ zprint.py 
+
+torch_
+
+ facenet.py 
+
+vis
+
+ __init__.py 
+ compose.py 
+ cv2_.py 
+ files.py 
+ matplotlib_.py 
+ minor.py 
+ other.py 
+ rotate.py 
+ video.py 
+
+
+
+
+var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".tree_nested").classList.toggle("tree_active");
+    this.classList.toggle("caret-down");
+  });
+}
+
+
+	
+	
+		
+		function openTab(evt, cityName) {
+		  var i, tabcontent, tablinks;
+		  tabcontent = document.getElementsByClassName("tabcontent");
+		  for (i = 0; i < tabcontent.length; i++) {
+		    tabcontent[i].style.display = "none";
+		  }
+		  tablinks = document.getElementsByClassName("tablinks");
+		  for (i = 0; i < tablinks.length; i++) {
+		    tablinks[i].className = tablinks[i].className.replace(" active", "");
+		  }
+		  if (cityName != '-') {
+		  	document.getElementById(cityName).style.display = "block";
+		  	evt.currentTarget.className += " active";
+		  }
+		}
+		
+
+
+
+
+
