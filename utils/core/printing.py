@@ -1,8 +1,3 @@
-#import builtins
-#def __print(*a,**b): 
-#    builtins.print('lmptbs...')
-#    builtins.print(*a,**b) 
-
 from k3.utils.core.renaming import *
 
 from termcolor import cprint
@@ -137,7 +132,7 @@ def lines_to_html_str(print_lines):
     if type(print_lines) == str:
         print_lines = [print_lines]
     assert type(print_lines) == list
-    h = ' <br>'.join(print_lines).replace(' ','&nbsp').encode('ascii', 'xmlcharrefreplace').decode('utf8')
+    h = ' '.join(print_lines).replace(' ',' ').encode('ascii', 'xmlcharrefreplace').decode('utf8')
     replace_list = list(range(100))
     for i in rlen(replace_list):
         replace_list[i] = d2n('[',replace_list[i],'m')

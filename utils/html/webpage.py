@@ -28,6 +28,8 @@ SubCode = {
 def get_Output_form(p,A):
     s = """
    <form>
+   """
+    """
       <input readonly style="font-size:25px;font-weight:bold;" type="text" id="file_output" name="file_output" value=\""""+p+"""\">
       <label for="file">file</label>
       <br>
@@ -190,10 +192,10 @@ def get_SubCode(url):
                         importlib.reload( Imports[p] )
                         Imports[p+':time'] = time.time()
                     Imports[p].main(**A)
-            SubCode['t--OUTPUT---'] += lines_to_html_str(file_to_text(out))
+            SubCode['t--OUTPUT---'] += '<hr>'+lines_to_html_str(file_to_text(out))
         except:
             SubCode['t--OUTPUT---'] += \
-                lines_to_html_str("\ncould not run Imports[p].main(**A)")
+                '<hr>'+lines_to_html_str("\ncould not run Imports[p].main(**A)")
             cr("could not run Imports[p].main(**A)")
 
     if 'city_tab' in URL_args:
