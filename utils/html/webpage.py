@@ -2,6 +2,7 @@ from k3 import *
 from htmlpy import *
 import tree_
 import importlib
+from contextlib import redirect_stdout
 
 
 D = {
@@ -27,23 +28,31 @@ SubCode = {
 def get_Output_form(p,A):
     s = """
     <form>
-      <input readonly style="font-size:25px;font-weight:bold;" type="text" id="file" name="file" value=\""""+p+"""\">
+      <input readonly style="font-size:25px;font-weight:bold;" type="text" id="file_output" name="file_output" value=\""""+p+"""\">
       <label for="file">file</label>
       <br>
     """
     #s = ''
     for k in A.keys():
+        k_ = k + '_output'
         s += """
-  <input style="font-size:14px;" type="text" id=\""""+k+"""\" name=\""""+k+"""\" value=\""""+A[k]+"""\">
-  <label for=\""""+k+"""\">--"""+k+"""</label>
+  <input style="font-size:14px;" type="text" id=\""""+k_+"""\" name=\""""+k_+"""\" value=\""""+A[k]+"""\">
+  <label for=\""""+k_+"""\">--"""+k+"""</label>
   <br>
     """
 
     s += """
-  <input style="font-size:14px;" type="text" id="extra" name="extra" value="">
-  <label for="extra">additional cmd line str</label>
+  <input style="font-size:14px;" type="text" id="extra_output" name="extra_output" value="">
+  <label for="extra_output">additional cmd line str</label>
   <br>
+  """
 
+    s += """
+      <form>
+      <input size="3" hidden readonly type="text" id="run_output" name="run_output" value=\"Run\">
+      <label for="file"></label>
+    """
+    s += """
   <input type="submit" value="Run">
 </form>
     """
@@ -160,6 +169,31 @@ def get_SubCode(url):
         D['files_dir'] = URL_args['files_dir']
 
     SubCode['t--FILES---'] = tree_.get_tree(D['files_dir'])
+
+    A = {}
+    for k in URL_args:
+        if k.endswith('_output'):
+            k_ = k.replace('_output','')
+            A[k_] = URL_args[k]
+    zprint(A,'A')
+    out = 'k3/__private__/__private3.temp.txt'
+    #print('def main(**' in file_to_text(SubCode['---EDITOR---']))
+    #if True:#'def main(**' in SubCode['---EDITOR---']:
+        #cr(0,r=1)
+    if 'run' in A:
+        try:
+        #cr(1,r=1)
+            with open(out, 'w') as f:
+                with redirect_stdout(f):
+                    if False:#os.path.getmtime(p) > Imports[p+':time']:
+                        importlib.reload( Imports[p] )
+                        Imports[p+':time'] = time.time()
+                    Imports[p].main(**A)
+            SubCode['t--OUTPUT---'] += lines_to_html_str(file_to_text(out))
+        except:
+            SubCode['t--OUTPUT---'] += \
+                lines_to_html_str("\ncould not run Imports[p].main(**A)")
+            cr("could not run Imports[p].main(**A)")
 
     return SubCode
 

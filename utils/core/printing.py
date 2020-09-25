@@ -156,7 +156,7 @@ def trun(s):
     v = s
     if len(s) > w:
         u = w//2 - 2
-        v = s[:u] + '...' + s[-u:]
+        v = s[:u] + '|||' + s[-u:]
     return v
 
 
