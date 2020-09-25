@@ -54,7 +54,7 @@ pn = pname
 
 Arguments = get_Arguments(
     {
-        'p':opjk('test.py'),
+        'p':'k3/drafts/temp7.py',
         's':'-',
         
     }
@@ -78,9 +78,4 @@ if __name__ == '__main__':
     main(**Arguments)
 
 #EOF
-  
-  
-  
-  
-  
   

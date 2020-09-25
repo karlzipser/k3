@@ -133,7 +133,7 @@ def get_tree(p):
 
   a(D)
 
-  zprint(D)
+  #zprint(D)
   s.append(script)
  
   #text_to_file(opjD('temp.html'),'\n'.join(s))

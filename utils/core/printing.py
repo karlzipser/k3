@@ -151,6 +151,14 @@ def as_pct(a,b):
 
 
     
+def trun(s):
+    w = get_terminal_size()[1]
+    v = s
+    if len(s) > w:
+        u = w//2 - 2
+        v = s[:u] + '...' + s[-u:]
+    return v
+
 
 def main(**A):
     if 't' not in A:

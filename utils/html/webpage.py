@@ -1,41 +1,57 @@
 from k3 import *
 from htmlpy import *
 import tree_
+import importlib
+
 
 D = {
     'files_dir':opjk('utils'),
 }
-
+Imports = {}
 SubCode = {
     '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
     '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
     '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),
     '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-    #'---REDIRECT---':   '',
     't--FIGURES---':    
             """<img src="/Desktop/Internet_dog.jpg" ;">""",
-    't--OUTPUT---':"""
-<form>
-  <input style="font-size:25px;font-weight:bold;" type="text" id="file" name="file" value="k3/utils/core/paths.py">
-  <label for="file">file</label>
-  <br>
-  <input style="font-size:14px;" type="text" id="src" name="src" value="Pictures/new">
-  <label for="src">--src</label>
-  <br>
-  <input style="font-size:14px;" type="text" id="dst" name="dst" value="Desktop/samples">
-  <label for="dst">--dst</label>
-  <br>
-  <input style="font-size:14px;" type="text" id="extra" name="extra" value="">
-  <label for="extra">additional cmd line str</label>
-  <br>
-  <input type="submit" value="Run">
-</form>
-    """,
+    
     
 }
 # create dynamic output tab
 # add imports and mtime reloads
 # sort out problem with directory to dic
+# run
+
+
+def get_Output_form(p,A):
+    s = """
+    <form>
+      <input readonly style="font-size:25px;font-weight:bold;" type="text" id="file" name="file" value=\""""+p+"""\">
+      <label for="file">file</label>
+      <br>
+    """
+    #s = ''
+    for k in A.keys():
+        s += """
+  <input style="font-size:14px;" type="text" id=\""""+k+"""\" name=\""""+k+"""\" value=\""""+A[k]+"""\">
+  <label for=\""""+k+"""\">--"""+k+"""</label>
+  <br>
+    """
+
+    s += """
+  <input style="font-size:14px;" type="text" id="extra" name="extra" value="">
+  <label for="extra">additional cmd line str</label>
+  <br>
+
+  <input type="submit" value="Run">
+</form>
+    """
+    return s
+
+
+
+
 
 
 def _get_files(path=opjk('utils')):
@@ -80,12 +96,29 @@ def handle_path_and_URL_args(p,URL_args):
 
     if 'SaveCode' in URL_args:
         sc = URL_args['SaveCode'].replace('\r','')
-        os_system('mv',p,d2p(p,time.time()))
+        n = opjh('bkps',p.replace(opjh(),''))
+        cr(n)
+        os_system('mkdir -p',pname(n))
+        os_system('mv',p,d2p(n,time.time()))
         text_to_file(p,sc)
         if len(URL_args['SaveCode']) > 50:
             URL_args['SaveCode'] = URL_args['SaveCode'][:50]+' . . .'
 
+    if p not in Imports:
+        Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
+        Imports[p+':time'] = time.time()
+        cb('imported',p)
 
+    if os.path.getmtime(p) > Imports[p+':time']:
+        importlib.reload( Imports[p] )
+        Imports[p+':time'] = time.time()
+        cb('reloaded',p)
+
+    try:
+        zprint(Imports[p].Arguments,'Arguments')
+    except:
+        cb('p has no Arguments')
+    #Imports[p].main(**URL_args)
 
 def get_SubCode(url):
     path, URL_args = urlparse(url)
@@ -101,26 +134,33 @@ def get_SubCode(url):
         cr(p_,'-->',p,r=0)
 
     handle_path_and_URL_args(p,URL_args)
+
     SubCode['t--URL_args---'] = print_dic_simple(URL_args,'',html=True)
+
     try:
         if len(sggo(p)) == 1:
             SubCode['---EDITOR---'] = p
     except:
         pass
 
-    #SubCode['---FILES---'],paths = _get_files()
+    try:
+        A = Imports[p].Arguments
+    except:
+        A = {}
+    SubCode['t--OUTPUT---'] = get_Output_form(p,A)
+
     if False:#path not in paths:
         SubCode['t--REDIRECT---'] = \
             """<meta http-equiv="Refresh" content="0; url='"""+ \
             path+"""'" />"""
-    #SubCode['---OUTPUT---'] = d2s(path,URL_args)
-    SubCode['t--TITLE---'] = p # this so not treated as path
+
+    SubCode['t--TITLE---'] = p
+
     if 'files_dir' in URL_args and len(URL_args['files_dir']) > 0:
         D['files_dir'] = URL_args['files_dir']
+
     SubCode['t--FILES---'] = tree_.get_tree(D['files_dir'])
-    #cm(SubCode['t--FILES---'])
-    #SubCode['t--PATH-URL---'] = D['files_dir'] + '?' + urlencode(URL_args)
-    #clp(SubCode['t--PATH-URL---'],'`rwb')
+
     return SubCode
 
 #EOF

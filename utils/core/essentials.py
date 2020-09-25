@@ -1,12 +1,12 @@
 from k3.utils.core.imports import *
 
-def print_dic_simple(D,title=''):
+def __print_dic_simple(D,title=''):
     print(title)
     if type(D) is not dict:
         print(D)
     else:
         for k in D:
-            print('   ',k+':',D[k])
+            print('   ',str(k)+':',str(D[k]))
 
 def print_dic_simple(D,title='',do_print=True,html=False):
     el = '\n'
@@ -20,7 +20,7 @@ def print_dic_simple(D,title='',do_print=True,html=False):
         print(D)
     else:
         for k in D:
-            s += '   '+k+':'+D[k]+el;
+            s += '   '+str(k)+':'+str(D[k])+el;
     print(s)
     return s
 
@@ -152,12 +152,13 @@ def kys(D):
 def set_Defaults(Defaults,Dst):
     for k in Dst.keys():
         if k not in Defaults.keys():
-            cr("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()),ra=1)
+            print("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()))
 
     for k in Defaults.keys():
         if k not in Dst.keys():
             if Defaults[k] is REQUIRED:
-                cprint('*** Error. '+qtd('--'+k)+' is a required cmd line arg. ***','white','on_red')
+                print('*** Error. '+qtd('--'+k)+\
+                    ' is a required cmd line arg. ***')
                 print_dic_simple(Defaults,'Defaults')
                 os.sys.exit()
             else:
@@ -268,7 +269,7 @@ def args_to_dictionary(*args):
     return d
 
 
-def get_Arguments(Defaults={}):
+def get_Arguments(Defaults={},argstr=None):
     """
     Examples using get_Arguments:
         python FILE --help
@@ -276,8 +277,13 @@ def get_Arguments(Defaults={}):
         try using --help
     """#.replace('FILE',__file__)#.replace(opjh(),'')
 
-
-    temp = args_to_dictionary(sys.argv[1:])
+    if argstr is None:
+        arglst = sys.argv[1:]
+    else:   
+        assert type(argstr) is str
+        arglst = arg_str_to_args(argstr)
+    
+    temp = args_to_dictionary(arglst) #sys.argv[1:])
 
     Arguments = {}
 
@@ -302,7 +308,7 @@ def get_Arguments(Defaults={}):
                     assert(False)
             else:
                 print_dic_simple(Args,'Args')
-                cr(
+                print(
                     '*** Warning, argument',
                     "'"+k+"'",
                     'not proceeded by -- on command line ***',
