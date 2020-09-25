@@ -1,3 +1,4 @@
+
 from k3 import *
 from urllib.parse import unquote
 from urllib.parse import urlencode
@@ -23,14 +24,14 @@ def urlparse(url):
     #    path = path[1:]
     return path,URL_args
 
-sp = '&nbsp'
+sp = ' '
 
-br = '<br>\n'
+br = '\n'
 def lines_to_html_str(print_lines):
     if type(print_lines) == str:
         print_lines = print_lines.split('\n')
     assert type(print_lines) == list
-    h = '\n<br>'.join(print_lines).replace(' ','&nbsp').encode('ascii', 'xmlcharrefreplace').decode('utf8')
+    h = '\n'.join(print_lines).replace(' ',' ').encode('ascii', 'xmlcharrefreplace').decode('utf8')
     replace_list = list(range(100))
     for i in rlen(replace_list):
         replace_list[i] = d2n('[',replace_list[i],'m')
@@ -41,20 +42,20 @@ l2h = lines_to_html_str
 
 def head_(s):
     a = """
-<html>
-<head>
-<title>
+
+
+
         """
     b = """
-</title>
-</head>
-<body>
+
+
+
         """
     return a + s + b
 
 
 def img_(src,style):
-    return d2n('\n<img src=',qtd(src),' style=',qtd(style),'>\n')
+    return d2n('\n\n')
 
 
 def href_(dst,s,underline=False):
@@ -62,24 +63,24 @@ def href_(dst,s,underline=False):
         u = "style='text-decoration:none'"
     else:
         u = ''
-    return d2n('\n<a '+u+' href=',qtd(dst),'>',s,'</a>\n')
+    return d2n('\n',s,'\n')
 
 
 def form_(s,v=''):
-    return """\n<form action="" method="GET">\n""" + \
-        s + " <input size='50' type='text' name='"+get_safe_name(s)+"' value='"+v+"''>\n" +\
-        "</form>\n"
+    return """\n\n""" + \
+        s + " \n" +\
+        "\n"
 
 
 def end_():
-    return "\n</body></html>\n\n"
+    return "\n\n\n"
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
 style = """
-<style>
+
 .highlight .hll { background-color: #ffffcc }
 .highlight  { background: #ffebcd; } /*#f8f8f8; }*/
 .highlight .c { color: #408080; font-style: italic } /* Comment */
@@ -149,20 +150,12 @@ style = """
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
-</style>
+
 """
 #border-color: coral;
 def div(px):
     return """
-<div
-    style="
-        overflow-y: scroll;
-        height:"""+str(px)+"""px;
-        font-family:'Courier New';
-        font-size:12px"
-border-right: 1px solid #000;
-border-left: 1px solid #000;
->
+
     """
 #EOF
 

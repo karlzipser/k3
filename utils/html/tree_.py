@@ -127,7 +127,7 @@ def get_tree(p):
         for e in D:
             if exname(e) not in ['js','py','html','txt','c','cpp']:
                 continue
-            s.append(d2s("<li><a href='"+e.replace(opjh(),'/')+"'>",fname(e),"</a></li>"))
+            s.append(d2s("<li><a href='"+e.replace(opjh(),'/')+"?city_tab=Files'>",fname(e),"</a></li>"))
 
   #d2n('\n<a '+u+' href=',qtd(dst),'>',s,'</a>\n')
 

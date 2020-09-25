@@ -27,7 +27,7 @@ SubCode = {
 
 def get_Output_form(p,A):
     s = """
-    <form>
+   <form>
       <input readonly style="font-size:25px;font-weight:bold;" type="text" id="file_output" name="file_output" value=\""""+p+"""\">
       <label for="file">file</label>
       <br>
@@ -42,19 +42,20 @@ def get_Output_form(p,A):
     """
 
     s += """
-  <input style="font-size:14px;" type="text" id="extra_output" name="extra_output" value="">
+  <input spellcheck="false" style="font-size:14px;" type="text" id="extra_output" name="extra_output" value="">
   <label for="extra_output">additional cmd line str</label>
   <br>
   """
 
     s += """
-      <form>
-      <input size="3" hidden readonly type="text" id="run_output" name="run_output" value=\"Run\">
-      <label for="file"></label>
+  <input hidden readonly type="text" id="run_output" name="run_output" value=\"Run\">
     """
     s += """
+  <input hidden readonly type="text" id="city_tab" name="city_tab" value=\"Output\">
+    """    
+    s += """
   <input type="submit" value="Run">
-</form>
+  </form>
     """
     return s
 
@@ -73,7 +74,7 @@ def _get_files(path=opjk('utils')):
     ctr = 0
     for pp,pr in zip(_trim_paths(paths),paths):
         url = pp
-        files += href_(pr,pp[1:].replace(' ','&nbsp'),False)
+        files += href_(pr+'abc'+'?city_tab=Files',pp[1:].replace(' ','&nbsp'),False)
         ctr += 1
         files += br
     return files,paths
@@ -194,6 +195,14 @@ def get_SubCode(url):
             SubCode['t--OUTPUT---'] += \
                 lines_to_html_str("\ncould not run Imports[p].main(**A)")
             cr("could not run Imports[p].main(**A)")
+
+    if 'city_tab' in URL_args:
+        SubCode['t--CITY_TAB---'] = """onload="openTab('event', '"""+URL_args['city_tab']+"""')" """
+        cr(SubCode['t--CITY_TAB---'])
+    else:
+        SubCode['t--CITY_TAB---'] = """onload="openTab('event', '-')" """
+        cy(SubCode['t--CITY_TAB---'])
+    # onload="setURL()"
 
     return SubCode
 
