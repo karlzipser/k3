@@ -9,13 +9,6 @@ D = {'files_dir':opjk('utils'),}
 
 Imports = {}
 
-SubCode = {
-    '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
-    '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
-    '---ACE-THEME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
-    '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-    't--FIGURES---':    """<img src="/Desktop/Internet_dog.jpg" ;">""",
-}
 
 # sort out problem with directory to dic
 
@@ -101,11 +94,12 @@ if False:
         return r
 
 
+from bs4 import BeautifulSoup
 
 def handle_path_and_URL_args(p,URL_args):
 
     if 'SaveCode' in URL_args:
-        from bs4 import BeautifulSoup
+        
         if not bool(BeautifulSoup(URL_args['SaveCode'], "html.parser").find()):
             sc = URL_args['SaveCode'].replace('\r','')
             n = opjh('bkps',p.replace(opjh(),''))
@@ -118,25 +112,39 @@ def handle_path_and_URL_args(p,URL_args):
         else:
             print("Can't save because URL_args['SaveCode'] contains html")
             #print(qtd(URL_args['SaveCode']))
-    if p not in Imports:
-        Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
-        Imports[p+':time'] = time.time()
-        cb('imported',p)
-
-    if os.path.getmtime(p) > Imports[p+':time']:
-        importlib.reload( Imports[p] )
-        Imports[p+':time'] = time.time()
-        cb('reloaded',p)
-
     try:
-        Imports[p].Arguments
-        #zprint(Imports[p].Arguments,'Arguments: '+p)
-    except:
-        pass#cb('p has no Arguments')
-    #Imports[p].main(**URL_args)
+        if p not in Imports:
+            Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
+            Imports[p+':time'] = time.time()
+            cb('imported',p)
 
+        if os.path.getmtime(p) > Imports[p+':time']:
+            importlib.reload( Imports[p] )
+            Imports[p+':time'] = time.time()
+            cb('reloaded',p)
+
+        try:
+            Imports[p].Arguments
+            #zprint(Imports[p].Arguments,'Arguments: '+p)
+        except:
+            pass#cb('p has no Arguments')
+        #Imports[p].main(**URL_args)
+    except:
+        cr('Could not import',p)
+
+H={'<':'&lt;','>':'&gt;','&':'&amp;','\"':'&quot;',}
 
 def get_SubCode(url):
+
+    SubCode = {
+        '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
+        '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
+        '---ACE-THEME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
+        '---WEBPAGE---':    opjk('utils/html/webpage.html'),
+        't--FIGURES---':    """<img src="/Desktop/Internet_dog.jpg" ;">""",
+        't--TEXTAREA---': "",
+    }
+
     path, URL_args = urlparse(url)
     #cm(path)
     p = path
@@ -155,7 +163,14 @@ def get_SubCode(url):
 
     try:
         if len(sggo(p)) == 1:
-            SubCode['---EDITOR---'] = p
+            SubCode['t--EDITOR---'] = file_to_text(p)
+            if bool(BeautifulSoup(SubCode['t--EDITOR---'], "html.parser").find()):
+                
+                SubCode['t--TEXTAREA---'] = "<!-- contains html -->\n"+SubCode['t--EDITOR---']
+                SubCode['t--EDITOR---'] = ""
+                for k in H:
+                    SubCode['t--EDITOR---'] = SubCode['t--EDITOR---'].replace(k,H[k])
+                SubCode['---ACE-ACE---'] = opjk('utils/html/ace/mode-python.js')
     except:
         pass
 
