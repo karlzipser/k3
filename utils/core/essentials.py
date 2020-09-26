@@ -1,5 +1,7 @@
 from k3.utils.core.imports import *
 
+Arguments = {}
+
 def __print_dic_simple(D,title=''):
     print(title)
     if type(D) is not dict:

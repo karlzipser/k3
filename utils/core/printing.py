@@ -1,5 +1,5 @@
 from k3.utils.core.renaming import *
-
+Arguments = {}
 from termcolor import cprint
 from termcolor import colored
 

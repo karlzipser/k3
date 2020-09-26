@@ -1,4 +1,3 @@
-
 imports = (
     'os',
     'os.path',
@@ -53,6 +52,8 @@ for im in imports:
             except:
                 pass
                 print('Failed to import '+im[1]+' as '+im[2]) 
+
+Arguments = {}
 
 def main(**A):
     print("main()")

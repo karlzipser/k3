@@ -1,6 +1,6 @@
-
 from k3.utils.core.printing import *
 
+Arguments = {}
 
 def input_int(s='> '):
     c = input(s)

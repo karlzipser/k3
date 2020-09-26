@@ -1,5 +1,3 @@
-#print(__file__)
-
 from k3.utils.core.imports import *
 
 from k3.utils.core.essentials import *
@@ -22,10 +20,12 @@ from k3.utils.core.input_ import *
 
 from k3.utils.core.printing import *
 # :^)
+Arguments = {}
 
 def main(**A):
     eg(__file__)
     print("Nothing to see here.")
+    
 if __name__ == '__main__':
     
     main()

@@ -1,4 +1,3 @@
-
 from k3.utils.core.essentials import *
 
 rnd = np.random.random
@@ -28,12 +27,17 @@ sleep = time.sleep
 sys = os.sys
 gg = glob.glob
 
+Arguments = get_Arguments({},'--a --b --c')
 
 def main(**A):
-    print("main()")
+    eg(__file__)
+    print("cos(pi) =",cos(pi))
+    print('home_path =',home_path)
+    print('username =',username)
+    print('host_name =',host_name)
+    print('rndn(3) =',rndn(3))
     
 if __name__ == '__main__':
-    eg(__file__)
-    main()
+    main(**Arguments)
 
 #EOF

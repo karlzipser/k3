@@ -1,7 +1,12 @@
 from k3 import *
 from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 Arguments = get_Arguments(
-    {'webpage':'k3.utils.html.webpage'}
+    {
+        'webpage':'k3.utils.html.webpage',
+        'quiet':True,
+        'name':"localhost",
+        'port':9000,
+    }
 )
 exec(d2s('import',Arguments['webpage'],'as wp'))
 
@@ -9,7 +14,9 @@ Images = {}
 
 
 class MyServer(BaseHTTPRequestHandler):
-
+    if Arguments['quiet']:
+        def log_message(self, format, *args):
+            return
     def do_GET(self):
 
         mimetype=None
@@ -42,11 +49,11 @@ class MyServer(BaseHTTPRequestHandler):
         elif "favicon.ico" in self.path:
             return
 
-        elif '.py' not in self.path:
-            return
+        #elif '.py' not in self.path:
+        #   return
 
         else:
-            #print(exname(self.path))
+            #cr(self.path)
             SubCode = wp.get_SubCode(self.path)
 
             html = '---WEBPAGE---'
@@ -95,8 +102,8 @@ class MyServer(BaseHTTPRequestHandler):
 
 def main(**A):
 
-    hostName = "localhost"
-    hostPort = 9000
+    hostName = Arguments['name']
+    hostPort = int(Arguments['port'])
 
     myServer = ThreadingHTTPServer((hostName, hostPort), MyServer)
     print(time.asctime(), "Server Starts - %s:%s" % (hostName, hostPort))

@@ -1,5 +1,6 @@
 from k3.utils.core.renaming import *
 
+Arguments = {}
 
 def zeroToOneRange(m):
     min_n = 1.0*np.min(m)
@@ -58,6 +59,8 @@ def mean_exclude_outliers(data,n,min_proportion,max_proportion):
 
 def meo(data,n):
     return mean_exclude_outliers(data,n,1/3.0,2/3.0)
+
+
 
 def main(**A):
     a = na([1.,3.,5.])

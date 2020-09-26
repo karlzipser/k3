@@ -1,6 +1,4 @@
-
 from k3.utils.core.essentials import *
-
 
 def get_safe_name(
     name,

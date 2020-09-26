@@ -103,7 +103,7 @@ def handle_path_and_URL_args(p,URL_args):
         if not bool(BeautifulSoup(URL_args['SaveCode'], "html.parser").find()):
             sc = URL_args['SaveCode'].replace('\r','')
             n = opjh('bkps',p.replace(opjh(),''))
-            cr(n)
+            cy('Saving',p)#n.replace(opjh(),''))
             os_system('mkdir -p',pname(n))
             os_system('mv',p,d2p(n,time.time()))
             text_to_file(p,sc)
@@ -141,8 +141,7 @@ def get_SubCode(url):
         '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
         '---ACE-THEME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
         '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-        't--FIGURES---':    """<img src="/Desktop/Internet_dog.jpg" ;">""",
-        't--TEXTAREA---': "",
+        't--FIGURES---':    """<img src="/Desktop/_Internet_dog.jpg" ;">""",
     }
 
     path, URL_args = urlparse(url)
@@ -155,11 +154,12 @@ def get_SubCode(url):
     if not os.path.isfile(p):
         p_ = p
         p = opjk('utils/__init__.py').replace(opjh(),'')
-        cr(p_,'-->',p,r=0)
+        #cr(p_,'-->',p,r=0)
 
     handle_path_and_URL_args(p,URL_args)
 
-    SubCode['t--URL_args---'] = print_dic_simple(URL_args,'',html=True,print_=False)
+    SubCode['t--URL_args---'] = print_dic_simple(
+        URL_args,'',html=True,print_=False)
 
     try:
         if len(sggo(p)) == 1:
@@ -174,16 +174,15 @@ def get_SubCode(url):
     except:
         pass
 
+    A = {}
     try:
         A = Imports[p].Arguments
     except:
+        cg('here?')
+        pass
+    if type(A) is not dict:
         A = {}
     SubCode['t--OUTPUT---'] = get_Output_form(p,A)
-
-    if False:#path not in paths:
-        SubCode['t--REDIRECT---'] = \
-            """<meta http-equiv="Refresh" content="0; url='"""+ \
-            path+"""'" />"""
 
     SubCode['t--TITLE---'] = p
 
