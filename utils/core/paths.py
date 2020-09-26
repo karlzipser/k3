@@ -9,6 +9,7 @@ Arguments = get_Arguments(
 )
 
 def main(**A):
+    eg(__file__)
     p = A['p']
     print(A['s'])
     print(p)               
@@ -19,6 +20,7 @@ def main(**A):
     print(pname(p))        
     print(fname(pname(p)))
     print_dic_simple(A)
+    print('abc')
 
 
 
@@ -76,7 +78,6 @@ pn = pname
 
 if __name__ == '__main__':
     print(" :^)")
-    eg(__file__)
     main(**Arguments)
 
 #EOF

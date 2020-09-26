@@ -12,10 +12,6 @@ class MyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        if False:#'apple-touch-icon.png' in self.path:
-            cr("'apple-touch-icon.png' in self.path")
-            return
-
         mimetype=None
         if exname(self.path) in ('jpeg','jpg','JPG','JPEG'):
             mimetype='image/jpg'
@@ -40,7 +36,8 @@ class MyServer(BaseHTTPRequestHandler):
                     f.close()
                 self.wfile.write(Images[path_to_image])
             except:
-                cr('failed to load',path_to_image)#,r=1)
+                pass
+                #cr('failed to load',path_to_image)#,r=1)
 
         elif "favicon.ico" in self.path:
             return

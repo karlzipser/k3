@@ -24,9 +24,10 @@ from k3.utils.core.printing import *
 # :^)
 
 def main(**A):
-    pass
-if __name__ == '__main__':
     eg(__file__)
+    print("Nothing to see here.")
+if __name__ == '__main__':
+    
     main()
     
 #EOF
