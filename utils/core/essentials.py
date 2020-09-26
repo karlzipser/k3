@@ -153,10 +153,11 @@ def kys(D):
     return list(sorted(D.keys()))
 
 
-def set_Defaults(Defaults,Dst):
+def set_Defaults(Defaults,Dst,verbose=False):
     for k in Dst.keys():
         if k not in Defaults.keys():
-            print("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()))
+            if verbose:
+                print("**** Warning, argument '"+k+"' not in expected Dst:\n\t",list(Defaults.keys()))
 
     for k in Defaults.keys():
         if k not in Dst.keys():

@@ -41,7 +41,6 @@ t--CITY_TAB---
 
 
 
-
 <pre id="editor">t--EDITOR---</pre>
 
 <script >
@@ -75,6 +74,7 @@ style="
     margin:0;
     /*width:500px;*/
     height:500px;
+    /*height:100%;*/
     margin-right:20px;
     margin-left:20px;
     
@@ -157,7 +157,7 @@ style="
 	<button type="button" class="tablinks" onclick="openTab(event, 'Output')">Output</button>
 	<button type="button" class="tablinks" onclick="openTab(event, 'Files')">Files</button>
 	<button type="button" class="tablinks" onclick="openTab(event, 'Figures')">Figures</button>
-	<button class="tablinks" onClick="this.form.SaveCode.value = editor.getValue();this.form.submit()">Save</button>
+	<button t--SAVE-HIDDEN--- class="tablinks" onClick="this.form.SaveCode.value = editor.getValue();this.form.submit()">Save</button>
 	</form>
 	</div>
 	<div id="-" class="tabcontent"></div>
@@ -183,6 +183,8 @@ style="
 		}
 		</script>
 </div>
+
+t--HTML-CODE-AREA---
 
 
 </body>

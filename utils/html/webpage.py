@@ -56,50 +56,15 @@ def get_Output_form(p,A):
 
 
 
-if False:
-    def _get_files(path=opjk('utils')):
-        a = get_list_of_files_recursively(path,'*.py')
-        b = []
-        for c in a:
-            b.append('/'+c.replace(opjh(),''))
-        paths = sorted(b)
-        files = ''
-        ctr = 0
-        for pp,pr in zip(_trim_paths(paths),paths):
-            url = pp
-            files += href_(pr+'abc'+'?city_tab=Files',pp[1:].replace(' ','&nbsp'),False)
-            ctr += 1
-            files += br
-        return files,paths
-
-
-    def _trim_paths(paths):
-        paths = sorted(paths)
-        q = []
-        for p in paths:
-            q.append(p.replace(opjk(),'').split('/'))
-
-        for i in range(len(q)-1,1,-1):
-            for j in rlen(q[i]):
-                #print(i,j)
-                try:
-                    if q[i][j] == q[i-1][j]:
-                        q[i][j] = ' '*len(q[i][j])
-                except:
-                    pass
-        r = []
-        for u in q:
-            r.append('/'.join(u).replace(
-                '/ ','  ').replace(opjk(),'').replace(' /','  '))
-        return r
-
+#html_warning = "html detected, this page not shown"
 
 from bs4 import BeautifulSoup
 
 def handle_path_and_URL_args(p,URL_args):
 
     if 'SaveCode' in URL_args:
-        
+        #print(qtd(URL_args['SaveCode']))
+
         if not bool(BeautifulSoup(URL_args['SaveCode'], "html.parser").find()):
             sc = URL_args['SaveCode'].replace('\r','')
             n = opjh('bkps',p.replace(opjh(),''))
@@ -132,7 +97,7 @@ def handle_path_and_URL_args(p,URL_args):
     except:
         cr('Could not import',p)
 
-H={'<':'&lt;','>':'&gt;','&':'&amp;','\"':'&quot;',}
+H=(('&','&amp;'),('<','&lt;'),('>','&gt;'),('\"','&quot;'))
 
 def get_SubCode(url):
 
@@ -141,7 +106,10 @@ def get_SubCode(url):
         '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
         '---ACE-THEME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
         '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-        't--FIGURES---':    """<img src="/Desktop/_Internet_dog.jpg" ;">""",
+        't--FIGURES---':    """<img src="/Pictures/Internet_dog.jpg" ;">""",
+        't--SAVE-HIDDEN---': "",
+        't--HTML-CODE-AREA---': "",
+
     }
 
     path, URL_args = urlparse(url)
@@ -163,14 +131,38 @@ def get_SubCode(url):
 
     try:
         if len(sggo(p)) == 1:
-            SubCode['t--EDITOR---'] = file_to_text(p)
+            raw_code = file_to_text(p)
+            SubCode['t--EDITOR---'] = raw_code
             if bool(BeautifulSoup(SubCode['t--EDITOR---'], "html.parser").find()):
                 
-                SubCode['t--TEXTAREA---'] = "<!-- contains html -->\n"+SubCode['t--EDITOR---']
-                SubCode['t--EDITOR---'] = ""
-                for k in H:
-                    SubCode['t--EDITOR---'] = SubCode['t--EDITOR---'].replace(k,H[k])
+                #SubCode['t--TEXTAREA---'] = "<!-- contains html -->\n"+SubCode['t--EDITOR---']
+                SubCode['t--EDITOR---'] = ""#html_warning
+                SubCode['t--SAVE-HIDDEN---'] = 'hidden'
+                #for k in H:
+                #    SubCode['t--EDITOR---'] = SubCode['t--EDITOR---'].replace(k,H[k])
                 SubCode['---ACE-ACE---'] = opjk('utils/html/ace/mode-python.js')
+                for h in H:
+                    k = h[0]
+                    Hk = h[1]
+                    raw_code = raw_code.replace(k,Hk)
+                text_to_file(opjD('raw.txt'),raw_code)
+                SubCode['t--HTML-CODE-AREA---'] =\
+                    """
+<pre
+    style="
+        /*float:left;*/
+        cursor: no-drop;
+        background-color: #FFDDD0;
+        font-family: 'Courier New';
+        font-size: 10px;
+        height: 100%;
+        /*width:300px;*/
+        overflow: scroll;
+        /*overflow-x: hidden;
+        overflow-y: scroll;*/
+
+    "
+>\n""" + '\n<br>'.join(raw_code.split('\n')) + "</pre>"
     except:
         pass
 
