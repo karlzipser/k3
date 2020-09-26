@@ -8,7 +8,7 @@ def __print_dic_simple(D,title=''):
         for k in D:
             print('   ',str(k)+':',str(D[k]))
 
-def print_dic_simple(D,title='',do_print=True,html=False):
+def print_dic_simple(D,title='',do_print=True,html=False,print_=True):
     el = '\n'
     if html:
         el +=''
@@ -17,11 +17,13 @@ def print_dic_simple(D,title='',do_print=True,html=False):
     else:
         s = ''
     if type(D) is not dict:
-        print(D)
+        if print_:
+            print(D)
     else:
         for k in D:
             s += '   '+str(k)+':'+str(D[k])+el;
-    print(s)
+    if print_:
+        print(s)
     return s
 
 def clear_screen():

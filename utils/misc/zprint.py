@@ -271,11 +271,7 @@ def _post_process(Din,use_line_numbers,use_color):
 #def type_to_str(a):
 #    return str(type(a)).split("'")[-2]
 
-Arguments = {}
-
-def main(**A):
-
-    A = get_Arguments(
+Arguments = get_Arguments(
         Defaults={
             'no-banner':'not relevant',
             'use_color':1,
@@ -284,9 +280,11 @@ def main(**A):
             'html':False,
             'do_print':1,
         },
-    )
+)
 
 
+
+def main(**A):
 
     Example = {
         'A':{
@@ -298,7 +296,6 @@ def main(**A):
             'I':{'G':[1,2,3],'H':[4,5,'6',(1,2)],}, 
         },
     }
-
 
 
     Example = {

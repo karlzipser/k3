@@ -45,8 +45,11 @@ class MyServer(BaseHTTPRequestHandler):
         elif "favicon.ico" in self.path:
             return
 
+        elif '.py' not in self.path:
+            return
+
         else:
-        
+            #print(exname(self.path))
             SubCode = wp.get_SubCode(self.path)
 
             html = '---WEBPAGE---'
@@ -73,7 +76,7 @@ class MyServer(BaseHTTPRequestHandler):
                 else:
                     assert False
                 if sc_is_path:
-                    cg(trun(d2s('treating',j,sc,'as path')))
+                    #cg(trun(d2s('treating',j,sc,'as path')))
                     try:
                         r = file_to_text(SubCode[j])
                     except:
@@ -81,7 +84,7 @@ class MyServer(BaseHTTPRequestHandler):
                         r = d2s(9*'\n'+j,": Error, unable to find or load",sc)
                         cr(r)
                 else:
-                    cy(trun(d2s('treating',j,'as text')))
+                    #cy(trun(d2s('treating',j,'as text')))
                     r = SubCode[j]
                 #cy(j,r,r=1)
                 html = html.replace(j,r)

@@ -12,7 +12,7 @@ Imports = {}
 SubCode = {
     '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
     '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
-    '---ACE-THEME---':  opjk('utils/html/ace/theme-twilight.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
+    '---ACE-THEME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
     '---WEBPAGE---':    opjk('utils/html/webpage.html'),
     't--FIGURES---':    """<img src="/Desktop/Internet_dog.jpg" ;">""",
 }
@@ -32,9 +32,11 @@ def get_Output_form(p,A):
     """
     #s = ''
     for k in A.keys():
+        Ak = str(A[k])
+        k = str(k)
         k_ = k + '_output'
         s += """
-  <input style="font-size:14px;" type="text" id=\""""+k_+"""\" name=\""""+k_+"""\" value=\""""+A[k]+"""\">
+  <input style="font-size:14px;" type="text" id=\""""+k_+"""\" name=\""""+k_+"""\" value=\""""+Ak+"""\">
   <label for=\""""+k_+"""\">--"""+k+"""</label>
   <br>
     """
@@ -127,15 +129,16 @@ def handle_path_and_URL_args(p,URL_args):
         cb('reloaded',p)
 
     try:
-        zprint(Imports[p].Arguments,'Arguments')
+        Imports[p].Arguments
+        #zprint(Imports[p].Arguments,'Arguments: '+p)
     except:
-        cb('p has no Arguments')
+        pass#cb('p has no Arguments')
     #Imports[p].main(**URL_args)
 
 
 def get_SubCode(url):
     path, URL_args = urlparse(url)
-    cm(path)
+    #cm(path)
     p = path
     del path
     if p[0] == '/' and len(p) > 1:
@@ -148,7 +151,7 @@ def get_SubCode(url):
 
     handle_path_and_URL_args(p,URL_args)
 
-    SubCode['t--URL_args---'] = print_dic_simple(URL_args,'',html=True)
+    SubCode['t--URL_args---'] = print_dic_simple(URL_args,'',html=True,print_=False)
 
     try:
         if len(sggo(p)) == 1:

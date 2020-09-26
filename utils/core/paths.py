@@ -1,6 +1,26 @@
-#
-####
 from k3.utils.core.renaming import *
+
+Arguments = get_Arguments(
+    {
+        'p':'k3/drafts/temp7.py',
+        's':'-',
+        
+    }
+)
+
+def main(**A):
+    p = A['p']
+    print(A['s'])
+    print(p)               
+    print(fname(p))     
+    print(fnamene(p))    
+    print(exname(p))       
+    print(fname(p))        
+    print(pname(p))        
+    print(fname(pname(p)))
+    print_dic_simple(A)
+
+
 
 def opj(*args):
     if len(args) == 0:
@@ -53,27 +73,6 @@ def pname(path):
     return '/'.join(  path.split('/')[:-1]  )
 pn = pname
 
-
-Arguments = get_Arguments(
-    {
-        'p':'k3/drafts/temp7.py',
-        's':'-',
-        
-    }
-)
-    
-
-def main(**A):
-    p = A['p']
-    print(A['s'])
-    print(p)               
-    print(fname(p))     
-    print(fnamene(p))    
-    print(exname(p))       
-    print(fname(p))        
-    print(pname(p))        
-    print(fname(pname(p)))
-    print('abc')
 
 if __name__ == '__main__':
     print(" :^)")

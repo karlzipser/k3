@@ -1,7 +1,18 @@
-
 from k3.utils.core.files.files import *
 
+Arguments = get_Arguments(
+    {},
+    '--one 1111 --two 2222 --three 3333'
+)
 
+def main(**A):
+    print_dic_simple(A)
+    soD('temp',A)
+    B = loD('temp')
+    os.system('rm ' + opjD('temp.pkl'))
+    print_dic_simple(B)
+    
+    
 def save_obj(obj, name,noisy=True,show_time=False,use_real_path=False):
     assert_disk_locations([pname(name)])
     name = name.replace('.pkl','')
@@ -74,9 +85,6 @@ def soD(arg1,arg2,noisy=True):
         print("exec(EXCEPT_STR)")
 
 
-def main(**A):
-    print("main()")
-    
 if __name__ == '__main__':
     eg(__file__)
     main()

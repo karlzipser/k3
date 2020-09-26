@@ -4,7 +4,6 @@ from termcolor import cprint
 from termcolor import colored
 
 
-
 def d2s_spacer(args,spacer=' '):
     lst = []
     for e in args:

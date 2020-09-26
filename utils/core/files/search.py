@@ -1,4 +1,3 @@
-
 from k3.utils.core.files.files import *
 
 
@@ -26,7 +25,11 @@ def tsggo(d,*args):
     return get_files_sorted_by_mtime(a)
 
 
-def most_recent_file_in_folder(path,str_elements=[],ignore_str_elements=[],return_age_in_seconds=False):
+def most_recent_file_in_folder(
+    path,str_elements=[],
+    ignore_str_elements=[],
+    return_age_in_seconds=False
+):
     files = gg(opj(path,'*'))
     if len(files) == 0:
         return None
