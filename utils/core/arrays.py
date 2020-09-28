@@ -1,7 +1,21 @@
 from k3.utils.core.renaming import *
 
-Arguments = {}
+#assert 'Arguments' not in locals()
 
+_Arguments = args_to_dict('-x 1 -y 2')
+
+def main(**A):
+    eg(__file__)
+    a = na([1.,3.,5.])
+    b = z2o(a)
+    c = zeros((int(A['x']),int(A['y'])),np.uint8)
+    print("a = na([1.,3.,5.])")
+    print(a)
+    print("b = z2o(a)")
+    print(b)
+    print("c = zeros((int(A['x']),int(A['y'])),np.uint8)")
+    print(c)
+    
 def zeroToOneRange(m):
     min_n = 1.0*np.min(m)
     return (1.0*m-min_n)/(1.0*np.max(m)-min_n)
@@ -62,17 +76,10 @@ def meo(data,n):
 
 
 
-def main(**A):
-    a = na([1.,3.,5.])
-    b = z2o(a)
-    print("a = na([1.,3.,5.])")
-    print(a)
-    print("b = z2o(a)")
-    print(b)
+
 
     
 if __name__ == '__main__':
-    eg(__file__)
-    main()
+    main(**get_Arguments(_Arguments))
     
 #EOF

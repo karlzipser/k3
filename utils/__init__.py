@@ -7,5 +7,5 @@ from k3.utils.misc import *
 
 from k3.utils.vis import *
 
-Arguments = {}
+#assert 'Arguments' not in locals()
 #EOF

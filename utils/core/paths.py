@@ -1,15 +1,13 @@
 from k3.utils.core.renaming import *
 
-Arguments = get_Arguments(
-    {
-        'p':'k3/drafts/temp7.py',
-        's':'-',
-        
-    }
-)
+_Arguments = {
+    'p':'k3/drafts/temp7.py',
+    's':'<---------------------------------------->',
+}
 
 def main(**A):
     eg(__file__)
+    Arguments = get_Arguments(_Arguments)
     p = A['p']
     print(A['s'])
     print(p)               
@@ -26,7 +24,7 @@ def main(**A):
     
 if __name__ == '__main__':
     print(" :^)")
-    main(**Arguments)
+    main(**_Arguments)
     
     
 

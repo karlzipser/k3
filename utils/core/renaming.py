@@ -27,7 +27,7 @@ sleep = time.sleep
 sys = os.sys
 gg = glob.glob
 
-Arguments = get_Arguments({},'1 2 -a a3 -b 4 1 a2 5 -c a12')
+_Arguments = args_to_dict('face 1 2 -a a3 -b 4 1 a2 5 -c a12 1')
 
 def main(**A):
     eg(__file__)
@@ -36,8 +36,10 @@ def main(**A):
     print('username =',username)
     print('host_name =',host_name)
     print('rndn(3) =',rndn(3))
+    print_dic_simple(A)
     
 if __name__ == '__main__':
+    Arguments = get_Arguments(_Arguments)
     main(**Arguments)
 
 #EOF

@@ -1,15 +1,14 @@
 from k3.utils.core.imports import *
 
-Arguments = {}
+_Arguments = {}
 
-def __print_dic_simple(D,title=''):
-    print(title)
-    if type(D) is not dict:
-        print(D)
-    else:
-        for k in D:
-            print('   ',str(k)+':',str(D[k]))
-
+def main(**A):
+    eg(__file__)
+    print("int(1.9) =",int(1.9))
+    print("intr(1.9) =",intr(1.9))
+    
+    
+    
 def print_dic_simple(D,title='',do_print=True,html=False,print_=True):
     el = '\n'
     if html:
@@ -31,11 +30,12 @@ def print_dic_simple(D,title='',do_print=True,html=False,print_=True):
 def clear_screen():
     print(chr(27) + "[2J")
     
-def eg(file,cs=False):
+def eg(f,cs=False):
     if cs:
         clear_screen()
-    print('Examples from '+file+':')
-    print('') 
+    s = "│ Examples from "+f+":"
+    print('┌'+(len(s)-1)*'─'+'\n'+s+'\n')
+
 
 
 def intr(n):
@@ -131,20 +131,7 @@ def interactive():
     import __main__ as main
     return not hasattr(main, '__file__')
     
-def main(**A):
-    print("main()")
 
-if __name__ == '__main__':
-    eg(__file__)
-    main()
-    
-    
-    
-    
-    
-    
-    
-    
 
 
 REQUIRED = '__REQUIRED__'
@@ -211,7 +198,7 @@ def arg_str_to_args(s):
     return re.findall(r,s)
 
 
-def args_to_dictionary(*args):
+def ___args_to_dictionary(*args):
 
     for e in args:
         if '--help' in e:
@@ -268,7 +255,7 @@ def space(s):
 
 
 def args_to_dict(s):
-    print(s)
+    #print(s)
     m = space(s)
     n = []
     keyword_found = False
@@ -282,14 +269,14 @@ def args_to_dict(s):
             n.insert(0,'KEYWORD=--positional_args')
         n.append(a)
     o = ' '.join(n)
-    print(o)
+    #print(o)
     q = o.split('KEYWORD=')
-    print(q)
+    #print(q)
     r = remove_empty(q)
-    print(r)
+    #print(r)
     #EOF
     U = {}
-    print(r)
+    #print(r)
     for a in r:
         b = space(a)
         #cg(b)
@@ -326,12 +313,6 @@ def args_to_dict(s):
 
 
 def get_Arguments(Defaults={},argstr=None):
-    """
-    Examples using get_Arguments:
-        python FILE --help
-        python FILE --src Desktop/temp.dat
-        try using --help
-    """#.replace('FILE',__file__)#.replace(opjh(),'')
 
     if argstr is None:
         args = ' '.join(sys.argv[1:])
@@ -339,56 +320,15 @@ def get_Arguments(Defaults={},argstr=None):
         assert type(argstr) is str
         args = argstr
     
-    temp = args_to_dict(args)
-    
-    #temp = args_to_dictionary(arglst) #sys.argv[1:])
-
-    Arguments = {}
-
-    if temp != None:
-        Args = {}
-        for k in temp.keys():
-            Args[k] = temp[k]
-
-        del temp
-
-        for a in Args.keys():
-
-            ar = Args[a]
-
-            if a[0] == '-':
-                if len(a) == 2:
-                    a = a[1]
-                    assert(a.islower() or not a.isalpha())
-                elif len(a) > 2:
-                    a = a[2:]
-                else:
-                    assert(False)
-            else:
-                print_dic_simple(Args,'Args')
-                print(
-                    '*** Warning, argument',
-                    "'"+k+"'",
-                    'not proceeded by -- on command line ***',
-                    #ra=1
-                )
-            if str_is_int(ar):
-                Arguments[a] = int(ar)
-            elif str_is_float(ar):
-                Arguments[a] = float(ar)
-            elif ',' in ar:
-                Arguments[a] = ar.split(',')
-            elif ar == 'True':
-                Arguments[a] = True
-            elif ar == 'False':
-                Arguments[a] = False        
-            else:
-                Arguments[a] = ar
+    Arguments = args_to_dict(args)
 
     set_Defaults(Defaults,Arguments)
 
     return Arguments
 
+
+if __name__ == '__main__':
+    main(**_Arguments)
 
     
 #EOF

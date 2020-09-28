@@ -12,7 +12,7 @@ Imports = {}
 
 # sort out problem with directory to dic
 
-
+verbose = False
 
 def get_Output_form(p,A):
     s = """
@@ -81,12 +81,14 @@ def handle_path_and_URL_args(p,URL_args):
         if p not in Imports:
             Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
             Imports[p+':time'] = time.time()
-            cb('imported',p)
+            if verbose:
+                cb('imported',p)
 
         if os.path.getmtime(p) > Imports[p+':time']:
             importlib.reload( Imports[p] )
             Imports[p+':time'] = time.time()
-            cb('reloaded',p)
+            if verbose:
+                cb('reloaded',p)
 
         try:
             Imports[p].Arguments
@@ -168,9 +170,8 @@ def get_SubCode(url):
 
     A = {}
     try:
-        A = Imports[p].Arguments
+        A = Imports[p]._Arguments
     except:
-        cg('here?')
         pass
     if type(A) is not dict:
         A = {}
@@ -194,7 +195,7 @@ def get_SubCode(url):
     #if True:#'def main(**' in SubCode['---EDITOR---']:
         #cr(0,r=1)
     if 'run' in A:
-        try:
+        if True:#try:
         #cr(1,r=1)
             with open(out, 'w') as f:
                 with redirect_stdout(f):
@@ -203,7 +204,7 @@ def get_SubCode(url):
                         Imports[p+':time'] = time.time()
                     Imports[p].main(**A)
             SubCode['t--OUTPUT---'] += '<hr>'+lines_to_html_str(file_to_text(out))
-        except:
+        else:#except:
             SubCode['t--OUTPUT---'] += \
                 '<hr>'+lines_to_html_str("\ncould not run Imports[p].main(**A)")
             cr("could not run Imports[p].main(**A)")

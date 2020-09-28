@@ -118,60 +118,62 @@ threading.Thread(target=clipthread).start()
 
 while True:
 
-	
+	try:
 
-	#if use_prefix_and_suffix:
-	#	istr = 'X' + istr
+		q = raw_input()
 
-	#if E['pause_thread']:
-	#	istr = 'P' + istr
-	
-	q = raw_input()#istr)
-
-	r = q.split(' ')
-	if str_is_int(r[0]):
-		setClipboardData(E['lst'][int(r[0])][0])
-		clp('set clipboard to:\n','`g',qtd(E['lst'][int(r[0])][0]),'`m')
-	elif r[0] == 'q':
-		E['Command'] = 'quit'
-		break
-	elif r[0] == 'r':
-		u = 0
-		if len(r) == 3:
-			u  = int(r[2]) + 1
-		elif len(r) == 2:
-			u = int(r[1])+1
-		if u:
-			for v in range(int(r[1]),u):
-				E['lst'].pop(int(r[1]))
-			so(E['lst'],save_file,noisy=E['noisy'])
+		r = q.split(' ')
+		if str_is_int(r[0]):
+			setClipboardData(E['lst'][int(r[0])][0])
+			clp('set clipboard to:\n','`g',qtd(E['lst'][int(r[0])][0]),'`m')
+		elif r[0] == 'q':
+			E['Command'] = 'quit'
+			break
+		elif r[0] == 'r':
+			u = 0
+			if len(r) == 3:
+				u  = int(r[2]) + 1
+			elif len(r) == 2:
+				u = int(r[1])+1
+			if u:
+				for v in range(int(r[1]),u):
+					E['lst'].pop(int(r[1]))
+				so(E['lst'],save_file,noisy=E['noisy'])
+				print_lst()
+		elif r[0] == 'n':
+			if int(r[1]) < 0:
+				E['num_chars'] = 999999
+			else:
+				E['num_chars'] = int(r[1])
 			print_lst()
-	elif r[0] == 'n':
-		if int(r[1]) < 0:
-			E['num_chars'] = 999999
-		else:
-			E['num_chars'] = int(r[1])
-		print_lst()
-	elif r[0] == 'l':
-		files = sggo(save_dir,'*.pkl')
-		for i in rlen(files):
-			if '.pkl' in files[i]:
-				clp(i,')',fname(files[i]))
-		j = input('==>> ')
-		assert(str_is_int(j))
-		j = int(j)
-		print(files[j])
-		E['lst'] = lo(files[j])
-		print_lst()
-	elif r[0] == 'x':
-		if use_prefix_and_suffix:
-			use_prefix_and_suffix = False
-		else:
-			use_prefix_and_suffix = True
+		elif r[0] == 'l':
+			files = sggo(save_dir,'*.pkl')
+			for i in rlen(files):
+				if '.pkl' in files[i]:
+					clp(i,')',fname(files[i]))
+			j = input('==>> ')
+			assert(str_is_int(j))
+			j = int(j)
+			print(files[j])
+			E['lst'] = lo(files[j])
+			print_lst()
+		elif r[0] == 'x':
+			if use_prefix_and_suffix:
+				use_prefix_and_suffix = False
+			else:
+				use_prefix_and_suffix = True
 
-	elif r[0] == 'p':
-		E['pause_thread'] = not E['pause_thread']
+		elif r[0] == 'p':
+			E['pause_thread'] = not E['pause_thread']
 
-
+	except KeyboardInterrupt:
+	    print('*** KeyboardInterrupt ***')
+	    E['Command'] = 'quit'
+	    time.sleep(0)
+	    sys.exit()
+	except Exception as e:
+	    exc_type, exc_obj, exc_tb = sys.exc_info()
+	    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+	    cEd2s(exc_type,file_name,exc_tb.tb_lineno) 
 #EOF
 

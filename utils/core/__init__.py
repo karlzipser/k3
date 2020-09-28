@@ -19,12 +19,12 @@ from k3.utils.core.arrays import *
 from k3.utils.core.input_ import *
 
 from k3.utils.core.printing import *
-# :^)
-Arguments = {}
+
+#assert 'Arguments' not in locals()
 
 def main(**A):
     eg(__file__)
-    print("Nothing to see here.")
+    print("Nothing to see here   :^)")
     
 if __name__ == '__main__':
     
