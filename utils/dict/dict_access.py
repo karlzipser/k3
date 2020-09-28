@@ -1,7 +1,4 @@
-# ,a
-
-from k3.utils.misc.zprint import *
-from k3.utils.misc.clipcode import *
+from k3.utils.dict.zprint import *
 
 
 def dict_access(D,name):
@@ -14,7 +11,6 @@ def dict_access(D,name):
             'ignore_underscore':False,
             'ignore_keys':[],
         }
-
 
     def o(
         p=None,
@@ -51,6 +47,7 @@ def dict_access(D,name):
                         do_return=do_return,
                         do_print=do_print,
                         ignore_keys=Meta['ignore_keys'],
+                        ignore_underscore=Meta['ignore_underscore'],
                         )
         if p == '':
             p = None
@@ -130,9 +127,7 @@ def dict_access(D,name):
                 indx_prev = indx
                 print(print_lines[i],ctr_show)
 
-
             return U,print_lines
-
 
         assert_as(D is not None,"D is not None")
 
@@ -140,10 +135,8 @@ def dict_access(D,name):
             p is None or has_form_of_path(p), d2s(qtd(p),
             "is None or has_form_of_path(",qtd(p),")"))
 
-
         if p is not None:
             key_list = p[:-1].split('/')
-
 
         if e == None:
             if p is not None:
@@ -181,40 +174,35 @@ def dict_access(D,name):
 
 
 
+if True:
+    def count_nodes(D):
+        if type(D) is not dict:
+            return 1
+        n = 1    
+        ks = kys(D)
+        for k in ks:
+            n += count_nodes(D[k])
+        return n
 
-def count_nodes(D):
-    if type(D) is not dict:
-        return 1
-    n = 1    
-    ks = kys(D)
-    for k in ks:
-        n += count_nodes(D[k])
-    return n
-
-def condense_dict(D):
-    if type(D) is not dict:
+    def condense_dict(D):
+        if type(D) is not dict:
+            return D
+        ks = kys(D)
+        if len(ks) == 1:
+            return condense_dict(D[ks[0]])
+        for k in ks:
+            D[k] = condense_dict(D[k])
         return D
-    ks = kys(D)
-    if len(ks) == 1:
-        return condense_dict(D[ks[0]])
-    for k in ks:
-        D[k] = condense_dict(D[k])
-    return D
 
 
             
 
 
-def __has_form_of_path(s):
-    if type(s) == str:
-        if len(s) > 1:
-            if s[0] != '/':
-                if s[-1] == '/':
-                    return True
-    return False 
+
 
 _re = r'^([\s|\w|_|\d|\.|-|`|~|!|@|#|\$|%|^|&|\+|\||\*|\(|\)|\[|\]|\{|\}|<|>|,]+/)+$'
 #_re = r'^(\S+/)+$'
+
 def has_form_of_path(s):
     if type(s) == str:
         if re.match(
@@ -240,97 +228,9 @@ def pa(lst):
 
 
 
+def main(**A):
+    eg(__file__)
 
-if not interactive() and __name__ == '__main__':
-
-
-    if '__file__' in locals(): eg(__file__)
-
-
-    raw_code = get_code_snippet_(__file__,start='#,---a',stop='#,---b')
-    v = raw_code.split('\n')[1:]
-    q = []
-    indent_spaces = 4
-    for r in v:
-        q.append(r[indent_spaces:])
-    raw_code = '\n'.join( q )
-    
-    #import matplotlib.pyplot as plt
-    for c in raw_code.split('#.'):
-        if not c.isspace():
-            clp(c,'`--r')
-            #clp(c[indent_spaces:],indent_spaces,'`---')
-            exec(c)
-            #plt.pause(3)
-            time.sleep(3)
-
-    if False:
-        D=files_to_dict(opjh('Desktops_older/Desktop_30Jan19_10h14m01s'),D={})
-        D = condense_dict(D)
-        oD = dict_access(D,'Desktops_older/Desktop_30Jan19_10h14m01s/')
-
-        #clear_screen()
-        oD(up_down='-')
-        c = None
-        U = {}
-        while True:
-            c = input('-> ')#_from_choices(choices=['u','d','q','m'])
-
-            if c == 'q':
-                break
-
-            if c is None:
-                c = '-'
-
-            if c == 'm':
-                i = input_int_in_range(
-                    0,
-                    10*10,
-                    d2n('max depth (',D['__meta__']['max_depth'],') >>> ')
-                )
-                if type(i) is int:
-                    D['__meta__']['max_depth'] = i
-
-                oD(up_down='-')
-                continue
-            
-            if True:
-
-                if c in ['u','d']:
-                    cc = c
-                else:
-                    cc = '-'
-                U,print_lines = oD(up_down=cc)
-
-                if str_is_int(c.split(' ')[0]):
-                    i = int(c.split(' ')[0])
-                    if i in U:
-                        p = U[i]['path']
-                        oD('__meta__/menu_path/',e=p)
-                        if False:
-                            clp(p,'`ybb') #oD('__meta__/menu_path/'),U[i]['path'],p,'`yb')
-                            if U[i]['lst_indx'] is None:
-                                cy('out:',oD(p))
-                            else:
-                                cg('out:',oD(p)[U[i]['lst_indx']])
-            
-                    oD(up_down='-')
-                    if U[i]['lst_indx'] is None:
-                        cy('out:',oD(p))
-                    else:
-                        cg('out:',oD(p)[U[i]['lst_indx']])
-                    if len(c.split(' ')[0]) > 1:
-                        if c.split(' ')[1] == 'o':
-                            cg('open',opjh('Desktops_older/Desktop_30Jan19_10h14m01s',p),r=1)
-
-
-            else:#except:
-                print('oops!')
-
-
-if False:
-#############################
-#,---a
     D = {} #.
     oD = dict_access(D,'D') #.
     oD('a/b/c/d/e/',e=['x','y','z'],z=1) #.
@@ -347,13 +247,12 @@ if False:
     oD('a/b/c/d/',prune=1)
     oD(z=1) #.
     print(oD('a/b/'))
-
-#,---b
-#############################
+    oD('a/b/c/',e=5)
+    oD(z=1)
+    oD('__meta__/ignore_underscore/',e=True)
+    oD(z=1)
+    
+if __name__ == '__main__':
+    main()
 
 #EOF
-
-# ,b
-
-
-

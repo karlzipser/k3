@@ -3,6 +3,18 @@ from k3 import *
 from urllib.parse import unquote
 from urllib.parse import urlencode
 
+def lines_to_html_str(print_lines):
+    if type(print_lines) == str:
+        print_lines = [print_lines]
+    assert type(print_lines) == list
+    h = ' '.join(print_lines).replace(' ',' ').encode('ascii', 'xmlcharrefreplace').decode('utf8')
+    replace_list = list(range(100))
+    for i in rlen(replace_list):
+        replace_list[i] = d2n('[',replace_list[i],'m')
+    for s in replace_list:
+        h = h.replace(s,'')
+    return h
+    
 def urlparse(url):
     URL_args = {}
     a = url

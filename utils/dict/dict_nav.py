@@ -1,6 +1,6 @@
-# ,a
+
 from k3.utils.core import *
-from k3.utils.misc.dict_access import *
+from k3.utils.dict.dict_access import *
 from k3.utils.misc.sys import *
 from k3.utils.misc.osx import *
 

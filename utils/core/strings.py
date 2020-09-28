@@ -32,20 +32,9 @@ def num_from_str(s):
         try:
             return float(s)
         except:
-            print('String does not represent a number.')
+            #print('String does not represent a number.')
             return None
 
-def str_contains(st,str_list):
-    for s in str_list:
-        if not s in st:
-            return False
-    return True
-    
-def str_contains_one(st,str_list):
-    for s in str_list:
-        if s in st:
-            return True
-    return False
 
 def main(**A):         
     s = "Is this name: @ safe for a file!!!!"

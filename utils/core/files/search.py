@@ -199,6 +199,19 @@ def main(**A):
     for m in l:
         print(m)
     
+
+def files_to_dict(path,D={}):
+    D['.'] = []
+    fs = sggo(path,'*')
+    for f in fs:
+        if not os.path.isdir(f):
+            D['.'].append(fname(f))
+        else:
+            D[fname(f)] = files_to_dict(f,{})
+    return D
+
+    
+    
 if __name__ == '__main__':
     main()
 #EOF

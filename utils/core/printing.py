@@ -128,22 +128,12 @@ def format_row(list_of_sym_percent_pairs):
     return row_str
 
 
-def lines_to_html_str(print_lines):
-    if type(print_lines) == str:
-        print_lines = [print_lines]
-    assert type(print_lines) == list
-    h = ' '.join(print_lines).replace(' ',' ').encode('ascii', 'xmlcharrefreplace').decode('utf8')
-    replace_list = list(range(100))
-    for i in rlen(replace_list):
-        replace_list[i] = d2n('[',replace_list[i],'m')
-    for s in replace_list:
-        h = h.replace(s,'')
-    return h
+
 
 
 def as_pct(a,b):
     return d2n(intr(100*a/b),'%')
-
+pct = as_pct
 
     
 def trun(s):

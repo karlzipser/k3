@@ -89,8 +89,6 @@ def rlen(a):
     return range(len(a))
 
 
-def atoi(text):
-    return int(text) if text.isdigit() else text
 
 
 def getch():
@@ -136,6 +134,8 @@ def natural_keys(text):
     http://nedbatchelder.com/blog/200712/human_sorting.html
     (See Toothy's implementation in the comments)
     '''
+    def atoi(text):
+        return int(text) if text.isdigit() else text
     return [ atoi(c) for c in re.split('(\d+)', text) ]
 
 
@@ -191,66 +191,6 @@ def an_element(dic):
     return dic[a_key(dic)]
 
 
-
-
-def files_to_dict(path,D={}):
-    D['.'] = []
-
-    fs = sggo(path,'*')
-    for f in fs:
-        if not os.path.isdir(f):
-            D['.'].append(fname(f))
-        else:
-            D[fname(f)] = files_to_dict(f,{})
-    return D
-
-    
-def arg_str_to_args(s):
-    r=r'(\S+)\s*'
-    return re.findall(r,s)
-
-
-def ___args_to_dictionary(*args):
-
-    for e in args:
-        if '--help' in e:
-            print_dic_simple(Defaults,'Defaults')
-            os.sys.exit()
-
-    args_0 = []
-    for i in range(len(args[0])):
-
-        if '--' not in args[0][i]:
-            if i == 0 or '--' not in args[0][i-1]:
-                print("Error with",args[0])
-                return
-
-        if '--' in args[0][i] and args[0][i][:2] == '--':
-            args_0.append(args[0][i])
-            if i+1 == len(args[0]) or '--' in args[0][i+1] and args[0][i+1][:2] == '--':
-                args_0.append(1)
-        else:
-            args_0.append(args[0][i])
-    ctr = 0
-    keys = []
-    values = []
-    for e in args_0:
-        if is_even(ctr):
-            keys.append(e)
-        else:
-            values.append(e)
-        ctr += 1
-    d = {}
-    if len(keys) != len(values):
-        print("args_to_dictionary(*args)")
-        print("given keys are:")
-        print(keys)
-        print("given values are:")
-        print(values)
-        raise ValueError('ERROR because: len(keys) != len(values)')
-    for k,v in zip(keys,values):
-        d[k] = v
-    return d
 
 
 
