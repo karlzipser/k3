@@ -53,12 +53,13 @@ for im in imports:
                 pass
                 print('Failed to import '+im[1]+' as '+im[2]) 
 
-Arguments = {}
+
 
 def main(**A):
-    print("main()")
+    print(np.pi)
+    print(time.time())
+    pprint([[1,2,3],4])
     
 if __name__ == '__main__':
-    eg(__file__)
     main()
 #EOF

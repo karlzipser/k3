@@ -1,4 +1,3 @@
-
 from k3.utils.core.printing import *
 
 class Timer:
@@ -144,6 +143,7 @@ def format_seconds(time):
 
 
 def main(**A):
+    eg(__file__)
     t = 2
     pd2s('Setting timer for',t,'second:')
     timer = Timer(t)
@@ -159,7 +159,6 @@ def main(**A):
 
 
 if __name__ == '__main__':
-    eg(__file__)
     main()
 
 #EOF

@@ -1,6 +1,6 @@
 from k3.utils.core.printing import *
 
-Arguments = {}
+
 
 def input_int(s='> '):
     c = input(s)
@@ -43,9 +43,8 @@ def select_from_list(lst,ignore_underscore=False):
     return lst[i]
 
 def main(**A):
-    print("main()")
+    eg(__file__)
     
 if __name__ == '__main__':
-    eg(__file__)
     main()
 #EOF

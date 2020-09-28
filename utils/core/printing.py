@@ -1,5 +1,6 @@
 from k3.utils.core.renaming import *
-Arguments = {}
+_Arguments = {'t':0.05}
+
 from termcolor import cprint
 from termcolor import colored
 
@@ -155,6 +156,7 @@ def trun(s):
 
 
 def main(**A):
+    eg(__file__)
     if 't' not in A:
         t = 0.05
     else:
@@ -174,8 +176,7 @@ def main(**A):
 
 
 if __name__ == '__main__':
-    eg(__file__)
-    main()
+    main(**get_Arguments(_Arguments))
 
     
 #EOF

@@ -20,14 +20,6 @@ def main(**A):
     print_dic_simple(A)
     print('abc')
     
-    
-    
-if __name__ == '__main__':
-    print(" :^)")
-    main(**_Arguments)
-    
-    
-
 def opj(*args):
     if len(args) == 0:
         args = ['']
@@ -79,5 +71,9 @@ def pname(path):
     return '/'.join(  path.split('/')[:-1]  )
 pn = pname
 
+
+if __name__ == '__main__':
+    print(" :^)")
+    main(**get_Arguments(_Arguments))
 #EOF
   

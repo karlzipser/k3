@@ -1,4 +1,3 @@
-
 from k3.utils.core.paths import *
 from k3.utils.core.times import *
 from k3.utils.core.printing import *
@@ -47,10 +46,10 @@ def percent_disk_free(disk='/'):
 
 
 def main(**A):
-    print("files main()")
-    pass
-if __name__ == '__main__':
     eg(__file__)
+    print("percent_disk_free(disk='/') =", percent_disk_free(disk='/'))
+
+if __name__ == '__main__':
     main()
 
 

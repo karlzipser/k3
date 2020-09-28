@@ -8,6 +8,16 @@ def main(**A):
     print("intr(1.9) =",intr(1.9))
     
     
+def bordered(text):
+    # https://stackoverflow.com/questions/20756516/python-create-a-text-border-with-dynamic-size
+    lines = text.splitlines()
+    width = max(len(s) for s in lines)
+    res = ['┌' + '─' * width + '┐']
+    for s in lines:
+        res.append('│' + (s + ' ' * width)[:width] + '│')
+    res.append('└' + '─' * width + '┘')
+    return '\n'.join(res)
+
     
 def print_dic_simple(D,title='',do_print=True,html=False,print_=True):
     el = '\n'
@@ -33,8 +43,10 @@ def clear_screen():
 def eg(f,cs=False):
     if cs:
         clear_screen()
-    s = "│ Examples from "+f+":"
-    print('┌'+(len(s)-1)*'─'+'\n'+s+'\n')
+    if False:
+        s = "│ Examples from "+f+":"
+        print('┌'+(len(s)-1)*'─'+'\n'+s+'\n')
+    print(bordered('E.g.s from '+f))
 
 
 

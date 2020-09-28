@@ -1,6 +1,6 @@
-
 from k3.utils.core.renaming import *
 
+_Arguments = {}
 
 _which_python = sys.version.split(' ')[0]
 if _which_python[0] == '3':
@@ -13,9 +13,9 @@ del _which_python
 os.environ['PYTHONUNBUFFERED'] = '1'
 
 def main(**A):
-    print("main()")
+    eg(__file__)
     
 if __name__ == '__main__':
-    eg(__file__)
-    main()
+    main(**get_Arguments(_Arguments))
+    
 #EOF

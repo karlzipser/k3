@@ -1,9 +1,9 @@
 from k3.utils.core.files.files import *
 
-Arguments = args_to_dict('--one 1111 --two 2222 --three 3333')
-
+_Arguments = args_to_dict('--one 1111 --two 2222 --three 3333')
 
 def main(**A):
+    eg(__file__)
     print_dic_simple(A)
     soD('temp',A)
     B = loD('temp')
@@ -84,8 +84,6 @@ def soD(arg1,arg2,noisy=True):
 
 
 if __name__ == '__main__':
-    Arguments = get_Arguments(Arguments)
-    eg(__file__)
-    main()
+    main(**get_Arguments(_Arguments))
 
 #EOF

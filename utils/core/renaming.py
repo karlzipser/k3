@@ -39,7 +39,6 @@ def main(**A):
     print_dic_simple(A)
     
 if __name__ == '__main__':
-    Arguments = get_Arguments(_Arguments)
-    main(**Arguments)
+    main(**get_Arguments(_Arguments))
 
 #EOF

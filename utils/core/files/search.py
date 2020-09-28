@@ -3,8 +3,6 @@ from k3.utils.core.files.files import *
 
 os.environ['GLOG_minloglevel'] = '2'
 
-
-
 def sgg(d):
     return sorted(gg(d),key=natural_keys)
 
@@ -187,9 +185,20 @@ def get_list_of_files_recursively(
     return files
 
 def main(**A):
-    print("main()")
+    eg(__file__)
+    l = get_list_of_files_recursively2(
+        opjk(),
+        "*.py",
+        FILES_ONLY=True,
+        DIRS_ONLY=False,
+        ignore_underscore=True,
+        ignore_Trash=True,
+        followlinks=True
+    )
+    l = sorted(l)
+    for m in l:
+        print(m)
     
 if __name__ == '__main__':
-    eg(__file__)
     main()
 #EOF

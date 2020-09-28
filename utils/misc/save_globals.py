@@ -1,4 +1,3 @@
-
 from k3.utils.misc.printing import *
 
 
@@ -18,8 +17,8 @@ def Record_vars(global_key_list,Globals):
                         pickle.dumps(g)
                         N[l] = g
                     except:
-                        errPrint(d2s('Warning, cannot pickle',qtd(l),'so skipping it.'))
-                        N[l] = '<not able to pickle>'
+                        pd2s('Warning, cannot pickle',qtd(l),'so skipping it.')
+                        N[l] = '--not able to pickle--'
         return N
     def save(global_key_list,f=opjD('D.pkl')):
         update(global_key_list)
@@ -50,8 +49,9 @@ if __name__ == '__main__':
         #P.show(5,10)
         #P.show()
 
-    R.save(list(globals().keys()))
-
+    #R.save(list(globals().keys()))
+    R.save(kys(globals()))
+    
     o = loD('D')
 
     kprint(o,'reloaded R')
