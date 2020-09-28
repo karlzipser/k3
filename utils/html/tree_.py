@@ -109,6 +109,8 @@ def get_tree(p):
   #cy(p,files_to_dict2(opjh(p)),r=1)
   D = {p:files_to_dict(opjh(p))}
 
+  kprint(D)
+
   def a(D):
     if type(D) is dict:
         for k in kys(D):
