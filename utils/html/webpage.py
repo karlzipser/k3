@@ -30,11 +30,11 @@ def get_Output_form(p,A):
         k_ = k + '_output'
         s += """
   <input style="font-size:14px;" type="text" id=\""""+k_+"""\" name=\""""+k_+"""\" value=\""""+Ak+"""\">
-  <label for=\""""+k_+"""\">--"""+k+"""</label>
+  <label for=\""""+k_+"""\">"""+k+"""</label>
   <br>
     """
 
-    s += """
+    """
   <input spellcheck="false" style="font-size:14px;" type="text" id="extra_output" name="extra_output" value="">
   <label for="extra_output">additional cmd line str</label>
   <br>

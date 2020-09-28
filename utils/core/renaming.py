@@ -27,7 +27,7 @@ sleep = time.sleep
 sys = os.sys
 gg = glob.glob
 
-Arguments = get_Arguments({},'--a --b --c')
+Arguments = get_Arguments({},'1 2 -a a3 -b 4 1 a2 5 -c a12')
 
 def main(**A):
     eg(__file__)
