@@ -200,14 +200,14 @@ def main(**A):
         print(m)
     
 
-def files_to_dict(path,D={}):
-    D['.'] = []
+def files_to_dict(path):
+    D = {'.' : []}
     fs = sggo(path,'*')
     for f in fs:
         if not os.path.isdir(f):
-            D['.'].append(fname(f))
+            D['.'].append(f)#fname(f))
         else:
-            D[fname(f)] = files_to_dict(f,{})
+            D[fname(f)] = files_to_dict(f)
     return D
 
     

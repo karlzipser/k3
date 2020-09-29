@@ -1,8 +1,8 @@
 #,a
 def files_to_dict(path,D={}):
     D['.'] = []
-
     fs = sggo(path,'*')
+    #cy(fs,r=1)
     for f in fs:
         if not os.path.isdir(f):
             D['.'].append(f)#fname(f))
@@ -28,12 +28,18 @@ def files_to_dict2(path,D={},use_fname=False,ignore_underscore=True):
             D[fname(f)] = files_to_dict2(f,{},use_fname,ignore_underscore)
     return D
 
-def get_tree(p):
-  s = [style,button.replace('FILES_DIR',p),"<ul id='myUL'>"]
 
+def files_to_dict_(path):
+    D = {'.' : []}
+    fs = sggo(path,'*')
+    for f in fs:
+        if not os.path.isdir(f):
+            D['.'].append(f)#fname(f))
+        else:
+            D[fname(f)] = files_to_dict_(f)
+    return D
 
-
-p = 'k3'
+p = 'k3/utils/core'
 D = files_to_dict(opjh(p))
-zprint(D)
+kprint(D)
 #,b
