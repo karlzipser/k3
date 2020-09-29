@@ -1,5 +1,5 @@
 
-from k3.utils.misc.zprint import *
+from k3.utils.dict_.zprint import *
 from k3.utils.misc.sys import *
 from k3.utils.vis import *
 

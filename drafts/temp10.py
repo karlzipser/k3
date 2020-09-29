@@ -29,17 +29,17 @@ def files_to_dict2(path,D={},use_fname=False,ignore_underscore=True):
     return D
 
 
-def files_to_dict_(path):
+def files_to_dict(path):
     D = {'.' : []}
     fs = sggo(path,'*')
     for f in fs:
         if not os.path.isdir(f):
             D['.'].append(f)#fname(f))
         else:
-            D[fname(f)] = files_to_dict_(f)
+            D[fname(f)] = files_to_dict(f)
     return D
 
-p = 'k3/utils/core'
-D = files_to_dict(opjh(p))
-kprint(D)
+p = 'k3/utils/core/files'
+D = files_to_dict_(opjh(p))
+clear_screen();kprint(D)
 #,b
