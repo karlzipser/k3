@@ -1,5 +1,6 @@
 
 from k3 import *
+from urllib.parse import quote
 from urllib.parse import unquote
 from urllib.parse import urlencode
 
@@ -19,7 +20,7 @@ def urlparse(url):
     URL_args = {}
     a = url
     b = a.split('?')
-    path = b[0]
+    path = unquote(b[0])
     if len(b) > 1:
         c = b[-1]
         #cg(c)
@@ -29,9 +30,7 @@ def urlparse(url):
                 f = e.split('=')
                 #print(f)
                 f[1] = f[1].replace('+',' ')
-                f[1] = unquote(f[1])
-                #print(f[1])
-                URL_args[f[0]] = f[1]
+                URL_args[unquote(f[0])] = unquote(f[1])
     #if path[0] == '/':
     #    path = path[1:]
     return path,URL_args

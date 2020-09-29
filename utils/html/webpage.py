@@ -77,38 +77,39 @@ def handle_path_and_URL_args(p,URL_args):
         else:
             print("Can't save because URL_args['SaveCode'] contains html")
             #print(qtd(URL_args['SaveCode']))
-    try:
-        if p not in Imports:
-            Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
-            Imports[p+':time'] = time.time()
-            if verbose:
-                cb('imported',p)
-
-        if os.path.getmtime(p) > Imports[p+':time']:
-            importlib.reload( Imports[p] )
-            Imports[p+':time'] = time.time()
-            if verbose:
-                cb('reloaded',p)
-
+    if exname(p) == 'py':
         try:
-            Imports[p].Arguments
-            #zprint(Imports[p].Arguments,'Arguments: '+p)
+            if p not in Imports:
+                Imports[p] = importlib.import_module( opj(pname(p),fnamene(p)).replace('/','.') ) 
+                Imports[p+':time'] = time.time()
+                if verbose:
+                    cb('imported',p)
+
+            if os.path.getmtime(p) > Imports[p+':time']:
+                importlib.reload( Imports[p] )
+                Imports[p+':time'] = time.time()
+                if verbose:
+                    cb('reloaded',p)
+
+            try:
+                Imports[p].Arguments
+                #zprint(Imports[p].Arguments,'Arguments: '+p)
+            except:
+                pass#cb('p has no Arguments')
+            #Imports[p].main(**URL_args)
         except:
-            pass#cb('p has no Arguments')
-        #Imports[p].main(**URL_args)
-    except:
-        cr('Could not import',p)
+            cr('Could not import',p)
 
 H=(('&','&amp;'),('<','&lt;'),('>','&gt;'),('\"','&quot;'))
 
 def get_SubCode(url):
 
     SubCode = {
-        '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
-        '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
-        '---ACE-THEME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
+        '---ACE-AC E---':    opjk('utils/html/ace/ace.js'),
+        '---ACE-MO DE---':   opjk('utils/html/ace/mode-python.js'),
+        '---ACE-TH EME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
         '---WEBPAGE---':    opjk('utils/html/webpage.html'),
-        't--FIGURES---':    """<img src="/Pictures/Internet_dog.jpg" ;">""",
+        't--FIGURES---':    """<img src="/Pictures/Internet_dog.jpg" ;>""",
         't--SAVE-HIDDEN---': "",
         't--HTML-CODE-AREA---': "",
 
@@ -120,7 +121,7 @@ def get_SubCode(url):
     del path
     if p[0] == '/' and len(p) > 1:
         p = p[1:]
-
+    #cy(p)
     if not os.path.isfile(p):
         p_ = p
         p = opjk('utils/__init__.py').replace(opjh(),'')
@@ -132,24 +133,33 @@ def get_SubCode(url):
         URL_args,'',html=True,print_=False)
 
     try:
+
         if len(sggo(p)) == 1:
-            raw_code = file_to_text(p)
-            SubCode['t--EDITOR---'] = raw_code
-            if bool(BeautifulSoup(SubCode['t--EDITOR---'], "html.parser").find()):
-                
-                #SubCode['t--TEXTAREA---'] = "<!-- contains html -->\n"+SubCode['t--EDITOR---']
-                SubCode['t--EDITOR---'] = ""#html_warning
-                SubCode['t--SAVE-HIDDEN---'] = 'hidden'
-                #for k in H:
-                #    SubCode['t--EDITOR---'] = SubCode['t--EDITOR---'].replace(k,H[k])
-                SubCode['---ACE-ACE---'] = opjk('utils/html/ace/mode-python.js')
-                for h in H:
-                    k = h[0]
-                    Hk = h[1]
-                    raw_code = raw_code.replace(k,Hk)
-                text_to_file(opjD('raw.txt'),raw_code)
-                SubCode['t--HTML-CODE-AREA---'] =\
-                    """
+            from urllib.parse import quote
+            if exname(p) in IMAGE_EXTENSIONS:
+                SubCode['t--EDITOR---'] = \
+                    "<img src=\"/"+quote(p)+"\"; width=\"350\">"
+            elif exname(p) in ['pdf']:
+                SubCode['t--EDITOR---'] = \
+                    "<embed src=\"/"+quote(p)+"\"; width=\"350\">"
+            else:
+                raw_code = file_to_text(p)
+                SubCode['t--EDITOR---'] = raw_code
+                if bool(BeautifulSoup(SubCode['t--EDITOR---'], "html.parser").find()):
+                    
+                    #SubCode['t--TEXTAREA---'] = "<!-- contains html -->\n"+SubCode['t--EDITOR---']
+                    SubCode['t--EDITOR---'] = ""#html_warning
+                    SubCode['t--SAVE-HIDDEN---'] = 'hidden'
+                    #for k in H:
+                    #    SubCode['t--EDITOR---'] = SubCode['t--EDITOR---'].replace(k,H[k])
+                    SubCode['---ACE-ACE---'] = opjk('utils/html/ace/mode-python.js')
+                    for h in H:
+                        k = h[0]
+                        Hk = h[1]
+                        raw_code = raw_code.replace(k,Hk)
+                    text_to_file(opjD('raw.txt'),raw_code)
+                    SubCode['t--HTML-CODE-AREA---'] =\
+                        """
 <pre
     style="
         /*float:left;*/

@@ -68,6 +68,7 @@ def files_to_dict(
     path,
     ignore_underscore=True,
     require_extension=[],
+    ignore_extension=['pyc'],
     ignore=[],
     save_stats=False,
 ):
@@ -95,7 +96,8 @@ def files_to_dict(
             else:
                 f_ = f
             if not require_extension or exname(f) in require_extension:
-                D['.'].append(f_)
+                if not ignore_extension or exname(f) not in ignore_extension:
+                    D['.'].append(f_)
         else:
             D[fname(f)] =\
              files_to_dict(

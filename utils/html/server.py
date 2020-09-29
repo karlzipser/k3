@@ -28,8 +28,10 @@ class MyServer(BaseHTTPRequestHandler):
             mimetype='image/gif'
 
         if mimetype is not None:
+            from urllib.parse import unquote
             try:   
-                path_to_image = opjh(self.path)[1:]
+                path_to_image = unquote(opjh(self.path)[1:])
+                #cb(path_to_image)
                 statinfo = os.stat(path_to_image)
                 img_size = statinfo.st_size
                 self.send_response(200)
