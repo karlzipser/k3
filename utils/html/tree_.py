@@ -66,6 +66,11 @@ for (i = 0; i < toggler.length; i++) {
 
 button = """
 <form action="" autocomplete="off">
+
+
+<div class="autocomplete"> 
+<input id="myInput" type="text" name="myCountry" placeholder="Country">
+
   <label for="files_dir">Top Path</label>
   <input autocomplete="off" 
         style="font-size:14px;" type="text"
@@ -77,7 +82,14 @@ button = """
 </form>
 """
 
-
+"""
+<form autocomplete="off" action="/action_page.php">
+  <div class="autocomplete" style="width:300px;">
+    <input id="myInput" type="text" name="myCountry" placeholder="Country">
+  </div>
+  <input type="submit">
+</form>
+"""
 
 def get_tree(p):
 
