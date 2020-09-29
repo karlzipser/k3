@@ -63,11 +63,6 @@ def most_recent_file_in_folder(
 IMAGE_EXTENSIONS = ['jpg','jpeg','JPG','JPEG','png','PNG','tif','tiff','TIF','TIFF']
 
 
-    
-
-
-
-
 
 def files_to_dict(
     path,
