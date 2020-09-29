@@ -146,10 +146,26 @@ def interactive():
 
 
 
+def all_values(D):
+    def get_all_values(d):
+        #https://stackoverflow.com/questions/7002429/how-can-i-extract-all-values-from-a-dictionary-in-python
+        if isinstance(d, dict):
+            for v in d.values():
+                yield from get_all_values(v)
+        elif isinstance(d, list):
+            for v in d:
+                yield from get_all_values(v)
+        else:
+            yield d
+    return sorted(list(get_all_values(D)))
+
+
+
+
 REQUIRED = '__REQUIRED__'
 
 def kys(D):
-    return list(sorted(D.keys()))
+    return list(D.keys())
 
 
 def set_Defaults(Defaults,Dst,verbose=False):
