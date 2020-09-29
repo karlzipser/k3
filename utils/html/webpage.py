@@ -105,9 +105,9 @@ H=(('&','&amp;'),('<','&lt;'),('>','&gt;'),('\"','&quot;'))
 def get_SubCode(url):
 
     SubCode = {
-        '---ACE-AC E---':    opjk('utils/html/ace/ace.js'),
-        '---ACE-MO DE---':   opjk('utils/html/ace/mode-python.js'),
-        '---ACE-TH EME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
+        '---ACE-ACE---':    opjk('utils/html/ace/ace.js'),
+        '---ACE-MODE---':   opjk('utils/html/ace/mode-python.js'),
+        '---ACE-THEME---':  opjk('utils/html/ace/theme-iplastic.js'),#opjk('utils/html/ace/theme-iplastic.js'),#
         '---WEBPAGE---':    opjk('utils/html/webpage.html'),
         't--FIGURES---':    """<img src="/Pictures/Internet_dog.jpg" ;>""",
         't--SAVE-HIDDEN---': "",
@@ -139,6 +139,9 @@ def get_SubCode(url):
             if exname(p) in IMAGE_EXTENSIONS:
                 SubCode['t--EDITOR---'] = \
                     "<img src=\"/"+quote(p)+"\"; width=\"350\">"
+                SubCode['---ACE-ACE---'] = ''
+                SubCode['---ACE-THEME---'] = ''
+                SubCode['---ACE-MODE---'] = ''
             elif exname(p) in ['pdf']:
                 SubCode['t--EDITOR---'] = \
                     "<embed src=\"/"+quote(p)+"\"; width=\"350\">"

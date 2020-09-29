@@ -271,16 +271,15 @@ def _post_process(Din,use_line_numbers,use_color):
 #def type_to_str(a):
 #    return str(type(a)).split("'")[-2]
 
-Arguments = get_Arguments(
-        Defaults={
+_Arguments = {
             'no-banner':'not relevant',
             'use_color':1,
             'use_line_numbers':1,
             'path':None,
             'html':False,
             'do_print':1,
-        },
-)
+        }
+
 
 
 
@@ -343,7 +342,7 @@ def main(**A):
         )
 
 if __name__ == '__main__':
-    main()
+    main(get_Arguments(_Arguments))
 
 #EOF
 
