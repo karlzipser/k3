@@ -10,6 +10,7 @@ def main(**A):
     
 def bordered(text):
     # https://stackoverflow.com/questions/20756516/python-create-a-text-border-with-dynamic-size
+    text = str(text)
     lines = text.splitlines()
     width = max(len(s) for s in lines)
     res = ['┌' + '─' * width + '┐']
@@ -18,8 +19,25 @@ def bordered(text):
     res.append('└' + '─' * width + '┘')
     return '\n'.join(res)
 
-    
-def print_dic_simple(D,title='',do_print=True,html=False,print_=True):
+
+
+def boxed(text,title=''):
+    text = str(text)
+    lines = text.splitlines()
+    width = max(max(len(s) for s in lines),len(title)+1)
+    #res = ['┌' + '─' * width + '┐']
+    top = '┌' + '─' + title
+    top += (width-len(top)+1) * '─' + '┐'
+    res = [top]
+    for s in lines:
+        res.append('│' + (s + ' ' * width)[:width] + '│')
+    res.append('└' + '─' * width + '┘')
+    return '\n'.join(res)
+  
+def box(text,title=''):
+    print(boxed(text,title))
+  
+def print_dic_simple(D,title='',html=False,print_=True):
     el = '\n'
     if html:
         el +=''
@@ -278,6 +296,7 @@ def args_to_dict(s):
 
     return U
 
+a2d = args_to_dict
 
 
 def get_Arguments(Defaults={},argstr=None):

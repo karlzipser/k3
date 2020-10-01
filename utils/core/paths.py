@@ -71,6 +71,18 @@ def pname(path):
     return '/'.join(  path.split('/')[:-1]  )
 pn = pname
 
+import importlib
+def get_import_str(ps,I):
+    s = ''
+    for p in ps:
+        m = p.replace('/','.').replace('.py','')
+        I[p] = importlib.import_module(m)
+        if os.path.getmtime(p) > os.path.getmtime(__file__):
+            print('reloading',p)
+            importlib.reload(I[p])
+        f = fnamene(p)
+        s += f +" = I['"+p+"'].main\n"
+    return s
 
 if __name__ == '__main__':
     print(" :^)")

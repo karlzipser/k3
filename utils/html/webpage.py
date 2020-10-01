@@ -92,7 +92,7 @@ def handle_path_and_URL_args(p,URL_args):
                     cb('reloaded',p)
 
             try:
-                Imports[p].Arguments
+                Imports[p]._Arguments
                 #zprint(Imports[p].Arguments,'Arguments: '+p)
             except:
                 pass#cb('p has no Arguments')
