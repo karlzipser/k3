@@ -1,24 +1,15 @@
 from k3 import *
 
-_Arguments = {
-    'a':0,
-    'b':0,
-    'pn':False,
-}
+_Arguments = a2d(' -a 0 -b 0 ')
 
 def main(**A):
-    pn = A['pn']
-    if pn == 'False':
-        pn = False
-    if pn: eg(__file__)
-    if pn: print_dic_simple(A)
     c = float(A['a']) + float(A['b'])
-    if pn: print(c,'\n')
-    return c
+    return {
+        'out':c,
+    }
    
    
 if __name__ == '__main__':
-    print(" :^)")
-    main(**get_Arguments(_Arguments))
+    zprint( main(**get_Arguments(_Arguments)), t=__file__ )
 #EOF
   
