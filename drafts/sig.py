@@ -1,7 +1,7 @@
 from k3 import *
 
 def sigma(m):
-    P = Percent('sigma('+str(m)+')')
+    P = Percent('calling sigma( '+str(m)+' )')
     timer = Timer(1)
     q = 0
     for n in range(1,m+1):
