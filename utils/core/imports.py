@@ -24,6 +24,7 @@ imports = (
     'math',
     'pickle',
     'time',
+    'importlib',
     ('FROM','pprint','pprint'),
     ('FROM','termcolor','cprint'),
     ('FROM','collections','namedtuple'),
