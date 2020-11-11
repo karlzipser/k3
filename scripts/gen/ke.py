@@ -24,7 +24,6 @@ def ke(
 
 
 if __name__ == '__main__':
-
     ke(**A)
 
 #EOF

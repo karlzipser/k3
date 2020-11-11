@@ -11,6 +11,7 @@ def backup_folder(
     os.system('mkdir -p ' + dst)
     os.system(d2s("rsync -ravL --exclude '*.pyc' --exclude '*.pkl'", src, dst))
 
-backup_folder()
+if __name__ == '__main__':
+    backup_folder()
 
 #EOF
