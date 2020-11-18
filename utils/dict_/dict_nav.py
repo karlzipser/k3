@@ -122,13 +122,16 @@ def navigate(D,oD,name,Arguments):
 
             if m.groups()[0] == 'q':
                 close_Finder_windows()
-                quit_Preview()
+                if preview_on:
+                    quit_Preview()
+                    preview_on = False
                 break
 
             elif m.groups()[0] == 'c':
                 close_Finder_windows()
-                quit_Preview()
-                preview_on = False
+                if preview_on:
+                    quit_Preview()
+                    preview_on = False
 
             elif m and m.groups()[0] == 'm':
                 cr(m.groups()[1], str_is_int(m.groups()[1]))
@@ -217,10 +220,16 @@ def navigate(D,oD,name,Arguments):
                                     #    qP = False
 
                                     os_system('open',n)
-                                    if not preview_on:
-                                        time.sleep(0.5) # let Preivew start up
-                                    os_system("""osascript -e 'tell application "Preview" to set bounds of front window to """+bounds_str+"""' """,e=0)
-                                    preview_on = True
+                                    if exname(e.lower()) in [
+                                        'jpg','jpeg',
+                                        'png',
+                                        'gif','giff',
+                                        'tiff','tif',
+                                    ]:
+                                        if not preview_on:
+                                            time.sleep(0.5) # let Preivew start up
+                                        os_system("""osascript -e 'tell application "Preview" to set bounds of front window to """+bounds_str+"""' """,e=0)
+                                        preview_on = True
                                 else:
                                     if exname(e) != 'pyc':
                                         cr(

@@ -137,14 +137,6 @@ def _get_j_and_W(
                 if len(only_keys) > 0:
                     if k not in only_keys:
                         continue
-                """
-                if type(item[k]) in [dict,list]:
-                    l = len(item[k])
-                else:
-                    l = 1
-                """
-                #if type(item[k]) is dict and len(item[k]) == 0:
-                #    item[k] = 'empty'
 
                 j,_ = _get_j_and_W(
                     item[k],
@@ -168,7 +160,7 @@ def _get_j_and_W(
                     break
     else:
         pass
-    #print(_W)
+
     return j,_W
 
 
@@ -240,7 +232,6 @@ def _post_process(Din,use_line_numbers,use_color):
 
     for i in sorted(kys(D),reverse=False):
         if len(D[i]):
-            #print(D[i][-1])
             if leaf in str(D[i][-1]):
                 D[i][-1] = D[i][-1].replace(leaf,'')
                 continue
