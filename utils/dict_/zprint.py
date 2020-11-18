@@ -18,6 +18,7 @@ def zprint(
     max_items=999999,
     max_depth=999999,
     do_return = False,
+    do_fname = False,
 ):
 
     if True:#type(Dictionary) is not dict:
@@ -27,7 +28,7 @@ def zprint(
             n = d2n('<',type(Dictionary).__name__,'>')
         Dictionary = {n:Dictionary}
 
-    V = _preprocess( copy.deepcopy(Dictionary), use_color )
+    V = _preprocess( copy.deepcopy(Dictionary), use_color, do_fname )
 
     _,D = _get_j_and_W(
         copy.deepcopy(V),
@@ -172,7 +173,7 @@ def _get_j_and_W(
 
 
 
-def _preprocess(Q,use_color):
+def _preprocess(Q,use_color,do_fname):
 
     for k in kys(Q):
 
@@ -183,7 +184,7 @@ def _preprocess(Q,use_color):
             Q[k] = D
 
         if type(Q[k]) is dict:
-            Q[k] = _preprocess(Q[k],use_color)
+            Q[k] = _preprocess(Q[k],use_color,do_fname)
 
         elif type(Q[k]) is None:
             pass
@@ -193,7 +194,10 @@ def _preprocess(Q,use_color):
                 if is_number(Q[k]):
                     s = cf(Q[k],'`g-b')
                 elif type(Q[k]) is str:
-                    s = cf(Q[k],'`y-b')
+                    qk = Q[k]
+                    if do_fname:
+                        qk = fname(qk)
+                    s = cf(qk,'`y-b')
                 else:
                     s = cf(Q[k],'`b-b')
             else:

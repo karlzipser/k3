@@ -1,4 +1,4 @@
-from k3.utils.dict.zprint import *
+from k3.utils.dict_.zprint import *
 
 
 def dict_access(D,name):
@@ -27,12 +27,13 @@ def dict_access(D,name):
         Meta=D['__meta__'],
         name=name,
         getdict=False,
+        do_fname=False,
     ):
 
         if getdict:
             return D
             
-        def _zprint(z=0,p=None,D=None,t=None,do_return=0,do_print=1):
+        def _zprint(z=0,p=None,D=None,t=None,do_return=0,do_print=1,do_fname=do_fname):
             if z:
                 if t is None:
                     t = p
@@ -46,6 +47,7 @@ def dict_access(D,name):
                         max_depth=Meta['max_depth']+1,
                         do_return=do_return,
                         do_print=do_print,
+                        do_fname=do_fname,
                         ignore_keys=Meta['ignore_keys'],
                         ignore_underscore=Meta['ignore_underscore'],
                         )
@@ -85,7 +87,8 @@ def dict_access(D,name):
                 p=None,
                 D=o( Meta['menu_path'] ),
                 do_return=1,
-                do_print=0
+                do_print=0,
+                do_fname=do_fname,
             )
 
             dpath_prev = None

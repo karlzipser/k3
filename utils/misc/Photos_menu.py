@@ -24,21 +24,21 @@ def find_folder_with_list_of_images(D):
 top = opjD('Photos/all')
 
 
-def open_imgs_with_Preview(l):
+def _open_imgs_with_Preview(l):
     if type(l) is str:
         l = [l]
     for f in l:
         os_system('open',qtd(f))
 
-def quit_Preview():
+def _quit_Preview():
     os_system(""" osascript -e 'quit app "Preview"' """)
     return
 
-def close_Finder_windows():
+def _close_Finder_windows():
     os_system(""" osascript -e 'tell application "Finder" to close every window' """)
     return
 
-def open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
+def _open_imgs_with_Preview_action(f,Args=None,MiniMenu=None):
     keylist = Args['keylist']
     top = Args['top']
     True
