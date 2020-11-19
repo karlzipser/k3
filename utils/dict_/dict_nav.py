@@ -1,6 +1,7 @@
 
 from k3.utils.core import *
 from k3.utils.dict_.dict_access import *
+from k3.utils.dict_.mini_menu import *
 from k3.utils.misc.sys import *
 from k3.utils.misc.osx import *
 
@@ -98,14 +99,6 @@ def navigate(D,oD,name,Arguments):
 
     U = {}
 
-
-    bounds_str = '{'+d2c(
-        Arguments['preview_x'],
-        Arguments['preview_y'],
-        Arguments['preview_y']+Arguments['preview_w'],
-        Arguments['preview_x']+Arguments['preview_h'],
-        ) + '}'
-
     preview_on = False
 
     while True:
@@ -114,9 +107,19 @@ def navigate(D,oD,name,Arguments):
 
         c = input('-> ')
 
+        if c in ['',None]:
+            continue
+
         cc = '-'
         
-        m = re.match( r'^\s*([a-z]+)\s*(\d*)$', c)
+        bounds_str = '{'+d2c(
+            Arguments['preview_x'],
+            Arguments['preview_y'],
+            Arguments['preview_y']+Arguments['preview_w'],
+            Arguments['preview_x']+Arguments['preview_h'],
+            ) + '}'
+
+        m = re.match( r'^\s*([a-zA-Z]+)\s*(\d*)$', c)
 
         if m:
 
@@ -126,6 +129,10 @@ def navigate(D,oD,name,Arguments):
                     quit_Preview()
                     preview_on = False
                 break
+
+            elif m.groups()[0] == 'M':
+                #cr(1,r=1)
+                mini_menu(Arguments)
 
             elif m.groups()[0] == 'c':
                 close_Finder_windows()
@@ -178,14 +185,14 @@ def navigate(D,oD,name,Arguments):
                     oDp = oD(p)
 
                     if type(oDp) is dict:
-                        cm('dict')
+                        #cm('dict')
                         oDp_show = '{...}'
                         if True:#len(m.groups()[1]) > 0:
                             if not flag:#if m.groups()[1] == 'o': # may use flag instead
                                 os_system('open',qtd(name+'/'+p)) # may need to change as for images
 
                     elif type(oDp) is list:
-                        cm('list')
+                        #cm('list')
                         oDp_show = '' # '[...]'
                         if True:#len(m.groups()[1]) > 0:
                             #if m.groups()[1] == 'o':
@@ -202,7 +209,7 @@ def navigate(D,oD,name,Arguments):
 
                             for j in rng:
                                 e = oDp[j]
-                                cy(name,p,e)
+                                #cy(name,p,e)
                                 #n = qtd(name+'/'+p+e)
                                 n = qtd(e) # this may have to do with symbolic links
                                 #cg(qtd(exname(e.lower())))
@@ -248,10 +255,10 @@ def navigate(D,oD,name,Arguments):
                     
                     if U[i]['lst_indx'] is None:
                         out_ = p + oDp_show
-                        cy('out:',out_)
+                        #cy('out:',out_)
                     else:
                         out_ = p+str(oDp[U[i]['lst_indx']])
-                        cg('out:',out_)
+                        #cg('out:',out_)
 
 
 
