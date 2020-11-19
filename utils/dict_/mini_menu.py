@@ -55,7 +55,7 @@ def mini_menu(A,clear=True,menu_name='MINI MEUNU'):
             if clear:
                 clear_screen()
 
-            clp(menu_name,'`w-bu','(ctr-C to exit)','`w-d')
+            clp(menu_name,'(ctr-C to exit)','`ybb')
 
             ks = sorted(kys(A))
             for i in rlen(ks):
@@ -74,7 +74,7 @@ def mini_menu(A,clear=True,menu_name='MINI MEUNU'):
                 else:
                     s = '<other>'
 
-                clp(d2n(i,') ',k,' ='),'`w--',s,'`w-b')
+                clp(str(i)+')',k,'=',s,'`wb')
 
             n = input_int_in_range(0,len(ks),'# ? ')
 
