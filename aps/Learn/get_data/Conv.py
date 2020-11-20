@@ -5,14 +5,16 @@ from k3 import *
 
 #from kzpy3.Learn.get_data.runs import All_runs
 
-from k3.Learn.get_data.runs import All_runs
+from k3.aps.Learn.get_data.runs import All_runs
 
 def setup(P):
 
     Runs = {}
 
     for path in sggo(opjD('Data/outer_contours/rotated2','*.h5py')):
+        #cm(path,r=1)
         r = fname(path).split('.')[0]
+        #cm(r,All_runs,r=1)
         if r in All_runs[P['runs']]:
             if os.path.getsize(path) > 0:
                 if time.time() - os.path.getmtime(path) > 60:
@@ -38,6 +40,7 @@ def setup(P):
     for r in list(Runs.keys()):
 
         H = find_files_recursively(opjD('Data'),r,DIRS_ONLY=True)
+        zprint(H,r=0)
 
         if len(H['paths']) == 0:
             cr(r,'not found.')

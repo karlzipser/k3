@@ -1,11 +1,8 @@
-
-
 from k3 import *
-import k3.Learn.networks as networks_net
-
+import k3.aps.Learn.networks.net as networks_net
 
 def Net_Main(M=False,sys_str=False,Arguments_=False,P_Runs_saved=None):
-    #cm(0,ra=1)
+
     D = {}
 
     P = {
@@ -61,8 +58,8 @@ def Net_Main(M=False,sys_str=False,Arguments_=False,P_Runs_saved=None):
             P[k] = [P[k]]
 
     assert P['type'][0] == 'Conv'
-    from k3.Learn.get_data.Conv import get_data_function
-    import k3.Learn.get_data.Conv as get_data_Conv
+    from k3.aps.Learn.get_data.Conv import get_data_function
+    import k3.aps.Learn.get_data.Conv as get_data_Conv
     if type(P_Runs_saved) != type(None):
         P['Runs'] = P_Runs_saved['Runs']
         P['good_list'] = P_Runs_saved['good_list']
@@ -70,8 +67,8 @@ def Net_Main(M=False,sys_str=False,Arguments_=False,P_Runs_saved=None):
     else:
         get_data_Conv.setup(P)
 
-    from k3.Learn.graphics.Conv import graphics_function
-    import k3.Learn.networks.Conv as networks_Conv
+    from k3.aps.Learn.graphics.Conv import graphics_function
+    import k3.aps.Learn.networks.Conv as networks_Conv
     Network = networks_Conv.MyConv
 
     P['NETWORK_OUTPUT_FOLDER'] = opjD(
@@ -79,15 +76,6 @@ def Net_Main(M=False,sys_str=False,Arguments_=False,P_Runs_saved=None):
         d2n(
             '.'.join(P['type'])
         ))
-
-    """
-    M['load']()
-
-    for k in list(M['Q']['runtime_parameters'].keys()):
-        P['runtime_parameters'][k] = M['Q']['runtime_parameters'][k]
-    """
-
-
 
     Data = networks_net.make_batch( get_data_function, P, P['batch_size'] )
     Duplicates = {}
@@ -99,9 +87,6 @@ def Net_Main(M=False,sys_str=False,Arguments_=False,P_Runs_saved=None):
     P['NUM_METADATA_CHANNELS'] = 10
     P['INPUT_WIDTH'] = shape(Data['input'])[2]
     P['INPUT_HEIGHT'] = shape(Data['input'])[3]
-    #cm(shape(Data['target']),ra=0)
-    #cm(shape(Data['target'])[1],ra=0)
-    #cm(P['NUM_OUTPUTS'],ra=1)
 
     N = Network(P)
 
@@ -112,25 +97,6 @@ def Net_Main(M=False,sys_str=False,Arguments_=False,P_Runs_saved=None):
     D['Duplicates'] = Duplicates
 
     return D
-
-
-if False:
-    conv0_model_path = 'Desktop/Networks/Conv.Fire3.conv0/weights/net_31May20_15h12m30s.3.7331793.cuda.infer'
-    s0 = torch.load(conv0_model_path)
-    net0 = s0['net']
-
-    conv1_model_path = 'Desktop/Networks/Conv.Fire3.conv1/weights/net_31May20_16h06m13s.no_losses.cuda.infer'
-    s1 = torch.load(conv1_model_path)
-    net1 = s1['net']
-
-    for k in list(net0.keys()):
-        if 'final_conv' not in k:
-            print(k)
-            net1[k] = net0[k]
-    weights = {'net':net1}
-    torch.save(weights,opj('Desktop/Networks/Conv.Fire3.conv1/weights/','transfered_from_conv0.cuda.infer'))
-
-
 
 
 #EOF

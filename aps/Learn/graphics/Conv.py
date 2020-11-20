@@ -148,7 +148,7 @@ def graphics_function(N,M,P):#,X):
 
     global graphics_timer
 
-
+    
 
     
     if graphics_timer == None:
@@ -159,8 +159,8 @@ def graphics_function(N,M,P):#,X):
 
 
     if k_in_D('save_output_2',P):
-
-        cm(P['ctr'])
+        #cm(1,r=1)
+        cb(P['ctr'])
 
         
         output_2 = N.extract('output_2')
@@ -187,7 +187,7 @@ def graphics_function(N,M,P):#,X):
         return
         #graphics_timer.trigger()
 
-
+    #cm(2,r=1)
 
 
 
@@ -206,17 +206,18 @@ def graphics_function(N,M,P):#,X):
         else:
             cg('done saving figures')
             sys.exit(0)
-
+    #cm(3,r=1)
     if graphics_timer.check() or M['Q']['runtime_parameters']['graphics_timer_time'] < 0:
         if M['Q']['runtime_parameters']['graphics_timer_time'] == -2:
             raw_enter()
-        M['load']()
+        if False:
+            M['load']()
         graphics_timer = Timer(M['Q']['runtime_parameters']['graphics_timer_time'])
     else:
         return
 
     title_name = title='.'.join(P['type'])
-
+    #cm(4,r=1)
     if True:
         
         figure(P['type'][-1],figsize=(2,10))
@@ -246,7 +247,7 @@ def graphics_function(N,M,P):#,X):
                 mn,
                 mx,
             )
-
+    #cm(5,r=1)
     Imgs = {}
     img_lst = []
     img_spacer = False
@@ -277,7 +278,7 @@ def graphics_function(N,M,P):#,X):
 
                 img_lst.append(img)
 
-
+    #cm(6,r=1)
     output_2 = N.extract('output_2')
     target = N.extract('target')
     meta = N.extract('meta')
@@ -286,10 +287,10 @@ def graphics_function(N,M,P):#,X):
     plot(output_2,'r.')
     plot(target,'k.')
 
-
+    #cm(7,r=1)
     if 'mapping1':
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(target)
-
+        #cm(8,r=1)
         figure('map');clf()
 
         plot_map(
@@ -324,7 +325,7 @@ def graphics_function(N,M,P):#,X):
 
 
 
-        import kzpy3.Array.fit3d as fit3d
+        import k3.misc.fit3d as fit3d
 
         im = N.extract('input')
         im = z55(im.transpose(2,1,0))

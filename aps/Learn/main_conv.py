@@ -1,17 +1,34 @@
 from k3 import *
 a=get_Arguments
-import k3.Learn.networks.net as networks_net
+import k3.aps.Learn.networks.net as networks_net
 """
 import Menu.main
 """
-from k3.Learn.net_main_conv import Net_Main
+from k3.aps.Learn.net_main_conv import Net_Main
 
 USE_DISCRIMINATOR = False
 
 """
 M = Menu.main.start_Dic(dic_project_path=pname(opjh(__file__)))
 """
-M = False
+M = {'Q':{
+    'runtime_parameters':{
+        'graphics_timer_time':5,
+        'abort':'_toggle',
+        'graphics_ylim':[], #[0,0.1],
+        'meo_num':8,
+        'data_from_run':'no',#tegra-ubuntu_01Nov18_13h46m55s
+        'data_from_ctr':-1,
+        'data_from_flip':-1,
+        'step':5,
+        'ctr_reset':'_toggle',
+        'save_images':False,
+        'scale':2.0,
+        'percent_loss_to_show':100,
+        'loss_stds':8.0,
+        'show_graphics':True,
+    },
+}}
 # python kzpy3/Learn/main_conv.py --main 6 --net_str conv1
 # python kzpy3/Learn/main_conv.py --main 6 --net_str conv0
 # python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run Mr_Black_24Sep18_18h52m26s
@@ -134,7 +151,8 @@ def main6():
     run_timer = Timer()
     freq_timer = Timer(30)
 
-    Abort = Toggler()
+    if False:
+        Abort = Toggler()
 
     wait_timer = Timer(5)
 
@@ -153,9 +171,9 @@ def main6():
 
     while True:
 
-        M['load']()
+        if False: M['load']()
 
-        if Abort['test'](M['Q']['runtime_parameters']['abort']):
+        if False and Abort['test'](M['Q']['runtime_parameters']['abort']):
             break
 
         if False:#minute_timer.check():
@@ -170,8 +188,9 @@ def main6():
         GENERATOR = Nets[n]['N']
         Nets[n]['P']['original_Fire3_scaling'] = True
 
-        for k in list(M['Q']['runtime_parameters'].keys()):
-            Nets[n]['P']['runtime_parameters'][k] = M['Q']['runtime_parameters'][k]
+        if True:
+            for k in list(M['Q']['runtime_parameters'].keys()):
+                Nets[n]['P']['runtime_parameters'][k] = M['Q']['runtime_parameters'][k]
 
         Data = networks_net.make_batch( Nets[n]['get_data_function'], Nets[n]['P'], Nets[n]['P']['batch_size'] )
 
