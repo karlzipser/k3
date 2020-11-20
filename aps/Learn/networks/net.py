@@ -23,6 +23,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.A = {}
         self.lr = P['LR']
+        print('net.py::self.lr =',self.lr)
         if self.lr > 0 and P['runs'] == 'validate':
             self.lr = 0
             clp('Warning, LR > 0 for validate runs. LR set to zero!','`wrb',p=3)
@@ -148,7 +149,8 @@ class Net(nn.Module):
         clp(opj(self.NETWORK_OUTPUT_FOLDER,'weights'))
         f = most_recent_file_in_folder(opj(self.NETWORK_OUTPUT_FOLDER,'weights'),['.infer'],[])
         clp('Resuming with','`','',f,'','`--rb'); time.sleep(1)
-        save_data = torch.load(f)
+        device = torch.device('cpu')
+        save_data = torch.load(f, map_location=device)
         self.load_state_dict(save_data['net'])
         if not self.reset_loss:
             f = most_recent_file_in_folder(opj(self.NETWORK_OUTPUT_FOLDER,'loss'),['.loss_avg.pkl'],[])

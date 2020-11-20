@@ -29,22 +29,11 @@ M = {'Q':{
         'show_graphics':True,
     },
 }}
-# python kzpy3/Learn/main_conv.py --main 6 --net_str conv1
-# python kzpy3/Learn/main_conv.py --main 6 --net_str conv0
-# python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run Mr_Black_24Sep18_18h52m26s
-
 
 """
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run tegra-ubuntu_07Oct18_18h24m28s
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run tegra-ubuntu_25Oct18_10h21m55s
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run tegra-ubuntu_17Oct18_12h11m22s
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run tegra-ubuntu_12Oct18_11h11m30s
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run Mr_Black_24Sep18_18h52m26s
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run tegra-ubuntu_12Nov18_20h56m16s
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run tegra-ubuntu_01Nov18_13h46m55s
-python kzpy3/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 True --batch_size 1 --save_timer_time 999999 --LR 0 --runs validate --single_run tegra-ubuntu_25Oct18_15h43m36s
-
 stat -c %Y kzpy3/.git/FETCH_HEAD
+
+python k3/aps/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 0 --batch_size 1 --save_timer_time 999999 --runs train  --manual_input0 0 --GPU -1 --resume 0 --graphics_timer_time 0 --backwards 0
 """
 
 
