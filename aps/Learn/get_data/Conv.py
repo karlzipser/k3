@@ -35,7 +35,7 @@ def setup(P):
     if 'save_output_2' in P and P['save_output_2']:
         P['output_2_data'] = {}
 
-   
+    #zprint(Runs,r=1)
 
     for r in list(Runs.keys()):
 
@@ -53,6 +53,7 @@ def setup(P):
 
 
         good_indicies_file = opjD('Data/outer_contours','good_indicies.'+P['runs']+'.pkl')
+        #cm(good_indicies_file,r=1)
         if len(sggo(good_indicies_file)) == 0:
             for i in rlen(Runs[r]['rotated']['valid']):
                 if Runs[r]['rotated']['valid'][i]:
@@ -238,11 +239,16 @@ def get_data_function(P):
 
     meta_turns = meta_blank.copy()
 
+    P['turns_zeroed'] = True
+    cm("P['turns_zeroed'] = True, Conv.py line 249")
+
     if k_in_D('manual_input0',P):
         meta_turns += 2
         for i in range(22):#i_v:
             meta_turns[0,:,i] = i_v
         #clp(meta_turns,r=1)
+
+
 
     elif not k_in_D('turns_zeroed',P):
         turns = Runs[r]['rotated']['turns'][ctr][:]

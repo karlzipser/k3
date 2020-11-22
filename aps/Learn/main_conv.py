@@ -34,6 +34,25 @@ M = {'Q':{
 stat -c %Y kzpy3/.git/FETCH_HEAD
 
 python k3/aps/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 0 --batch_size 1 --save_timer_time 999999 --runs train  --manual_input0 0 --GPU -1 --resume 0 --graphics_timer_time 0 --backwards 0
+
+# 11/22/2020
+
+python k3/aps/Learn/main_conv.py\
+     --main 6\
+     --net_str conv1\
+     --save_output_2 0\
+     --batch_size 1\
+     --save_timer_time 999999\
+     --LR 0\
+     --runs validate\
+     --manual_input0 0\
+     --GPU -1\
+     --resume 1\
+     --graphics_timer_time 0\
+     --backwards 0\
+     --resume 1
+
+
 """
 
 
