@@ -4,7 +4,7 @@ project_path = pname(opjh(__file__))
 
 Q = {
     'runtime_parameters':{
-        'graphics_timer_time':5,
+        'graphics_timer_time':-1,
         'abort':'_toggle',
         'graphics_ylim':[], #[0,0.1],
         'meo_num':8,

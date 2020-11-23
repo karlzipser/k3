@@ -195,7 +195,10 @@ def graphics_function(N,M,P):#,X):
     if graphics_timer.time_s != M['Q']['runtime_parameters']['graphics_timer_time']:
         graphics_timer.trigger()
 
-    if 'save_figures' in P:
+
+    time_string = d2p(P['run'],P['ctr']) ## removed from if below
+
+    if False:#'save_figures' in P:
         if P['save_figures'] > 0:
             cb("P['save_figures'] =",P['save_figures'])
             time_string = d2p(P['run'],P['ctr'])
@@ -207,7 +210,9 @@ def graphics_function(N,M,P):#,X):
             cg('done saving figures')
             sys.exit(0)
     #cm(3,r=1)
+    #cm(M['Q']['runtime_parameters']['graphics_timer_time'])
     if graphics_timer.check() or M['Q']['runtime_parameters']['graphics_timer_time'] < 0:
+        #cm('here')
         if M['Q']['runtime_parameters']['graphics_timer_time'] == -2:
             raw_enter()
         if False:
@@ -218,7 +223,7 @@ def graphics_function(N,M,P):#,X):
 
     title_name = title='.'.join(P['type'])
     #cm(4,r=1)
-    if True:
+    if False:
         
         figure(P['type'][-1],figsize=(2,10))
         clf()
@@ -283,42 +288,47 @@ def graphics_function(N,M,P):#,X):
     target = N.extract('target')
     meta = N.extract('meta')
 
-    figure('target-output',figsize=(4,3));clf();
-    plot(output_2,'r.')
-    plot(target,'k.')
+    if False:
+        figure('target-output',figsize=(4,3));clf();
+        plot(output_2,'r.')
+        plot(target,'k.')
 
     #cm(7,r=1)
+
     if 'mapping1':
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(target)
         #cm(8,r=1)
-        figure('map');clf()
 
-        plot_map(
-            outer_countours_rotated_left,
-            outer_countours_rotated_right,
-            angles_left,
-            angles_right,
-            color='k',
-            name='map',
-            e=e,
-            grid=True,
-        )
+        if False:
+            figure('map');clf()
+
+            plot_map(
+                outer_countours_rotated_left,
+                outer_countours_rotated_right,
+                angles_left,
+                angles_right,
+                color='k',
+                name='map',
+                e=e,
+                grid=True,
+            )
 
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(output_2)
 
-        plot_map(
-            outer_countours_rotated_left,
-            outer_countours_rotated_right,
-            angles_left,
-            angles_right,
-            color='b',
-            name='map',
-            e=e,
-            grid=False,
-        )
+        if False:
+            plot_map(
+                outer_countours_rotated_left,
+                outer_countours_rotated_right,
+                angles_left,
+                angles_right,
+                color='b',
+                name='map',
+                e=e,
+                grid=False,
+            )
 
-        if k_in_D('save_figures',P):
-            plt.savefig(opj(fig_path,d2p(time_string,'map','pdf')),format='pdf')
+            if k_in_D('save_figures',P):
+                plt.savefig(opj(fig_path,d2p(time_string,'map','pdf')),format='pdf')
 
 
 
@@ -330,8 +340,9 @@ def graphics_function(N,M,P):#,X):
         im = N.extract('input')
         im = z55(im.transpose(2,1,0))
 
-        for data,name in ((output_2,'output_2'),(target,'target')):
-
+        #for data,name in ((output_2,'output_2')):#,(target,'target')):
+        data,name = output_2,'output_2'
+        if True:
             outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(data)
             figname = 'map3d-'+name
             figure(figname);clf()
@@ -361,56 +372,60 @@ def graphics_function(N,M,P):#,X):
                 except:
                     clp('Exception, shape(c) =',shape(c),'`wrb')
 
-            if k_in_D('save_figures',P):
-                plt.savefig(opj(fig_path,d2p(time_string,figname,'pdf')),format='pdf')
+            if k_in_D('save_figures2',P):
+                fmt = 'pdf' 
+                if type(P['save_figures2']) is str:
+                    fmt = P['save_figures2']                    
+                plt.savefig(opj(fig_path,d2p(time_string,figname,fmt)),format=fmt)
 
 
 
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(target)
 
-        figure('map target');clf()
+        if False:
+            figure('map target');clf()
 
-        plot_map(
-            outer_countours_rotated_left,
-            outer_countours_rotated_right,
-            angles_left,
-            angles_right,
-            color='k',
-            name='map target',
-            e=e,
-            #x_offset=-0,
-        )
+            plot_map(
+                outer_countours_rotated_left,
+                outer_countours_rotated_right,
+                angles_left,
+                angles_right,
+                color='k',
+                name='map target',
+                e=e,
+                #x_offset=-0,
+            )
 
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(output_2)
 
 
+        if False:
+            figure('map output_2');clf()
 
-        figure('map output_2');clf()
-
-        plot_map(
-            outer_countours_rotated_left,
-            outer_countours_rotated_right,
-            angles_left,
-            angles_right,
-            color='b',
-            name='map output_2',
-            e=e,
-            #x_offset=0,
-        )
-        cg(P['ctr'])
-        if k_in_D('save_figures',P):
-            plt.savefig(opj(fig_path,d2p(time_string,'map_output_2','pdf')),format='pdf')
-
-
+            plot_map(
+                outer_countours_rotated_left,
+                outer_countours_rotated_right,
+                angles_left,
+                angles_right,
+                color='b',
+                name='map output_2',
+                e=e,
+                #x_offset=0,
+            )
+            cg(P['ctr'])
+            if k_in_D('save_figures',P):
+                plt.savefig(opj(fig_path,d2p(time_string,'map_output_2','pdf')),format='pdf')
 
 
 
 
-    figure('meta',figsize=(3,3))
-    meta[4,0,0] = 1
-    meta[4,0,1] = 2
-    meta[4,0,2] = 3
-    mi(meta[4,:,:],'meta')
+
+    if False:
+        figure('meta',figsize=(3,3))
+        meta[4,0,0] = 1
+        meta[4,0,1] = 2
+        meta[4,0,2] = 3
+        mi(meta[4,:,:],'meta')
 
     if False:
         meta = N.extract('meta')

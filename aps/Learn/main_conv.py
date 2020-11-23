@@ -13,7 +13,7 @@ M = Menu.main.start_Dic(dic_project_path=pname(opjh(__file__)))
 """
 M = {'Q':{
     'runtime_parameters':{
-        'graphics_timer_time':5,
+        'graphics_timer_time':-1,
         'abort':'_toggle',
         'graphics_ylim':[], #[0,0.1],
         'meo_num':8,
@@ -50,8 +50,9 @@ python k3/aps/Learn/main_conv.py\
      --resume 1\
      --graphics_timer_time 0\
      --backwards 0\
-     --resume 1
-
+     --resume 1\
+     --single_run direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow\
+     --save_figures2 jpeg\
 
 """
 
