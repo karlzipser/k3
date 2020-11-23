@@ -27,6 +27,9 @@ M = {'Q':{
         'percent_loss_to_show':100,
         'loss_stds':8.0,
         'show_graphics':True,
+
+
+ 
     },
 }}
 
@@ -38,22 +41,23 @@ python k3/aps/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 0 --b
 # 11/22/2020
 
 python k3/aps/Learn/main_conv.py\
-     --main 6\
-     --net_str conv1\
-     --save_output_2 0\
-     --batch_size 1\
-     --save_timer_time 999999\
-     --LR 0\
-     --runs validate\
-     --manual_input0 0\
-     --GPU -1\
-     --resume 1\
-     --graphics_timer_time 0\
-     --backwards 0\
-     --resume 1\
-     --single_run direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow\
-     --save_figures2 jpeg\
+    --main 6\
+    --net_str conv1\
+    --save_output_2 0\
+    --batch_size 1\
+    --save_timer_time 999999\
+    --LR 0\
+    --runs validate\
+    --manual_input0 0\
+    --GPU -1\
+    --resume 1\
+    --graphics_timer_time 0\
+    --backwards 0\
+    --resume 1\
+    --single_run direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow\
+    --save_figures2 jpeg\
 
+    
 """
 
 
@@ -82,6 +86,12 @@ Net_strs = {
             --reset_loss False
             --momentum 0.0001
             --LR 0.001
+            --hide_target_output_figure True
+            --hide_loss True
+            --hide_output_2 False
+            --hide_meta True
+            --hide_3d_output2 False
+            --hide_3d_target True
     """,
 
     'conv0' : """

@@ -3,7 +3,10 @@ All_runs = {
     'validate' : [
     
         'direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow', # a Tilden run
-
+        'direct_Tilden_LCR_24Jul17_17h13m40s_Mr_Yellow',
+        'direct_Tilden_LCR_23Jul17_10h27m34s_Mr_Yellow',
+        'direct_Tilden_LCR_15Jul17_12h29m14s_Mr_Yellow',
+        'direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow',
 
         'tegra-ubuntu_16Nov18_15h59m28s',
         'tegra-ubuntu_01Nov18_13h46m55s',

@@ -144,11 +144,21 @@ os.system('mkdir -p '+fig_path)
 
 save_timer = Timer(60)
 
+
+Pts_prev = {'output_2':None,'target':None}
+s = 0.5
+
 def graphics_function(N,M,P):#,X):
 
     global graphics_timer
 
-    
+    P['hide_target'] =True
+    P['hide_target_output_figure'] =True
+    P['hide_loss'] =True
+    P['hide_output_2'] =True
+    P['hide_meta'] =True
+    P['hide_3d_output2'] =False
+    P['hide_3d_target'] =True
 
     
     if graphics_timer == None:
@@ -223,7 +233,7 @@ def graphics_function(N,M,P):#,X):
 
     title_name = title='.'.join(P['type'])
     #cm(4,r=1)
-    if False:
+    if not P['hide_loss']:
         
         figure(P['type'][-1],figsize=(2,10))
         clf()
@@ -299,7 +309,7 @@ def graphics_function(N,M,P):#,X):
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(target)
         #cm(8,r=1)
 
-        if False:
+        if not P['hide_target_output_figure']:
             figure('map');clf()
 
             plot_map(
@@ -315,7 +325,7 @@ def graphics_function(N,M,P):#,X):
 
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(output_2)
 
-        if False:
+        if not P['hide_target_output_figure']:
             plot_map(
                 outer_countours_rotated_left,
                 outer_countours_rotated_right,
@@ -340,9 +350,14 @@ def graphics_function(N,M,P):#,X):
         im = N.extract('input')
         im = z55(im.transpose(2,1,0))
 
-        #for data,name in ((output_2,'output_2')):#,(target,'target')):
-        data,name = output_2,'output_2'
-        if True:
+        
+        for data,name in ((output_2,'output_2'),(target,'target')):
+        #data,name = output_2,'output_2'
+            if name == 'target' and P['hide_3d_target']:
+                continue
+            if name == 'output_2' and P['hide_3d_output2']:
+                continue
+
             outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(data)
             figname = 'map3d-'+name
             figure(figname);clf()
@@ -356,6 +371,7 @@ def graphics_function(N,M,P):#,X):
                 w = double_interp_2D_array(w)
                 o = np.concatenate((w,o[33:,:]))
 
+                #ctr = 0
                 for i in rlen(o):
                     a = o[i,:]
                     b = fit3d.point_in_3D_to_point_in_2D(
@@ -364,9 +380,26 @@ def graphics_function(N,M,P):#,X):
                         width_in_pixels = 168,
                         backup_parameter=1,
                     )
+                    p = 3
                     if False not in b:
-                        c.append(b)
+                        #cm(b)
+                        if b[0] > p and b[0] < 168-p:
+                            #cy(b)
+                            if b[1] > p and b[1] < 94-p:
+                                #cg(b)
+                                c.append(b)
+                                #print(int(c[-1][1]))
+                    #ctr += 1
+                #cm('ctr',ctr)
                 c = na(c)
+                if False:
+                    if Pts_prev[name] is None:
+                        Pts_prev[name] = c
+                    cm(shape(c),shape(Pts_prev[name]))
+                    if shape(c) == shape(Pts_prev[name]):
+                        cm('here')
+                        c = s * c + (1-s) * Pts_prev[name]
+                    Pts_prev[name] = c
                 try:
                     pts_plot(c,color=color,sym='.')
                 except:
@@ -382,7 +415,7 @@ def graphics_function(N,M,P):#,X):
 
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(target)
 
-        if False:
+        if not P['hide_target']:
             figure('map target');clf()
 
             plot_map(
@@ -399,7 +432,7 @@ def graphics_function(N,M,P):#,X):
         outer_countours_rotated_left, outer_countours_rotated_right, angles_left, angles_right = parse_target_vector(output_2)
 
 
-        if False:
+        if not P['hide_output_2']:
             figure('map output_2');clf()
 
             plot_map(
@@ -420,17 +453,14 @@ def graphics_function(N,M,P):#,X):
 
 
 
-    if False:
+    if not P['hide_meta']:
         figure('meta',figsize=(3,3))
         meta[4,0,0] = 1
         meta[4,0,1] = 2
         meta[4,0,2] = 3
         mi(meta[4,:,:],'meta')
 
-    if False:
-        meta = N.extract('meta')
-        for i in range(5):
-            mi(meta[i,:,:],i)
+
     spause()
 
     concatt = None
@@ -442,7 +472,8 @@ def graphics_function(N,M,P):#,X):
         else:
             #print 'b',shape(concatt),shape(img)
             concatt = np.concatenate((concatt,img),axis=1)
-    mci(concatt,1,scale=M['Q']['runtime_parameters']['scale'],title=title_name)
+    if False:
+        mci(concatt,1,scale=M['Q']['runtime_parameters']['scale'],title=title_name)
 
     if k_in_D('save_figures',P):
         plt.savefig(opj(fig_path,d2p(time_string,'meta','pdf')),format='pdf')

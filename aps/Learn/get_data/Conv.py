@@ -12,9 +12,12 @@ def setup(P):
     Runs = {}
 
     for path in sggo(opjD('Data/outer_contours/rotated2','*.h5py')):
+        #cm('path',path)
         #cm(path,r=1)
         r = fname(path).split('.')[0]
+        cm('r',r)
         #cm(r,All_runs,r=1)
+        zprint(All_runs[P['runs']])
         if r in All_runs[P['runs']]:
             if os.path.getsize(path) > 0:
                 if time.time() - os.path.getmtime(path) > 60:
@@ -29,13 +32,19 @@ def setup(P):
                     ]:
                         Runs[r][k] = None
                     Runs[r]['rotated'] = h5r(path)
+                else:
+                    cm('0',r=1)
+            else:
+                cm('1',r=1)
+        else:
+            cm(r,'not in All_runs',r=1)
 
     P['good_indicies'] = []
 
     if 'save_output_2' in P and P['save_output_2']:
         P['output_2_data'] = {}
 
-    #zprint(Runs,r=1)
+    #cm('Runs.keys()',kys(Runs),r=1)
 
     for r in list(Runs.keys()):
 
@@ -48,9 +57,19 @@ def setup(P):
         else:
             cg(r,'found.')
 
-        for k in ['original_timestamp_data','flip_images','left_timestamp_metadata_right_ts']:
-            Runs[r][k] = h5r(opj(opjD('Data'),list(H['paths'].keys())[0],r,k+'.h5py'))
-
+        for k in [
+            'original_timestamp_data',
+            'flip_images',
+            'left_timestamp_metadata_right'
+            'left_timestamp_metadata_right_ts'
+        ]:
+            kk = k
+            if k == 'left_timestamp_metadata_right':
+                k = 'left_timestamp_metadata_right_ts'
+            try:
+                Runs[r][k] = h5r(opj(opjD('Data'),list(H['paths'].keys())[0],r,kk+'.h5py'))
+            except:
+                cm("didn't find",k)
 
         good_indicies_file = opjD('Data/outer_contours','good_indicies.'+P['runs']+'.pkl')
         #cm(good_indicies_file,r=1)
@@ -240,7 +259,7 @@ def get_data_function(P):
     meta_turns = meta_blank.copy()
 
     P['turns_zeroed'] = True
-    cm("P['turns_zeroed'] = True, Conv.py line 249")
+    #cm("P['turns_zeroed'] = True, Conv.py line 249")
 
     if k_in_D('manual_input0',P):
         meta_turns += 2
