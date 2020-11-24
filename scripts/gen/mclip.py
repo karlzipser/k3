@@ -2,7 +2,7 @@
 
 from k3.utils import *
 
-Arguments = get_Arguments({'x':0})
+Arguments = get_Arguments({'x':0,'m':9999})
 
 save_dir = opjh('.'+fnamene(__file__))
 
@@ -41,8 +41,11 @@ E = {
 def clipthread():
 
 	#()
-
+	timer = Timer(Arguments['m']*60)
 	while True:
+
+		if timer.check():
+			E['Command'] = 'quit'
 
 		if E['Command'] == 'quit':
 			cg('quitting clipthread()')
