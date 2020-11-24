@@ -23,17 +23,17 @@ def h5rw(filename,use_real_path=False):
 
 def save_as_h5py(file_path,D,dtype='float16'):
     F = h5w(file_path)
-    clp('writing topics to',file_path)
+    print('writing topics to',file_path)
     for k in D.keys():
         D[k] = na(D[k])
-        clp('    ',k,len(D[k]))
+        print('    ',k,len(D[k]))
         if type(dtype) == dict:
             dt = dtype[k]
         else:
             dt = dtype
         F.create_dataset(k,data=D[k],dtype=dt)
     F.close()
-    clp('done.')
+    print('done.')
 
 
 def main(**A):

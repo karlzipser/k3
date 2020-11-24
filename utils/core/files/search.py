@@ -71,8 +71,9 @@ def files_to_dict(
     ignore_extension=['pyc'],
     ignore=[],
     save_stats=False,
+    list_symbol='*',
 ):
-    D = {'.' : []}
+    D = {list_symbol : []}
     fs = sggo(path,'*')
     for f in fs:
         if fname(f)[0] == '_' and ignore_underscore:
@@ -97,7 +98,7 @@ def files_to_dict(
                 f_ = f
             if not require_extension or exname(f) in require_extension:
                 if not ignore_extension or exname(f) not in ignore_extension:
-                    D['.'].append(f_)
+                    D[list_symbol].append(f_)
         else:
             D[fname(f)] =\
              files_to_dict(

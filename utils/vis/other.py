@@ -10,13 +10,13 @@ from scipy.optimize import curve_fit
 
 
 
-def open_imgs_with_Preview(l):
+def _open_imgs_with_Preview(l):
     if type(l) is str:
         l = [l]
     for f in l:
         os_system('open',qtd(f))
 
-def quit_Preview():
+def _quit_Preview():
     os_system(""" osascript -e 'quit app "Preview"' """)
     return
 

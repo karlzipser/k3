@@ -18,6 +18,7 @@ def zprint(
     max_items=999999,
     max_depth=999999,
     do_return = False,
+    do_fname = False,
 ):
 
     if True:#type(Dictionary) is not dict:
@@ -27,7 +28,7 @@ def zprint(
             n = d2n('<',type(Dictionary).__name__,'>')
         Dictionary = {n:Dictionary}
 
-    V = _preprocess( copy.deepcopy(Dictionary), use_color )
+    V = _preprocess( copy.deepcopy(Dictionary), use_color, do_fname )
 
     _,D = _get_j_and_W(
         copy.deepcopy(V),
@@ -136,14 +137,6 @@ def _get_j_and_W(
                 if len(only_keys) > 0:
                     if k not in only_keys:
                         continue
-                """
-                if type(item[k]) in [dict,list]:
-                    l = len(item[k])
-                else:
-                    l = 1
-                """
-                #if type(item[k]) is dict and len(item[k]) == 0:
-                #    item[k] = 'empty'
 
                 j,_ = _get_j_and_W(
                     item[k],
@@ -167,12 +160,12 @@ def _get_j_and_W(
                     break
     else:
         pass
-    #print(_W)
+
     return j,_W
 
 
 
-def _preprocess(Q,use_color):
+def _preprocess(Q,use_color,do_fname):
 
     for k in kys(Q):
 
@@ -183,7 +176,7 @@ def _preprocess(Q,use_color):
             Q[k] = D
 
         if type(Q[k]) is dict:
-            Q[k] = _preprocess(Q[k],use_color)
+            Q[k] = _preprocess(Q[k],use_color,do_fname)
 
         elif type(Q[k]) is None:
             pass
@@ -193,7 +186,10 @@ def _preprocess(Q,use_color):
                 if is_number(Q[k]):
                     s = cf(Q[k],'`g-b')
                 elif type(Q[k]) is str:
-                    s = cf(Q[k],'`y-b')
+                    qk = Q[k]
+                    if do_fname:
+                        qk = fname(qk)
+                    s = cf(qk,'`y-b')
                 else:
                     s = cf(Q[k],'`b-b')
             else:
@@ -236,7 +232,6 @@ def _post_process(Din,use_line_numbers,use_color):
 
     for i in sorted(kys(D),reverse=False):
         if len(D[i]):
-            #print(D[i][-1])
             if leaf in str(D[i][-1]):
                 D[i][-1] = D[i][-1].replace(leaf,'')
                 continue

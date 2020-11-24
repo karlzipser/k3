@@ -1,6 +1,7 @@
 
 from k3.utils.core import *
-from k3.utils.dict.dict_access import *
+from k3.utils.dict_.dict_access import *
+from k3.utils.dict_.mini_menu import *
 from k3.utils.misc.sys import *
 from k3.utils.misc.osx import *
 
@@ -10,11 +11,18 @@ Arguments = get_Arguments(
         'condense_dict':False,
         'ignore_meta':True,
         'max_depth':1,
+        'preview_x':0,
+        'preview_y':0,
+        'preview_h':250,
+        'preview_w':500,
     }
 )
 
-# python k3/utils/misc/file_menu.py --path /Users/karlzipser/Library/Mobile\ Documents/com\~apple\~CloudDocs/pictures --max_depth 9
-    
+# python k3/utils/dict_/dict_nav.py --path Desktop --max_depth 5 --preview_h 800 --preview_w 800    
+# python k3/utils/dict_/dict_nav.py --path iCloud_Links/jpg/2020/6 --max_depth 5 --preview_h 800 --preview_w 800
+
+
+
 def main(**Arguments):
     eg(__file__)
 
@@ -62,7 +70,7 @@ def main(**Arguments):
         
     else:
 
-        D = files_to_dict(opjh(name),D={})
+        D = files_to_dict(opjh(name))
 
         oD = dict_access(D,name)
 
@@ -85,30 +93,52 @@ def navigate(D,oD,name,Arguments):
         oD('__meta__/max_depth/', e=Arguments['max_depth'])
 
     clear_screen()
-    oD(up_down='-')
+    oD(up_down='-',do_fname=1)
 
     c = None
 
     U = {}
 
+    preview_on = False
+
     while True:
+
+        os_system(""" osascript -e 'tell application "Terminal" to activate' """,e=0)
 
         c = input('-> ')
 
+        if c in ['',None]:
+            continue
+
         cc = '-'
         
-        m = re.match( r'^\s*([a-z]+)\s*(\d*)$', c)
+        bounds_str = '{'+d2c(
+            Arguments['preview_x'],
+            Arguments['preview_y'],
+            Arguments['preview_y']+Arguments['preview_w'],
+            Arguments['preview_x']+Arguments['preview_h'],
+            ) + '}'
+
+        m = re.match( r'^\s*([a-zA-Z]+)\s*(\d*)$', c)
 
         if m:
 
             if m.groups()[0] == 'q':
                 close_Finder_windows()
-                quit_Preview()
+                if preview_on:
+                    quit_Preview()
+                    preview_on = False
                 break
+
+            elif m.groups()[0] == 'M':
+                #cr(1,r=1)
+                mini_menu(Arguments)
 
             elif m.groups()[0] == 'c':
                 close_Finder_windows()
-                quit_Preview()
+                if preview_on:
+                    quit_Preview()
+                    preview_on = False
 
             elif m and m.groups()[0] == 'm':
                 cr(m.groups()[1], str_is_int(m.groups()[1]))
@@ -123,15 +153,19 @@ def navigate(D,oD,name,Arguments):
                 if type(i) is int:
                     D['__meta__']['max_depth'] = i
                 clear_screen()
-                oD(up_down='-')
+                oD(up_down='-',do_fname=1)
                 continue
         
             elif m.groups()[0] in ['u','d']:
                 cc = m.groups()[0]
 
         clear_screen()
-        U,print_lines = oD(up_down=cc)
-        
+        U,print_lines = oD(up_down=cc,do_fname=1)
+        if c[-1] in [' ','.']:
+            flag = True
+        else:
+            flag = False
+
         m = re.match( r'^\s*(\d+)\s*(\w*)$', c)
 
         if m:
@@ -140,21 +174,25 @@ def navigate(D,oD,name,Arguments):
 
                 if i in U:
                     p = U[i]['path']
-                    oD('__meta__/menu_path/',e=p)
 
-                    clear_screen()      
-                    oD(up_down='-')
+                    if flag:#m.groups()[1] != 'o':
+                        oD('__meta__/menu_path/',e=p)
+
+                    clear_screen()
+
+                    oD(up_down='-',do_fname=1)
 
                     oDp = oD(p)
 
                     if type(oDp) is dict:
+                        #cm('dict')
                         oDp_show = '{...}'
-                        if len(m.groups()[1]) > 0:
-                            if m.groups()[1] == 'o':
-                                os_system('open',qtd(name+'/'+p))
+                        if True:#len(m.groups()[1]) > 0:
+                            if not flag:#if m.groups()[1] == 'o': # may use flag instead
+                                os_system('open',qtd(name+'/'+p)) # may need to change as for images
 
                     elif type(oDp) is list:
-                        
+                        #cm('list')
                         oDp_show = '' # '[...]'
                         if True:#len(m.groups()[1]) > 0:
                             #if m.groups()[1] == 'o':
@@ -162,15 +200,19 @@ def navigate(D,oD,name,Arguments):
                             rng = []
 
                             if U[i]['lst_indx'] is None:
-                                if m.groups()[1] == 'o':
+                                if not flag:#m.groups()[1] == 'o':
                                     rng = range(len(oDp))
                             else:
                                 rng = [U[i]['lst_indx']]
 
+                            #qP = True
+
                             for j in rng:
                                 e = oDp[j]
-                                n = qtd(name+'/'+p+e)
-                                cg(qtd(exname(e.lower())))
+                                #cy(name,p,e)
+                                #n = qtd(name+'/'+p+e)
+                                n = qtd(e) # this may have to do with symbolic links
+                                #cg(qtd(exname(e.lower())))
                                 if exname(e.lower()) in [
                                     '',
                                     'txt','rtf','xml','html','doc',
@@ -180,7 +222,21 @@ def navigate(D,oD,name,Arguments):
                                     'gif','giff',
                                     'tiff','tif',
                                 ]:
+                                    #if qP:
+                                    #   quit_Preview()
+                                    #    qP = False
+
                                     os_system('open',n)
+                                    if exname(e.lower()) in [
+                                        'jpg','jpeg',
+                                        'png',
+                                        'gif','giff',
+                                        'tiff','tif',
+                                    ]:
+                                        if not preview_on:
+                                            time.sleep(0.5) # let Preivew start up
+                                        os_system("""osascript -e 'tell application "Preview" to set bounds of front window to """+bounds_str+"""' """,e=0)
+                                        preview_on = True
                                 else:
                                     if exname(e) != 'pyc':
                                         cr(
@@ -192,17 +248,17 @@ def navigate(D,oD,name,Arguments):
                         oDp_show = '(...)'
                     elif type(oDp) is str:
                         oDp_show = oDp
-                        os_system('open',qtd(name+'/'+out_))
+                        os_system('open',qtd(name+'/'+out_))  # may need to change as for images
                     else:
                         oDp_show = str(oDp)
 
                     
                     if U[i]['lst_indx'] is None:
                         out_ = p + oDp_show
-                        cy('out:',out_)
+                        #cy('out:',out_)
                     else:
                         out_ = p+str(oDp[U[i]['lst_indx']])
-                        cg('out:',out_)
+                        #cg('out:',out_)
 
 
 

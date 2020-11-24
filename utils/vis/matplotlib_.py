@@ -27,7 +27,12 @@ if username == 'nvidia':
     matplotlib.use(u'TkAgg')
 
 
-
+def xylim(a,b,c,d):
+    xlim(a,b)
+    ylim(c,d)
+    
+def xysqlim(a):
+    xylim(-a,a,-a,a)
 
 def spause():
     pause(0.0001)
