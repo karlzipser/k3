@@ -54,8 +54,9 @@ python k3/aps/Learn/main_conv.py\
     --graphics_timer_time 0\
     --backwards 0\
     --resume 1\
-    --single_run direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow\
+    --single_run direct_Tilden_LCR_24Jul17_17h13m40s_Mr_Yellow\
     --save_figures2 jpeg\
+    --save_output_2 True
 
     
 """

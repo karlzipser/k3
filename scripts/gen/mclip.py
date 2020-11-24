@@ -33,16 +33,14 @@ E = {
 	'noisy':False,
 	'num_chars':100,
 	'lst':lst,
-	#'quit':False,
 }
 
-#istr =  cf('--> ','`gb-')
 
 
 def clipthread():
 
-	#()
 	timer = Timer(Arguments['m']*60)
+
 	while True:
 
 		if timer.check():
@@ -52,7 +50,6 @@ def clipthread():
 			cg('quitting clipthread()')
 
 			return 0
-
 
 		c = getClipboardData()
 
@@ -86,7 +83,7 @@ def print_lst():
 	rows,cols = get_terminal_size()
 	clear_screen()
 	for i in rlen(E['lst']):
-		m = min(len(E['lst'][i][0]), cols-10) #E['num_chars'])
+		m = min(len(E['lst'][i][0]), cols-10) 
 		a = E['lst'][i][0][:m]
 		b = a.split('\n')
 		c = []
@@ -97,11 +94,12 @@ def print_lst():
 			dots = '...'
 		else:
 			dots = ''
-		clp(str(i)+')','`---','\n'.join(c)+dots, '`---') #'`wbb')
+		clp(str(i)+')','`---','\n'.join(c)+dots, '`---') 
 		
 
 
 threading.Thread(target=clipthread).start()
+
 
 while True:
 
@@ -120,6 +118,7 @@ while True:
 	except Exception as e:
 	    exc_type, exc_obj, exc_tb = sys.exc_info()
 	    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-	    cEd2s(exc_type,file_name,exc_tb.tb_lineno) 
+	    cEd2s(exc_type,file_name,exc_tb.tb_lineno)
+	    
 #EOF
 
