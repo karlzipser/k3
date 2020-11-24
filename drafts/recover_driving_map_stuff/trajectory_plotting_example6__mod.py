@@ -1,23 +1,48 @@
 
 #,a
 from k3 import *
-Arguments = {}
 
-Arguments['run'] = 'tegra-ubuntu_31Oct18_16h06m32s'#'Mr_Black_24Sep18_18h52m26s'#'tegra-ubuntu_31Oct18_16h06m32s'  # 
+if 'Arguments':
 
-if len(sggo(opjD('Data/train/h5py',Arguments['run']))) > 0:
-    run_type = 'train'
-    #assert False
-elif len(sggo(opjD('Data/validate/h5py',Arguments['run']))) > 0:
-    run_type = 'validate'
-else:
-    clp(Arguments['run'],'not found')
-    assert False
+    Arguments = get_Arguments(
+        {
+            'run':REQUIRED,
+            'start':0,
+            'stop':-1,
+            'mod':1,
+            'use_past':True,
+            'path_step':5,
+            'print_motor_encoder':False,
+            'past_back_steps':30,
+            'future_back_steps':5,
+        }
+    )
 
-if 'startup material':
+    if Arguments['use_past']:
+        past_future_list = ['past','future']
+    else:
+        past_future_list = ['future']
+
+    zprint(Arguments)
+
+    if len(sggo(opjD('Data/train/h5py',Arguments['run']))) > 0:
+        run_type = 'train'
+        #assert False
+    elif len(sggo(opjD('Data/validate/h5py',Arguments['run']))) > 0:
+        run_type = 'validate'
+    else:
+        clp(Arguments['run'],'not found')
+        assert False
+
+
+
+if 'load run data':
 
     if 'L' not in locals():
-        L=h5r(opjD('Data',run_type,'h5py',Arguments['run'],'left_timestamp_metadata_right_ts.h5py'))
+        try:
+            L=h5r(opjD('Data',run_type,'h5py',Arguments['run'],'left_timestamp_metadata_right_ts.h5py'))
+        except:
+            L=h5r(opjD('Data',run_type,'h5py',Arguments['run'],'left_timestamp_metadata.h5py'))
         cm('opened L')
         O = h5r(opjD('Data',run_type,'h5py',Arguments['run'],'original_timestamp_data.h5py'))
         cm('opened O')
@@ -25,18 +50,15 @@ if 'startup material':
     if 'Y' not in locals():
         Y = lo(opjD('Data/outer_contours/output_2_data',run_type,Arguments['run']+'.pkl'))
 
-    start = 5000
-    stop = len(L['motor'])
+    start = Arguments['start']
+    if Arguments['stop'] < 0:
+        stop = len(L['motor'])
+    else:
+        stop = Arguments['stop']
     print_timer = Timer(1/70.)
     alpha = 0
     xyi = na([[0,0,0]])
     sample_frequency = 30
-
-
-
-
-
-
 
 
     if 'UO' not in locals():
@@ -45,12 +67,12 @@ if 'startup material':
         UO = {
             'past':{
                 'range':(21,26),#(23,24),
-                'back_steps':30*sample_frequency,
+                'back_steps':Arguments['past_back_steps']*sample_frequency,
                 'S':{},
             },
             'future':{
                 'range':(21,66),
-                'back_steps':5,
+                'back_steps':Arguments['future_back_steps'],
                 'S':{},
             },
         }
@@ -75,10 +97,11 @@ if 'startup material':
 
 
 
-if 'vector functions':
 
+if 'from vis3':
 
-
+    import warnings
+    warnings.filterwarnings("ignore")
     from scipy.optimize import curve_fit
 
     def rotatePoint(centerPoint,point,angle):
@@ -150,7 +173,9 @@ if 'vector functions':
        return v[0]*w[1]-v[1]*w[0]
 
 
-   
+
+if 'vector functions':
+
 
     def vec(heading,encoder,motor,sample_frequency=30.,vel_encoding_coeficient=1.0/2.6): #2.3): #3.33
         velocity = encoder * vel_encoding_coeficient # rough guess
@@ -198,63 +223,72 @@ if 'vector functions':
         u.append(v[-1])
         return na(u)
 
-PATH = [na([0,0])]
-
-def grow_path(heading,encoder,motor,xyi,alpha,i,back_steps):
-
-    a = vec(heading,encoder,motor)
-    PATH.append(PATH[-1]+a)
 
 
-    if len(xyi) > 1:
 
-        alpha_prev = alpha
-        alpha = 90 - get_alpha([[0,0],a])
+if 'path functionality':
 
-        d_alpha = alpha - alpha_prev
+    PATH = [na([0,0])]
 
-        xy = xyi[:,:2]
+    def grow_path(heading,encoder,motor,xyi,alpha,i,back_steps):
 
-        xy -= xy[-1]
-
-        xyi[:,:2] = xy
+        a = vec(heading,encoder,motor)
+        PATH.append(PATH[-1]+a)
 
 
-        xyi[:,:2] = rotate_alpha(d_alpha, xyi[:,:2])
+        if len(xyi) > 1:
 
-    else:
-        d_alpha = 0
+            alpha_prev = alpha
+            alpha = 90 - get_alpha([[0,0],a])
 
-    xyi = np.concatenate((xyi, na([[ 0, magnitude(a), i ]])))
+            d_alpha = alpha - alpha_prev
 
-    if len(xyi) > back_steps:
-        xyi = xyi[-back_steps:]
+            xy = xyi[:,:2]
 
-    return xyi,alpha,d_alpha,a
+            xy -= xy[-1]
+
+            xyi[:,:2] = xy
 
 
-times = {
-    'grow_path':[],
-    'past_future':[],
-    'graphics':[],
-}
-times_mean = {
-    'grow_path':0,
-    'past_future':0,
-    'graphics':0,
-}
+            xyi[:,:2] = rotate_alpha(d_alpha, xyi[:,:2])
+
+        else:
+            d_alpha = 0
+
+        xyi = np.concatenate((xyi, na([[ 0, magnitude(a), i ]])))
+
+        if len(xyi) > back_steps:
+            xyi = xyi[-back_steps:]
+
+        return xyi,alpha,d_alpha,a
+
+
+    times = {
+        'grow_path':[],
+        'past_future':[],
+        'graphics':[],
+    }
+    times_mean = {
+        'grow_path':0,
+        'past_future':0,
+        'graphics':0,
+    }
+
+
 
 
 U = UO
 
-
 for i in range(start,stop):
 
-    if not L['drive_mode'][i]:
+    if 'drive_mode' in L and not L['drive_mode'][i]:
         continue
 
-    if L['motor'][i] < 54 or L['encoder'][i] < 2.0:
-        continue
+    if Arguments['print_motor_encoder']:
+        print('motor',dp(L['motor'][i]),'encoder',dp(L['encoder'][i]))
+
+    if L['motor'][i] < 52 or L['encoder'][i] < 1.5:
+            continue
 
     t0 = time.time()
     xyi,alpha,d_alpha,a = grow_path(
@@ -272,7 +306,7 @@ for i in range(start,stop):
 
     t0 = time.time()
 
-    for k in ['past','future']:
+    for k in past_future_list:
 
         S = U[k]['S']
 
@@ -307,33 +341,37 @@ for i in range(start,stop):
     if 'graphics':
         t0 = time.time()
         e = 100
-        if i % 30 == 0:
+        if i % Arguments['mod'] == 0:
             xy = xyi[:,:2]
             figure(1)
             clf()
             plot([-e,e],[0,0],'k:')
             plot([0,0],[-e,e],'k:')
             pts_plot(xy,sym='.',color='c',ms=4)
-            for k in ['past','future']:
+            for k in past_future_list:
                 S = U[k]['S']
                 for j in S:
                     R = S[j]
                     if R['steps_left']:
+                        print(shape(R['left']))
                         pts_plot(R['left'],sym='.',ms=2,color='r')
                     if R['steps_left']:
                         pts_plot(R['right'],sym='.',ms=2,color='g')
 
-            xylim(-50,50,-50,30)
+            if Arguments['use_past']:
+                xylim(-50,50,-50,30)
+            else:
+                xylim(-15,15,-1,30)
             plt_square()
             plt.title(i)
             spause()
-            mci(O['left_image']['vals'][i],title='left_image')
+            mi(O['left_image']['vals'][i],2,img_title='left_image')
 
-            if len(PATH) > 30:
+            if len(PATH) > Arguments['path_step']:
                 figure(10)
                 clf()
                 plt_square()
-                pts_plot(PATH[0:len(PATH):30],color='k')
+                pts_plot(PATH[0:len(PATH):Arguments['path_step']],color='k')
 
     times['graphics'].append(time.time()-t0)
     

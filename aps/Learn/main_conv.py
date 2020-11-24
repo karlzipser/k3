@@ -1,5 +1,5 @@
 from k3 import *
-a=get_Arguments
+#a=get_Arguments
 import k3.aps.Learn.networks.net as networks_net
 """
 import Menu.main
