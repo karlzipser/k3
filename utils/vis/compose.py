@@ -1,5 +1,6 @@
 
 
+from k3.utils.vis.matplotlib_ import *
 
 
 
@@ -137,3 +138,20 @@ def place_img_f_in_img_g(x0,y0,f,g,bottom=False,f_center=False,center_in_g=False
     y1_,y1d_ = corner(y1,0,sg[0])
 
     g0 = g.copy()
+
+    if x1 > sg[1]:
+        q = -x0_
+    else:
+        q = -x0d_
+    if y1 > sg[0]:
+
+        u = -y0_
+    else:
+        u = -y0d_
+    g0[  y0_:y1_+y0d_-y0d_,  x0_:x1_+x0d_-x0d_,:] = f.copy()[-y0d_:y1_+u,-x0d_:x1_+q,:]
+
+    return g0
+
+#EOF
+
+

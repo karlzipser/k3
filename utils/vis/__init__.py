@@ -7,4 +7,6 @@ from k3.utils.vis.matplotlib_ import *
 
 from k3.utils.vis.files import *
 
+from k3.utils.vis.compose import *
+
 #EOF

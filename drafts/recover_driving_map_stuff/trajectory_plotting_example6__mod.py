@@ -225,6 +225,89 @@ if 'vector functions':
 
 
 
+if '3d functions':
+
+    def double_interp_1D_array(a):
+        b = []
+        for i in range(len(a)-1):
+            c = a[i]
+            d = a[i+1]
+            e = (c+d)/2.0
+            b.append(c)
+            b.append(e)
+        b.append(a[-1])
+        return na(b)
+
+    def double_interp_2D_array(a):
+        b = double_interp_1D_array(a[:,0])
+        c = double_interp_1D_array(a[:,1])
+        d = zeros((len(b),2))
+        d[:,0] = b
+        d[:,1] = c
+        return d
+
+    def xys_2_3D(
+        xys,
+        height_in_pixels = 94,
+        width_in_pixels = 168,
+        backup_parameter=1,
+        ignore_False=True,
+    ):
+        import k3.misc.fit3d as fit3d
+        c = []
+        for i in rlen(xys):
+            a = xys[i,:]
+            b = fit3d.point_in_3D_to_point_in_2D(
+                a,
+                height_in_pixels=height_in_pixels,
+                width_in_pixels=width_in_pixels,
+                backup_parameter=backup_parameter,
+            )
+            if ignore_False and False in b:
+                continue
+            c.append(b)
+
+        return c
+
+
+
+
+def plot_3D_points_in_image(xys,color='r',sym='o',max_range=5,border=5,doubles=5):
+    xys = na(xys)
+    for q in range(doubles):
+        if len(xys) > 0:
+            xys = double_interp_2D_array(xys)
+    a = []
+    for i in rlen(xys):
+        if np.sqrt(xys[i,0]**2 +xys[i,1]**2) < max_range:
+            a.append(xys[i,:])
+
+    pts = na(xys_2_3D(na(a)))
+    #raw_enter()
+    if len(pts) > 0:
+        border_point = na([border,border])
+        pts_plot(border_point+pts,sym=sym,ms=2,color=color)
+
+
+
+
+
+_LARGER_IMAGES = {}
+def mi_bordered_image(img,figure_num=1,border=5,img_title='title'):
+    height,width,__ = shape(img)
+    if img_title not in _LARGER_IMAGES:
+        _LARGER_IMAGES[img_title] = zeros((height+2*border,width+2*border,3),np.uint8)
+    _LARGER_IMAGES[img_title][border:border+height,border:border+width,:] = img
+    mi(_LARGER_IMAGES[img_title],figure_num,img_title=img_title)
+
+   
+
+
+
+
+
+
+
 
 if 'path functionality':
 
@@ -341,37 +424,77 @@ for i in range(start,stop):
     if 'graphics':
         t0 = time.time()
         e = 100
+        plot_top_view = False
         if i % Arguments['mod'] == 0:
             xy = xyi[:,:2]
-            figure(1)
-            clf()
-            plot([-e,e],[0,0],'k:')
-            plot([0,0],[-e,e],'k:')
-            pts_plot(xy,sym='.',color='c',ms=4)
+            if plot_top_view:
+                figure(1)
+                clf()
+                plot([-e,e],[0,0],'k:')
+                plot([0,0],[-e,e],'k:')
+                pts_plot(xy,sym='.',color='c',ms=4)
+            
+            W = { 'past':{'left':None,'right':None}, 'future':{'left':None,'right':None} }
             for k in past_future_list:
+                T = {'left':0,'right':0}
+                lctr = 0.0
+                rctr = 0.0
                 S = U[k]['S']
                 for j in S:
+                    
                     R = S[j]
                     if R['steps_left']:
-                        print(shape(R['left']))
-                        pts_plot(R['left'],sym='.',ms=2,color='r')
+                        lctr += 1
+
+                        T['left'] += R['left']
+                        if plot_top_view:
+                            pts_plot(R['left'],sym='.',ms=2,color='r')
                     if R['steps_left']:
-                        pts_plot(R['right'],sym='.',ms=2,color='g')
+                        rctr += 1
+                        if plot_top_view:
+                            pts_plot(R['right'],sym='.',ms=2,color='g')
+                        T['right'] += R['right']
 
-            if Arguments['use_past']:
-                xylim(-50,50,-50,30)
-            else:
-                xylim(-15,15,-1,30)
-            plt_square()
-            plt.title(i)
-            spause()
-            mi(O['left_image']['vals'][i],2,img_title='left_image')
+                W[k]['left'] = T['left'] / lctr
+                W[k]['right'] = T['right'] / rctr
 
-            if len(PATH) > Arguments['path_step']:
-                figure(10)
-                clf()
+                if plot_top_view:
+                    pts_plot(T['left'],sym='o',ms=2,color='m')
+                    pts_plot(T['right'],sym='o',ms=2,color='b')
+
+            if plot_top_view:
+                if Arguments['use_past']:
+                    xylim(-50,50,-50,30)
+                else:
+                    xylim(-15,15,-1,30)
                 plt_square()
-                pts_plot(PATH[0:len(PATH):Arguments['path_step']],color='k')
+                plt.title(i)
+                spause()
+
+
+
+
+            mi_bordered_image(O['left_image']['vals'][i],figure_num=2,border=5,img_title='left_image')
+            
+            plot_3D_points_in_image(W['future']['left'][:4,:],color='r',sym='o-',max_range=5,border=5,doubles=5)
+            plot_3D_points_in_image(W['future']['left'][3:,:],color='r',sym='o-',max_range=5,border=5,doubles=0)
+            
+            plot_3D_points_in_image(W['future']['right'][:,:],color='g',sym='o',max_range=5,border=5,doubles=5)
+
+            spause()
+
+
+
+
+            show_PATH = False
+            if show_PATH:
+                if len(PATH) > Arguments['path_step']:
+                    figure(10)
+                    clf()
+                    plt_square()
+                    pts_plot(PATH[0:len(PATH):Arguments['path_step']],color='k')
+
+                
 
     times['graphics'].append(time.time()-t0)
     
@@ -380,6 +503,7 @@ for i in range(start,stop):
         for k in times.keys():
             times_mean[k] = na(times[k]).mean()
         kprint(times_mean,'times_mean')
+
 
 
 #,b
