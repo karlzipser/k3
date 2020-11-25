@@ -85,6 +85,8 @@ if 'load run data':
                 UO[k]['S'][i] = {
                     'left': Y[i]['outer_countours_rotated_left'][a:b,:],
                     'right':  Y[i]['outer_countours_rotated_right'][a:b,:],
+                    'angles_left': Y[i]['angles_left'][a:b],
+                    'angles_right':  Y[i]['angles_right'][a:b],
                     'index':i,
                     'steps_left':0,
                 }
@@ -302,9 +304,19 @@ def mi_bordered_image(img,figure_num=1,border=5,img_title='title'):
 
    
 
+import warnings
+warnings.filterwarnings("ignore")
+from scipy.optimize import curve_fit
 
+def f___(x,A,B):
+    return A*x+B
 
-
+def get_offshoot(A,B,r,theta):
+  m,b = curve_fit(f___,(A[0],B[0]),(A[1],B[1]))[0]
+  alpha = corrected_angle(m,B,A)
+  C = B + na([0,r])
+  D = rotatePoint(B,C,90-theta+alpha+0)
+  return D
 
 
 
@@ -359,7 +371,7 @@ if 'path functionality':
 
 
 
-
+Colors = {'direct':'b','left':'r','right':'g'}
 U = UO
 
 for i in range(start,stop):
@@ -437,30 +449,53 @@ for i in range(start,stop):
             W = { 'past':{'left':None,'right':None}, 'future':{'left':None,'right':None} }
             for k in past_future_list:
                 T = {'left':0,'right':0}
-                lctr = 0.0
-                rctr = 0.0
+                #lctr = 0.0
+                #rctr = 0.0
+                Ctr = {'left':0,'right':0}
+                
                 S = U[k]['S']
+                
                 for j in S:
                     
                     R = S[j]
-                    if R['steps_left']:
-                        lctr += 1
+                    for side in ['left','right']:
+                        if R['steps_left']:
+                            Ctr[side] += 1
 
-                        T['left'] += R['left']
-                        if plot_top_view:
-                            pts_plot(R['left'],sym='.',ms=2,color='r')
-                    if R['steps_left']:
-                        rctr += 1
-                        if plot_top_view:
-                            pts_plot(R['right'],sym='.',ms=2,color='g')
-                        T['right'] += R['right']
+                            #print(R['angles_'+side])
+                            #print(R[side])
 
-                W[k]['left'] = T['left'] / lctr
-                W[k]['right'] = T['right'] / rctr
+                            E = {'left':[(0,0)],'right':[(0,0)]}
 
-                if plot_top_view:
-                    pts_plot(T['left'],sym='o',ms=2,color='m')
-                    pts_plot(T['right'],sym='o',ms=2,color='b')
+                            for j in rlen(R['angles_'+side]):
+                                a = R['angles_'+side][j]
+                                a = min(np.abs(a),400)
+                                marker_size = int(a/2.)
+                                #pts_plot(b['outer_countours_rotated_'+s][j] + o['xy'][i],Colors[s],sym='.',ms=marker_size)
+                                if j > 0:
+                                    if side == 'left':
+                                        aa = 180 - a
+                                    else:
+                                        aa = a - 180
+                                    D = get_offshoot( 
+                                        R[side][j-1],
+                                        R[side][j],
+                                        np.abs(a)/30.,
+                                        aa,
+                                    )
+                                    E[side].append(D)
+                            
+                            R[side] = na(E[side])
+
+                            T[side] += R[side]
+
+                            if plot_top_view:
+                                pts_plot(R[side],sym='.',ms=2,color=Colors[side])
+
+                for side in ['left','right']:
+                    W[k][side] = T[side] / Ctr[side]
+                    if plot_top_view:
+                        pts_plot(W[k][side],sym='-',ms=2,color='k')
 
             if plot_top_view:
                 if Arguments['use_past']:
@@ -474,12 +509,23 @@ for i in range(start,stop):
 
 
 
-            mi_bordered_image(O['left_image']['vals'][i],figure_num=2,border=5,img_title='left_image')
+
+
+
+
+
+
+
+
+
+
+
+            mi_bordered_image(O['left_image']['vals'][i],figure_num=2,border=5,img_title=d2s('left_image',i))
             
-            plot_3D_points_in_image(W['future']['left'][:4,:],color='r',sym='o-',max_range=5,border=5,doubles=5)
-            plot_3D_points_in_image(W['future']['left'][3:,:],color='r',sym='o-',max_range=5,border=5,doubles=0)
+            plot_3D_points_in_image(W['future']['left'][:4,:],color='r',sym='o-',max_range=95,border=5,doubles=5)
+            plot_3D_points_in_image(W['future']['left'][3:,:],color='r',sym='o-',max_range=95,border=5,doubles=0)
             
-            plot_3D_points_in_image(W['future']['right'][:,:],color='g',sym='o',max_range=5,border=5,doubles=5)
+            plot_3D_points_in_image(W['future']['right'][:,:],color='g',sym='o',max_range=95,border=5,doubles=5)
 
             spause()
 
