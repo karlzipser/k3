@@ -139,8 +139,7 @@ def plot_map(
 
 
 
-fig_path = opjD('Data/outer_contours/figures')
-os.system('mkdir -p '+fig_path)
+fig_path = None
 
 save_timer = Timer(60)
 
@@ -151,6 +150,11 @@ s = 0.5
 def graphics_function(N,M,P):#,X):
 
     global graphics_timer
+    global fig_path
+    if fig_path is None:
+        fig_path = opjD('Data/outer_contours/figures-'+P['single_run'])
+        fig_path = opj('/Volumes/osx-data/figures-'+P['single_run'])
+        os.system('mkdir -p '+fig_path)
 
     P['hide_target'] =True
     P['hide_target_output_figure'] =True
@@ -363,7 +367,7 @@ def graphics_function(N,M,P):#,X):
             figure(figname);clf()
 
             mi(im,figname)
-
+            plt.title(d2s(P['single_run'],P['gctr']))
             for o,color in ((outer_countours_rotated_left,'r'),(outer_countours_rotated_right,'g')):
                 c = []
                 w = double_interp_2D_array(o[:33,:])

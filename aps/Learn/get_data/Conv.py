@@ -169,6 +169,7 @@ def get_data_function(P):
             else:
                 r = P['single_run']
                 ctr = gctr
+                P['gctr'] = gctr
                 flip = 0
                 gctr += 1
                 if gctr > len(Runs[r]['original_timestamp_data']['left_image']['vals']):
