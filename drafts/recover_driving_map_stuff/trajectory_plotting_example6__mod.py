@@ -529,6 +529,11 @@ for i in range(start,stop):
 
             spause()
 
+            if save_3D_points_in_image:
+                plt.savefig(
+                    opj(fig_path,d2p(time_string,figname,jpeg)),
+                    format='jpeg'
+                )
 
 
 
