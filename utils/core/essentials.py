@@ -50,10 +50,10 @@ def print_dic_simple(D,title='<title>',html=False,print_=True):
             print(D)
     else:
         longest = 0
-        for k in D:
+        for k in sorted(D):
             if len(str(k)) > longest:
                 longest = len(str(k))
-        for k in D:
+        for k in sorted(D):
             sk = ' '*(longest-len(str(k)))+str(k)
             s += '   '+sk+':  '+str(D[k])+el;
     if print_:
@@ -195,20 +195,21 @@ def set_Defaults(Defaults,Dst,verbose=True):
     for k in Dst.keys():
         if k not in Defaults.keys():
             if verbose:
-                print("*** Warning, argument '"+k+"' not in expected Dst:\n\t",
+                print("*** Warning, argument '"+k+"' not in Defaults:\n\t",
                     list(Defaults.keys())
                 )
                 raw_enter()
     for k in Defaults.keys():
         if k not in Dst.keys():
             if Defaults[k] is REQUIRED:
-                print('*** Error. '+qtd('--'+k)+\
+                print('*** Error. '+qtd(k)+\
                     ' is a required cmd line arg. ***')
                 raw_enter()
                 print_dic_simple(Defaults,'Defaults')
                 os.sys.exit()
             else:
                 Dst[k] = Defaults[k]
+
     
 
 def advance(lst,e,min_len=1):
@@ -356,6 +357,33 @@ def get_Arguments(Defaults={},argstr=None):
         args = argstr
     
     Arguments = args_to_dict(args)
+
+
+    for i in Defaults:
+        if type(i is tuple):
+            j = i[0]
+        else:
+            j = i
+        
+        if type(Defaults[i]) is type:
+            Defaults[i] = (REQUIRED,Defaults[i])
+        k = Defaults[i]
+        print(0)
+        print(k,type(k))
+        if type(k) is tuple:
+            print(1)
+            if k[0] is REQUIRED:
+                print(2)
+                if j not in Arguments:
+                    print('*** Error. '+qtd(j)+\
+                        ' is a required cmd line arg. ***')
+                    raw_enter()
+                elif k[1] is not type(Arguments[j]):
+                    print(3)
+                    print('*** Error. arg',qtd(j)+\
+                        ' is wrong type, should be ',k[1],' ***')
+                    raw_enter() 
+
 
     _process_tuple_key(Defaults)
 
