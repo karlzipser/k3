@@ -6,6 +6,7 @@ alias ls='ls -alh'
 alias gacp="git add .;git commit -m 'gacp';git push origin master"
 
 alias k3gacp="cd ~/k3;gacp;cd"
+
 alias k3pull="cd ~/k3;git pull;cd"
 
 git config --global credential.helper "cache --timeout=86400"
@@ -31,5 +32,11 @@ PS1="\[\033[01;35m\]\w\[\033[00m\] $ "
 export HISTSIZE=100000
 export PYTHONUNBUFFERED=1 
 # needed for time.sleep() to work properly
+
+alias kgrep='k3/scripts/gen/kgrep.py'
+alias mclip='k3/scripts/gen/mclip.py'
+alias stowe='k3/scripts/gen/stowe.py'
+alias bk3='k3/scripts/gen/bk3.py'
+
 
 #EOF

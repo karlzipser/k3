@@ -37,7 +37,7 @@ def boxed(text,title=''):
 def box(text,title=''):
     print(boxed(text,title))
   
-def print_dic_simple(D,title='',html=False,print_=True):
+def print_dic_simple(D,title='<title>',html=False,print_=True):
     el = '\n'
     if html:
         el +=''
@@ -49,8 +49,13 @@ def print_dic_simple(D,title='',html=False,print_=True):
         if print_:
             print(D)
     else:
-        for k in D:
-            s += '   '+str(k)+':'+str(D[k])+el;
+        longest = 0
+        for k in sorted(D):
+            if len(str(k)) > longest:
+                longest = len(str(k))
+        for k in sorted(D):
+            sk = ' '*(longest-len(str(k)))+str(k)
+            s += '   '+sk+':  '+str(D[k])+el;
     if print_:
         print(s)
     return s
@@ -186,22 +191,39 @@ def kys(D):
     return list(D.keys())
 
 
-def set_Defaults(Defaults,Dst,verbose=False):
+def set_Defaults(Defaults,Dst,verbose=True):
     for k in Dst.keys():
         if k not in Defaults.keys():
             if verbose:
-                print("*** Warning, argument '"+k+"' not in expected Dst:\n\t",
+                print("*** Warning, argument '"+k+"' not in Defaults:\n\t",
                     list(Defaults.keys())
                 )
+                raw_enter()
     for k in Defaults.keys():
         if k not in Dst.keys():
             if Defaults[k] is REQUIRED:
-                print('*** Error. '+qtd('--'+k)+\
+                print('*** Error. '+qtd(k)+\
                     ' is a required cmd line arg. ***')
+                raw_enter()
                 print_dic_simple(Defaults,'Defaults')
                 os.sys.exit()
             else:
                 Dst[k] = Defaults[k]
+        else:
+            if type(Defaults[k]) is tuple:
+                if Defaults[k][0] is REQUIRED:
+                    b = Defaults[k][1]
+                else:
+                    b = tuple
+            else:
+                b = type(Defaults[k])
+
+            if type(Dst[k]) is not b:
+                print("*** Warning, argument '"+k+"' is not of the right type",
+                    "should be",b)
+                raw_enter()
+                
+
     
 
 def advance(lst,e,min_len=1):
@@ -287,6 +309,10 @@ def args_to_dict(s):
                 U[d] = int(b[1])
             elif str_is_float(b[1]):
                 U[d] = float(b[1])
+            elif b[1] == 'True':
+                U[d] = True
+            elif b[1] == 'False':
+                U[d] = False
             else:
                 U[d] = b[1]
         else:
@@ -299,6 +325,43 @@ def args_to_dict(s):
 a2d = args_to_dict
 
 
+def __tuple_to_multi_keys(A):
+    for k in kys(A):
+        if type(k) is not tuple:
+            continue
+        for l in k:
+            assert type(l) is str
+            if len(l) == 2:
+                if l[0] == '-':
+                    assert l[1] != '-'
+                    A[l[1]] = A[k]
+            elif len(l) > 3:
+                if l[0] == '-':
+                    assert l[1] == '-'
+                    A[l[2:]] = A[k]
+            A[str(k)[1:-1]] = '<arg>'
+        del A[k]
+    
+def _process_tuple_key(A):
+    for k in kys(A):
+        if type(k) is not tuple:
+            continue
+        assert len(k) == 2
+        l = k[0]
+        m = k[1]
+        assert len(l) > 0
+        assert len(m) > 0
+        assert type(l) is str
+        assert type(m) is str
+        A[l] = A[k]
+        if len(l) == 1:
+            A['-'+l] = m
+        else:
+            A['--'+l] = m
+        del A[k]
+
+
+
 def get_Arguments(Defaults={},argstr=None):
 
     if argstr is None:
@@ -309,7 +372,45 @@ def get_Arguments(Defaults={},argstr=None):
     
     Arguments = args_to_dict(args)
 
+    assert 'h' not in Defaults
+
+    Defaults[('h','help')] = False
+
+    if 'h' not in Arguments or not Arguments['h']:
+
+        for i in Defaults:
+            if type(i is tuple):
+                j = i[0]
+            else:
+                j = i
+            
+            if type(Defaults[i]) is type:
+                Defaults[i] = (REQUIRED,Defaults[i])
+            k = Defaults[i]
+
+            if type(k) is tuple:
+
+                if k[0] is REQUIRED:
+
+                    if j not in Arguments:
+                        print('*** Error. '+qtd(j)+\
+                            ' is a required cmd line arg. ***')
+                        raw_enter()
+                    elif k[1] is not type(Arguments[j]):
+
+                        print('*** Error. arg',qtd(j)+\
+                            ' is wrong type, should be ',k[1],' ***')
+                        raw_enter()
+        
+
+    _process_tuple_key(Defaults)
+
     set_Defaults(Defaults,Arguments)
+
+    if 'h' in Arguments and Arguments['h']:
+        print('\n')
+        print_dic_simple(Arguments,title='Arguments:')
+        sys.exit()
 
     return Arguments
 
