@@ -362,7 +362,7 @@ def _process_tuple_key(A):
 
 
 
-def get_Arguments(Defaults={},argstr=None):
+def get_Arguments(Defaults={},argstr=None,verbose=True):
 
     if argstr is None:
         args = ' '.join(sys.argv[1:])
@@ -373,7 +373,6 @@ def get_Arguments(Defaults={},argstr=None):
     Arguments = args_to_dict(args)
 
     assert 'h' not in Defaults
-
     Defaults[('h','help')] = False
 
     if 'h' not in Arguments or not Arguments['h']:
@@ -405,12 +404,14 @@ def get_Arguments(Defaults={},argstr=None):
 
     _process_tuple_key(Defaults)
 
-    set_Defaults(Defaults,Arguments)
+    set_Defaults(Defaults,Arguments,verbose=verbose)
 
     if 'h' in Arguments and Arguments['h']:
-        print('\n')
-        print_dic_simple(Arguments,title='Arguments:')
+        print_dic_simple(Arguments,title='\nArguments:')
         sys.exit()
+
+    if verbose:
+        print_dic_simple(Arguments,title='\nArguments:')
 
     return Arguments
 

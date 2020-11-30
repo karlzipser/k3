@@ -37,6 +37,6 @@ alias kgrep='k3/scripts/gen/kgrep.py'
 alias mclip='k3/scripts/gen/mclip.py'
 alias stowe='k3/scripts/gen/stowe.py'
 alias bk3='k3/scripts/gen/bk3.py'
-
-
+alias ky='python k3/scripts/gen/ky.py'
+alias nav='python k3/utils/dict_/dict_nav.py'
 #EOF

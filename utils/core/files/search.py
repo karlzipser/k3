@@ -72,10 +72,16 @@ def files_to_dict(
     ignore=[],
     save_stats=False,
     list_symbol='*',
+    process_symbol=True,
 ):
     D = {list_symbol : []}
     fs = sggo(path,'*')
+    timer = Timer(0.01)
     for f in fs:
+        if timer.check():
+            timer.reset()
+            #print(time.time())
+            print(rndchoice(['/','\\']),end='\r',flush=True)
         if fname(f)[0] == '_' and ignore_underscore:
             continue
         do_continue = False

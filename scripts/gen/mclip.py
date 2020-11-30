@@ -2,18 +2,10 @@
 
 from k3.utils import *
 
-Arguments = get_Arguments(
-	{
-		#('-x','--extend','add prefix and suffix to clipboard'):0,
-		#('-m','--minutes','extend expires after m minutes'):9999,
-		# ('x','add prefix and suffix to clipboard'):False,
-		# --> '-x':'add prefix and suffix to clipboard'
-		'x':False,
-		'm':9999,
-	}
-)
-
-print(Arguments)
+Arguments = get_Arguments({
+	('x', 'add prefix and suffix to clipboard') : False,
+	('m', '-x expires after -m minutes')        : 9999,
+})
 
 save_dir = opjh('.'+fnamene(__file__))
 

@@ -4,7 +4,7 @@ from k3 import *
 
 Arguments = get_Arguments(
     Defaults={
-        'days':7,
+        ('days', 'stowe items until --days day old') :7,
         'src':opjD(),
         'multisrc':False,
         'dst':opjh('Stowed'),
@@ -17,9 +17,9 @@ def stowe(
     **A,
     ):
 
-    clear_screen()
-    clp(Arguments['src'],'`--rb')
-    print('')
+    #clear_screen()
+    #clp(Arguments['src'],'`--rb')
+    #print('')
 
     fs = sggo(A['src'],'*')
     for f in fs:
