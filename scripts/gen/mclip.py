@@ -2,7 +2,18 @@
 
 from k3.utils import *
 
-Arguments = get_Arguments({'x':0,'m':9999})
+Arguments = get_Arguments(
+	{
+		#('-x','--extend','add prefix and suffix to clipboard'):0,
+		#('-m','--minutes','extend expires after m minutes'):9999,
+		# ('x','add prefix and suffix to clipboard'):False,
+		# --> '-x':'add prefix and suffix to clipboard'
+		'x':False,
+		'm':9999,
+	}
+)
+
+print(Arguments)
 
 save_dir = opjh('.'+fnamene(__file__))
 
@@ -105,7 +116,7 @@ while True:
 
 	try:
 		while True:
-			time.sleep(1)
+			time.sleep(0.1)
 			
 			if E['Command'] == 'quit':
 				sys.exit()
