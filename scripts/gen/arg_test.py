@@ -7,8 +7,12 @@ Arguments = get_Arguments({
 	('b', 'who knows?')   : float,
 	('c','just c')        : int,
 	('d','a bool')        : bool,
+	('e','a bool')        : False,
+	'f'					  : 'hi',
 })
 
 print_dic_simple(Arguments, title="Arguments")
 
 #EOF
+
+

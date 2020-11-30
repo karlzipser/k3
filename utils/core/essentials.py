@@ -209,6 +209,20 @@ def set_Defaults(Defaults,Dst,verbose=True):
                 os.sys.exit()
             else:
                 Dst[k] = Defaults[k]
+        else:
+            if type(Defaults[k]) is tuple:
+                if Defaults[k][0] is REQUIRED:
+                    b = Defaults[k][1]
+                else:
+                    b = tuple
+            else:
+                b = type(Defaults[k])
+
+            if type(Dst[k]) is not b:
+                print("*** Warning, argument '"+k+"' is not of the right type",
+                    "should be",b)
+                raw_enter()
+                
 
     
 
@@ -358,32 +372,36 @@ def get_Arguments(Defaults={},argstr=None):
     
     Arguments = args_to_dict(args)
 
+    assert 'h' not in Defaults
 
-    for i in Defaults:
-        if type(i is tuple):
-            j = i[0]
-        else:
-            j = i
+    Defaults[('h','help')] = False
+
+    if 'h' not in Arguments or not Arguments['h']:
+
+        for i in Defaults:
+            if type(i is tuple):
+                j = i[0]
+            else:
+                j = i
+            
+            if type(Defaults[i]) is type:
+                Defaults[i] = (REQUIRED,Defaults[i])
+            k = Defaults[i]
+
+            if type(k) is tuple:
+
+                if k[0] is REQUIRED:
+
+                    if j not in Arguments:
+                        print('*** Error. '+qtd(j)+\
+                            ' is a required cmd line arg. ***')
+                        raw_enter()
+                    elif k[1] is not type(Arguments[j]):
+
+                        print('*** Error. arg',qtd(j)+\
+                            ' is wrong type, should be ',k[1],' ***')
+                        raw_enter()
         
-        if type(Defaults[i]) is type:
-            Defaults[i] = (REQUIRED,Defaults[i])
-        k = Defaults[i]
-        print(0)
-        print(k,type(k))
-        if type(k) is tuple:
-            print(1)
-            if k[0] is REQUIRED:
-                print(2)
-                if j not in Arguments:
-                    print('*** Error. '+qtd(j)+\
-                        ' is a required cmd line arg. ***')
-                    raw_enter()
-                elif k[1] is not type(Arguments[j]):
-                    print(3)
-                    print('*** Error. arg',qtd(j)+\
-                        ' is wrong type, should be ',k[1],' ***')
-                    raw_enter() 
-
 
     _process_tuple_key(Defaults)
 
