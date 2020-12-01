@@ -4,8 +4,8 @@ from k3 import *
 
 A = get_Arguments(
     Defaults={
-        's':3,
-        'r':3,
+        ('s','seconds'):3,
+        ('r','repeats'):3,
     }
 )
 

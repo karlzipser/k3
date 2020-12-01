@@ -2,6 +2,19 @@
 #,a
 from k3 import *
 
+"""
+python k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
+    --run direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow\
+    --start 27000\
+    --stop -1\
+    --mod 1\
+    --future_back_steps 5\
+    --use_past False\
+    --save_3D_points_in_image True\
+    --save_path /Volumes/osx-data/3D_points_in_image_multistep\
+
+"""
+
 if 'Arguments':
 
     Arguments = get_Arguments(
@@ -15,8 +28,14 @@ if 'Arguments':
             'print_motor_encoder':False,
             'past_back_steps':30,
             'future_back_steps':5,
+            'save_3D_points_in_image':False,
+            'save_path':'<none>',
         }
     )
+    if Arguments['save_3D_points_in_image']:
+        assert Arguments['save_path'] != '<none>'
+        fig_path = opj(Arguments['save_path'],Arguments['run'],d2n(Arguments['start'],'_to_',Arguments['stop']))
+        os_system('mkdir -p',fig_path)
 
     if Arguments['use_past']:
         past_future_list = ['past','future']
@@ -374,6 +393,7 @@ if 'path functionality':
 Colors = {'direct':'b','left':'r','right':'g'}
 U = UO
 
+
 for i in range(start,stop):
 
     if 'drive_mode' in L and not L['drive_mode'][i]:
@@ -528,13 +548,13 @@ for i in range(start,stop):
             plot_3D_points_in_image(W['future']['right'][:,:],color='g',sym='o',max_range=95,border=5,doubles=5)
 
             spause()
-
-            if save_3D_points_in_image:
+            
+            if Arguments['save_3D_points_in_image']:
                 plt.savefig(
-                    opj(fig_path,d2p(time_string,figname,jpeg)),
+                    opj(fig_path,d2p(i,'jpeg')),
                     format='jpeg'
                 )
-
+            
 
 
             show_PATH = False

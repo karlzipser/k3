@@ -6,6 +6,6 @@ args = ' '.join(sys.argv[1:])
 
 print('\n')
 
-os.system('grep -r ' + '"'+args+'"' + ' k3')
+os.system('grep -r -n ' + '"'+args+'"' + ' k3')
 
 #EOF

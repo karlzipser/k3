@@ -24,8 +24,6 @@ export PATH=~/k3/scripts/connect:$PATH
 export PATH=~/k3/Menu:$PATH
 export PATH=~/k3/utils/misc:$PATH
 
-alias sb='cd;source ~/.bashrc'
-
 export COMPUTER_NAME=$HOSTNAME #'' #
 PS1="\[\033[01;35m\]\w\[\033[00m\] $ "
 
@@ -36,7 +34,22 @@ export PYTHONUNBUFFERED=1
 alias kgrep='k3/scripts/gen/kgrep.py'
 alias mclip='k3/scripts/gen/mclip.py'
 alias stowe='k3/scripts/gen/stowe.py'
+alias ke='k3/scripts/gen/ke.py'
 alias bk3='k3/scripts/gen/bk3.py'
 alias ky='python k3/scripts/gen/ky.py'
 alias nav='python k3/utils/dict_/dict_nav.py'
+
+alias sb="
+	if [[ -d '/Volumes' ]]
+	then
+		echo 'sourcing bash_profile...'
+		cd
+		source ~/.bash_profile
+	else
+		echo 'sourcing bashrc...'
+		cd
+		source ~/.bashrc
+	fi
+"
+
 #EOF
