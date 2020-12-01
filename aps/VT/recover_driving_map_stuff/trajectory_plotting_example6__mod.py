@@ -3,15 +3,39 @@
 from k3 import *
 
 """
+
 python k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
-    --run direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow\
-    --start 27000\
-    --stop -1\
+    --run direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow\
+    --start 78896\
+    --stop 85259\
     --mod 1\
     --future_back_steps 5\
     --use_past False\
     --save_3D_points_in_image True\
     --save_path /Volumes/osx-data/3D_points_in_image_multistep\
+
+
+
+direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow
+start on smaller path 20300+
+
+direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow
+30000 77267
+78896 85259
+86319 116043
+
+14s
+16000 21117
+27909 32417 
+
+34s
+26931 103289
+
+40s
+10703 12950
+41109 42531
+60000 62478
+71585 73559
 
 """
 
