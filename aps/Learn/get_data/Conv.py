@@ -17,7 +17,7 @@ def setup(P):
         r = fname(path).split('.')[0]
         cm('r',r)
         #cm(r,All_runs,r=1)
-        zprint(All_runs[P['runs']])
+        #zprint(All_runs[P['runs']])
         if r in All_runs[P['runs']]:
             if os.path.getsize(path) > 0:
                 if time.time() - os.path.getmtime(path) > 60:

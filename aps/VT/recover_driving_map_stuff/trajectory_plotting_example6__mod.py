@@ -6,14 +6,14 @@ from k3 import *
 
 python k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
     --run Mr_Black_24Sep18_18h52m26s\
-    --start 20499\
-    --stop 21699\
+    --start 0\
+    --stop -1\
     --mod 1\
-    --future_back_steps 2\
+    --future_back_steps 8\
     --use_past False\
     --save_3D_points_in_image True\
     --save_path /Volumes/osx-data/3D_points_in_image_multistep\
-    --horizon_factor 0.85\
+    --horizon_factor 1.\
 
 
 
@@ -57,7 +57,7 @@ if 'Arguments':
             'print_motor_encoder':False,
             'past_back_steps':30,
             'future_back_steps':5,
-            'save_3D_points_in_image':False,
+            'save_3D_points_in_image':True,
             'save_path':'<none>',
             'horizon_factor':1.0
         }
@@ -489,7 +489,7 @@ for i in range(start,stop):
     if 'graphics':
         t0 = time.time()
         e = 100
-        plot_top_view = True
+        plot_top_view = False
         if i % Arguments['mod'] == 0:
             xy = xyi[:,:2]
             if plot_top_view:
@@ -572,16 +572,18 @@ for i in range(start,stop):
 
 
             q = 13
-
+            a1 = 6
+            a2 = 5
+            d0 = 5
             mi_bordered_image(O['left_image']['vals'][i],figure_num=2,border=5,img_title=d2s('left_image',i))
             
-            plot_3D_points_in_image(W['future']['left'][:4,:],color='r',sym='o-',max_range=95,border=5,doubles=5,horizon_factor=Arguments['horizon_factor'])
-            plot_3D_points_in_image(W['future']['left'][3:q,:],color='r',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['left'][:a1,:],color='r',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['left'][a2:q,:],color='r',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
             
-            plot_3D_points_in_image(W['future']['right'][:4,:],color='g',sym='o-',max_range=95,border=5,doubles=5,horizon_factor=Arguments['horizon_factor'])
-            plot_3D_points_in_image(W['future']['right'][3:q,:],color='g',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['right'][:a1,:],color='g',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['right'][a2:q,:],color='g',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
 
-            if True:
+            if False:
                 plot_3D_points_in_image(W['future']['left'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])            
                 plot_3D_points_in_image(W['future']['right'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
             
