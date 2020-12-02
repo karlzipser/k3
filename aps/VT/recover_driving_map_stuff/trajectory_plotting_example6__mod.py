@@ -5,37 +5,42 @@ from k3 import *
 """
 
 python k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
-    --run direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow\
-    --start 78896\
-    --stop 85259\
+    --run Mr_Black_24Sep18_18h52m26s\
+    --start 20499\
+    --stop 21699\
     --mod 1\
-    --future_back_steps 5\
+    --future_back_steps 2\
     --use_past False\
     --save_3D_points_in_image True\
     --save_path /Volumes/osx-data/3D_points_in_image_multistep\
+    --horizon_factor 0.85\
 
 
 
+
+"""
+
+"""
 direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow
-start on smaller path 20300+
+    √start on smaller path 20300+
 
 direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow
-30000 77267
-78896 85259
-86319 116043
+    .30000 77267
+    √78896 85259
+    .86319 116043
 
-14s
-16000 21117
-27909 32417 
+direct_Tilden_LCR_15Jul17_12h29m14s_Mr_Yellow
+    .16000 21117
+    .27909 32417 
 
-34s
-26931 103289
+direct_Tilden_LCR_23Jul17_10h27m34s_Mr_Yellow
+    .26931 103289
 
-40s
-10703 12950
-41109 42531
-60000 62478
-71585 73559
+direct_Tilden_LCR_24Jul17_17h13m40s_Mr_Yellow
+    .10703 12950
+    .41109 42531
+    .60000 62478
+    .71585 73559
 
 """
 
@@ -54,6 +59,7 @@ if 'Arguments':
             'future_back_steps':5,
             'save_3D_points_in_image':False,
             'save_path':'<none>',
+            'horizon_factor':1.0
         }
     )
     if Arguments['save_3D_points_in_image']:
@@ -317,7 +323,7 @@ if '3d functions':
 
 
 
-def plot_3D_points_in_image(xys,color='r',sym='o',max_range=5,border=5,doubles=5):
+def plot_3D_points_in_image(xys,color='r',sym='o',max_range=5,border=5,doubles=5,horizon_factor=1.0):
     xys = na(xys)
     for q in range(doubles):
         if len(xys) > 0:
@@ -328,8 +334,10 @@ def plot_3D_points_in_image(xys,color='r',sym='o',max_range=5,border=5,doubles=5
             a.append(xys[i,:])
 
     pts = na(xys_2_3D(na(a)))
+    
     #raw_enter()
     if len(pts) > 0:
+        pts = pts*na([1,horizon_factor]) + na([0,94*(1-horizon_factor)])
         border_point = na([border,border])
         pts_plot(border_point+pts,sym=sym,ms=2,color=color)
 
@@ -426,7 +434,8 @@ for i in range(start,stop):
     if Arguments['print_motor_encoder']:
         print('motor',dp(L['motor'][i]),'encoder',dp(L['encoder'][i]))
 
-    if L['motor'][i] < 52 or L['encoder'][i] < 1.5:
+    
+    if L['motor'][i] < 52 or L['encoder_meo'][i] < 0.:
             continue
 
     t0 = time.time()
@@ -480,7 +489,7 @@ for i in range(start,stop):
     if 'graphics':
         t0 = time.time()
         e = 100
-        plot_top_view = False
+        plot_top_view = True
         if i % Arguments['mod'] == 0:
             xy = xyi[:,:2]
             if plot_top_view:
@@ -501,7 +510,7 @@ for i in range(start,stop):
                 
                 for j in S:
                     
-                    R = S[j]
+                    R = S[j].copy()
                     for side in ['left','right']:
                         if R['steps_left']:
                             Ctr[side] += 1
@@ -529,12 +538,12 @@ for i in range(start,stop):
                                     )
                                     E[side].append(D)
                             
-                            R[side] = na(E[side])
-
-                            T[side] += R[side]
-
+                            R[side] = na(E[side].copy())
+                            
+                            T[side] += R[side].copy()
+                            
                             if plot_top_view:
-                                pts_plot(R[side],sym='.',ms=2,color=Colors[side])
+                                pts_plot(R[side],sym='.-',ms=2,color=Colors[side])
 
                 for side in ['left','right']:
                     W[k][side] = T[side] / Ctr[side]
@@ -562,14 +571,20 @@ for i in range(start,stop):
 
 
 
-
+            q = 13
 
             mi_bordered_image(O['left_image']['vals'][i],figure_num=2,border=5,img_title=d2s('left_image',i))
             
-            plot_3D_points_in_image(W['future']['left'][:4,:],color='r',sym='o-',max_range=95,border=5,doubles=5)
-            plot_3D_points_in_image(W['future']['left'][3:,:],color='r',sym='o-',max_range=95,border=5,doubles=0)
+            plot_3D_points_in_image(W['future']['left'][:4,:],color='r',sym='o-',max_range=95,border=5,doubles=5,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['left'][3:q,:],color='r',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
             
-            plot_3D_points_in_image(W['future']['right'][:,:],color='g',sym='o',max_range=95,border=5,doubles=5)
+            plot_3D_points_in_image(W['future']['right'][:4,:],color='g',sym='o-',max_range=95,border=5,doubles=5,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['right'][3:q,:],color='g',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
+
+            if True:
+                plot_3D_points_in_image(W['future']['left'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])            
+                plot_3D_points_in_image(W['future']['right'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
+            
 
             spause()
             

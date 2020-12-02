@@ -5,7 +5,7 @@ from k3.utils.misc.printing import *
 def os_system(*args,e=0,r=0,a=1):
     s = d2s(*args)
     if(e):
-        clp(s,'`--u')
+        clp(s,'`---')
     if a:
         os.system(s)
     if r:
