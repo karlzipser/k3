@@ -5,9 +5,9 @@ from k3 import *
 """
 
 python k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
-    --run Mr_Black_24Sep18_18h52m26s\
-    --start 0\
-    --stop -1\
+    --run direct_Tilden_LCR_15Jul17_12h29m14s_Mr_Yellow\
+    --start 27909\
+    --stop 32417\
     --mod 1\
     --future_back_steps 8\
     --use_past False\
@@ -425,8 +425,15 @@ if 'path functionality':
 Colors = {'direct':'b','left':'r','right':'g'}
 U = UO
 
+if True:
+    H = loD(Arguments['run']+'.xy.'+d2n(start,'_to_',stop))
+    HH = {}
+    for i in rlen(H['x']):
+        HH[H['x'][i]] = H['y'][i]
+else:
+    HH = False
 
-for i in range(start,stop):
+for i in range(start,stop,1):
 
     if 'drive_mode' in L and not L['drive_mode'][i]:
         continue
@@ -448,6 +455,8 @@ for i in range(start,stop):
         i,
         1 * sample_frequency,
     )
+
+
 
     times['grow_path'].append(time.time()-t0)
 
@@ -570,23 +579,43 @@ for i in range(start,stop):
 
 
 
-
+            if HH:
+                hfr = HH[i]
+                #print(intr(hfr))
+                hf  = (94 - hfr)/44.5 
+            else:
+                hf = Arguments['horizon_factor']
+            #print(dp(hf))
             q = 13
             a1 = 6
             a2 = 5
             d0 = 5
             mi_bordered_image(O['left_image']['vals'][i],figure_num=2,border=5,img_title=d2s('left_image',i))
             
-            plot_3D_points_in_image(W['future']['left'][:a1,:],color='r',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=Arguments['horizon_factor'])
-            plot_3D_points_in_image(W['future']['left'][a2:q,:],color='r',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['left'][:a1,:],color='r',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=hf)
+            plot_3D_points_in_image(W['future']['left'][a2:q,:],color='r',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)
             
-            plot_3D_points_in_image(W['future']['right'][:a1,:],color='g',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=Arguments['horizon_factor'])
-            plot_3D_points_in_image(W['future']['right'][a2:q,:],color='g',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
+            plot_3D_points_in_image(W['future']['right'][:a1,:],color='g',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=hf)
+            plot_3D_points_in_image(W['future']['right'][a2:q,:],color='g',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)
 
             if False:
-                plot_3D_points_in_image(W['future']['left'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])            
-                plot_3D_points_in_image(W['future']['right'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=Arguments['horizon_factor'])
+                plot_3D_points_in_image(W['future']['left'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)            
+                plot_3D_points_in_image(W['future']['right'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)
+                plot([0+5,168+5],[hfr+5,hfr+5],'r')
+
+            if intr(L['state'][i])== 2:
+                plt.text(3, 7, 'LEFT', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'red', 'alpha': 1, 'pad': 3})
+            elif intr(L['state'][i]) == 3:
+                plt.text(159, 7, 'RIGHT', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'green', 'alpha': 1, 'pad': 3})
+            elif intr(L['state'][i]) == 1:
+                plt.text(77.3, 7, 'CENTER', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'blue', 'alpha': 1, 'pad': 3})
             
+            st = 1.5*(99-L['steer'][i]-49)+164/2
+            st = max(st,0)
+            st = min(st,164)
+            plot([5+164/2,5+st],[20,20],'b',linewidth=2)
+            plot([5+164/2,5+164/2],[15,25],'b',linewidth=2)
+
 
             spause()
             
