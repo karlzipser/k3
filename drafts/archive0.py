@@ -7,7 +7,6 @@ python3 k3/drafts/archive0.py
 from k3 import *
 from pathlib import Path
 
-
 Arguments = get_Arguments(
     Defaults={
         'src':opjD(),
@@ -16,6 +15,9 @@ Arguments = get_Arguments(
         'ignore_underscore':True,
     }
 )
+
+to_ignore = ["Downloads","Documents","Library",".Trash",]
+to_ignore += ["kzpy3","k3","k3-bkp","Stowed",]
 
 
 def file_type(f):
@@ -36,11 +38,6 @@ def file_type(f):
     else:
         return 'unknown'
 
-
-#,a
-
-to_ignore = ["Downloads","Documents","Library",".Trash",]
-to_ignore += ["kzpy3","k3","k3-bkp","Stowed",]
 
 
 
