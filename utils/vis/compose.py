@@ -5,10 +5,15 @@ from k3.utils.vis.matplotlib_ import *
 
 
 
-def vis_square2(data_in, padsize=1, padval=0):
+def vis_square2(
+    data_in,
+    padsize=1,
+    padval=0.
+):
+    if type(data_in) is list:
+        data_in = na(data_in)
+
     data = data_in.copy()
-    #data -= data.min()
-    #data /= data.max()
     
     # force the number of filters to be square
     n = int(np.ceil(np.sqrt(data.shape[0])))
@@ -19,13 +24,29 @@ def vis_square2(data_in, padsize=1, padval=0):
     data = data.reshape((n, n) + data.shape[1:]).transpose((0, 2, 1, 3) + tuple(range(4, data.ndim + 1)))
     data = data.reshape((n * data.shape[1], n * data.shape[3]) + data.shape[4:])
     
+    left = zeros((shape(data)[1],padsize,3),np.uint8) + 127
+    data = np.concatenate((left,data),axis=1)
+    top = zeros((padsize,shape(data)[1],3),np.uint8) + 127
+    data = np.concatenate((top,data),axis=0)
+
     return data
 
 
 
 
-def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_height,rel_bar_thickness,center=False,reverse=False,horizontal=False):
-    #print(value)
+def apply_rect_to_img(
+    img,
+    value,
+    min_val,
+    max_val,
+    pos_color,
+    neg_color,
+    rel_bar_height,
+    rel_bar_thickness,
+    center=False,
+    reverse=False,
+    horizontal=False
+):
     h,w,d = shape(img)
     p = (value - min_val) / (max_val - 1.0*min_val)
     if reverse:

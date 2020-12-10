@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 """#,arca
+
 python3 k3/drafts/archive0.py
+
 #,arcb"""
 
 from k3 import *
@@ -39,8 +41,6 @@ def file_type(f):
         return 'unknown'
 
 
-
-
 def source_file_is_okay(symlink):
     if os.path.exists(symlink) == True:
         if os.path.isdir(symlink) == False:
@@ -48,7 +48,6 @@ def source_file_is_okay(symlink):
                 if os.path.getsize(symlink) > 0:
                     return True
     return False
-
 
 
 def update_link(
@@ -82,8 +81,6 @@ def update_link(
                 return True
     return False
 
-#,b
-#"Archived/pall/jpg/2020/10/5/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg  _t=1601920090.6705475/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg" =="Archived/pall/jpg/2020/10/5/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg  _t=1601920090.6705475/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg"
 
 def archive(A):
 
@@ -104,6 +101,7 @@ def archive(A):
             continue
 
         mt = os.path.getmtime(f)
+        
         dt = datetime.datetime.fromtimestamp(mt)
 
         idnum = d2n(mt)
