@@ -5,6 +5,8 @@ python3 k3/drafts/archive0.py
 #,arcb"""
 
 from k3 import *
+from pathlib import Path
+
 
 Arguments = get_Arguments(
     Defaults={
@@ -23,7 +25,10 @@ def file_type(f):
         'jpg':'jpg',
         'jpeg':'jpg',
         'png':'png',
+        'tiff':'tiff',
         'gif':'gif',
+        'pdf':'pdf',
+        'rtf':'rtf',
         'txt':'txt',
     }
     if e in Q:
@@ -32,92 +37,54 @@ def file_type(f):
         return 'unknown'
 
 
-def get_archived_path(
-    symlink,
-    Arc={},
-    archive_file=opjh('Archive/Arc.pkl'),
-    to_ignore=["./Downloads","./Documents","./Library","./.Trash","./kzpy3","./k3",
-        "./k3-bkp","./Stowed",],
-):
-    from pathlib import Path
-    source_file = Path(symlink).resolve().as_posix()
-    id_name = fname(pname(source_file))
-
-    def assert_file_okay(f):
-        assert os.path.exists(f) == True
-        assert os.path.isdir(f) == True
-        assert os.path.islink(f) == False
-        assert os.path.getsize(f) > 0
-
-    try:
-        assert_file_okay(Arc[id_name])
-        return Arc[id_name]
-    except:
-        try:
-            Arc = lo(archive_file)
-            assert_file_okay(Arc[id_name])
-            return Arc[id_name]
-        except:
-            s = ''
-            for i in range(len(to_ignore)-1):
-                s = s + d2s(' -path',to_ignore[i],'-o ')
-            s = s + d2s(' -path',to_ignore[-1])
-
-            cg("Using unix find command to locate archived files")
-            us = "find . -type d ( " + s + " ) -prune -false -o -name *_t=*"
-            print(us)
-
-            o = unix( us )
-            for d in o:
-                cg(d,id_name)
-                if fname(d) == id_name:
-                    fname_ = fname(source_file)
-                    Arc[id_name] = d
-                    assert_file_okay(Arc[id_name])
-                    return Arc[id_name]
-
 #,a
+
+to_ignore = ["Downloads","Documents","Library",".Trash",]
+to_ignore += ["kzpy3","k3","k3-bkp","Stowed",]
+
+
+
+def source_file_is_okay(symlink):
+    if os.path.exists(symlink) == True:
+        if os.path.isdir(symlink) == False:
+            if os.path.islink(symlink) == True:
+                if os.path.getsize(symlink) > 0:
+                    return True
+    return False
+
+
+
 def update_link(
     symlink,
-    to_ignore=["./Downloads","./Documents","./Library","./.Trash","./kzpy3","./k3",
-        "./k3-bkp","./Stowed",],
+    to_ignore=to_ignore,
+    verbose=True,
 ):
-    from pathlib import Path
     source_file = Path(symlink).resolve().as_posix()
-    id_name = fname(pname(source_file))
 
-    def is_link_okay(symlink):
-        if os.path.exists(symlink) == True:
-            if os.path.isdir(symlink) == False:
-                if os.path.islink(symlink) == False:
-                    if os.path.getsize(symlink) > 0:
-                        return True
-        return False
+    id_folder_name = fname(pname(source_file))
 
-    if is_link_okay(symlink):
-        cm(0)
+    if source_file_is_okay(symlink):
+        if verbose:
+            cg('source_file_is_okay')
         return True
     else:
-        cm(1)
-        s = ''
+        ignore_str = ''
         for i in range(len(to_ignore)-1):
-            s = s + d2s(' -path',to_ignore[i],'-o ')
-        s = s + d2s(' -path',to_ignore[-1])
-        cm(2)
+            ignore_str = ignore_str + d2s(' -path',opjh(to_ignore[i]),'-o ')
+        ignore_str = ignore_str + d2s(' -path',opjh(to_ignore[-1]))
         cg("Using unix find command to locate archived files")
-        us = "find . -type d ( " + s + " ) -prune -false -o -name *_t=*"
-        print(us)
-        cm(3)
-        o = unix( us )
-        for d in o:
-            cm(4)
-            cg(d,id_name)
-            if fname(d) == id_name:
-                cm(5)
+        unix_str = "find "+opjh()[:-1]+" -type d ( " + ignore_str + " ) -prune -false -o -name *_t=*"
+        print(unix_str)
+        find_list = unix( unix_str )
+        for f in find_list:
+            cg(f,id_folder_name)
+            if fname(f) == id_folder_name:
                 os_system('rm',qtd(symlink),e=1)
-                os_system('ln -s',qtd(opj(d,fname(source_file))),qtd(symlink),e=1)
-                return is_link_okay(symlink)
+                os_system('ln -s',qtd(opj(f,fname(source_file))),qtd(symlink),e=1)
+                assert source_file_is_okay(symlink)
+                return True
     return False
+
 #,b
 #"Archived/pall/jpg/2020/10/5/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg  _t=1601920090.6705475/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg" =="Archived/pall/jpg/2020/10/5/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg  _t=1601920090.6705475/10E68917-4BF3-4FEA-91B5-D195989B2A54 copy.jpeg"
 
@@ -190,7 +157,7 @@ def archive(A):
                 e=1)
 
         #for lnk in [dlinks,mlinks,ylinks]:
-        #    os_system('ln -s',qtd(new_f),qtd(opj(lnk,fname_)),e=1)
+        #    os_system('ln -ignore_str',qtd(new_f),qtd(opj(lnk,fname_)),e=1)
 
 
     cy('done.')

@@ -16,6 +16,7 @@ stop = start[:-1] + 'b'
 tx = opjD('__temp__.txt')
 os_system("rm",tx,"; python3 k3/scripts/gen/kgrep.py",qtd(start),">",tx)
 g = txt_file_to_list_of_strings(tx)
+os_system("rm",tx)
 
 fs = []
 for h in g:
