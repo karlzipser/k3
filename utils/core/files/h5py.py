@@ -25,12 +25,14 @@ def save_as_h5py(file_path,D,dtype='float16'):
     F = h5w(file_path)
     print('writing topics to',file_path)
     for k in D.keys():
+        cm(k)
         D[k] = na(D[k])
-        print('    ',k,len(D[k]))
+        
         if type(dtype) == dict:
             dt = dtype[k]
         else:
             dt = dtype
+        print('    ',k,len(D[k]),dt)
         F.create_dataset(k,data=D[k],dtype=dt)
     F.close()
     print('done.')

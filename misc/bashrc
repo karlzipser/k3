@@ -31,13 +31,17 @@ export HISTSIZE=100000
 export PYTHONUNBUFFERED=1 
 # needed for time.sleep() to work properly
 
-alias kgrep='k3/scripts/gen/kgrep.py'
-alias mclip='k3/scripts/gen/mclip.py'
-alias stowe='k3/scripts/gen/stowe.py'
-alias ke='k3/scripts/gen/ke.py'
-alias bk3='k3/scripts/gen/bk3.py'
-alias ky='python k3/scripts/gen/ky.py'
-alias nav='python k3/utils/dict_/dict_nav.py'
+alias warn='python3 k3/scripts/gen/warn.py'
+alias bkp='python3  k3/scripts/gen/bkp.py'
+alias kgrep='python3 k3/scripts/gen/kgrep.py'
+alias mclip='python3 k3/scripts/gen/mclip.py'
+alias stowe='python3 k3/scripts/gen/stowe.py'
+alias ke='python3 k3/scripts/gen/ke.py'
+alias bk3='python3 k3/scripts/gen/bk3.py'
+alias ky='python3 k3/scripts/gen/ky.py'
+alias zrun='python3 k3/scripts/gen/zrun.py'
+
+alias nav='python3 k3/utils/dict_/dict_nav.py'
 
 alias sb="
 	if [[ -d '/Volumes' ]]

@@ -2,31 +2,32 @@
 #,a
 from k3 import *
 
+#,p1a
 """
 
-python k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
-    --run direct_Tilden_LCR_15Jul17_12h29m14s_Mr_Yellow\
-    --start 27909\
-    --stop 32417\
+python3 k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
+    --run caffe_z2_direct_local_sidewalks_09Oct16_08h30m15s_Mr_Orange\
+    --start 0\
+    --stop -1\
     --mod 1\
     --future_back_steps 8\
     --use_past False\
     --save_3D_points_in_image True\
     --save_path /Volumes/osx-data/3D_points_in_image_multistep\
     --horizon_factor 1.\
-
-
-
+    -s 0.5\
+    --steer_scale 2.0
 
 """
+#,p1b
 
 """
 direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow
-    √start on smaller path 20300+
+    start on smaller path 20300+
 
 direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow
     .30000 77267
-    √78896 85259
+    78896 85259
     .86319 116043
 
 direct_Tilden_LCR_15Jul17_12h29m14s_Mr_Yellow
@@ -59,7 +60,9 @@ if 'Arguments':
             'future_back_steps':5,
             'save_3D_points_in_image':True,
             'save_path':'<none>',
-            'horizon_factor':1.0
+            'horizon_factor':1.0,
+            'min_motor':-1,
+            'min_encoder':-1,
         }
     )
     if Arguments['save_3D_points_in_image']:
@@ -71,8 +74,6 @@ if 'Arguments':
         past_future_list = ['past','future']
     else:
         past_future_list = ['future']
-
-    zprint(Arguments)
 
     if len(sggo(opjD('Data/train/h5py',Arguments['run']))) > 0:
         run_type = 'train'
@@ -92,9 +93,9 @@ if 'load run data':
             L=h5r(opjD('Data',run_type,'h5py',Arguments['run'],'left_timestamp_metadata_right_ts.h5py'))
         except:
             L=h5r(opjD('Data',run_type,'h5py',Arguments['run'],'left_timestamp_metadata.h5py'))
-        cm('opened L')
+        cg('opened L')
         O = h5r(opjD('Data',run_type,'h5py',Arguments['run'],'original_timestamp_data.h5py'))
-        cm('opened O')
+        cg('opened O')
 
     if 'Y' not in locals():
         Y = lo(opjD('Data/outer_contours/output_2_data',run_type,Arguments['run']+'.pkl'))
@@ -111,7 +112,7 @@ if 'load run data':
 
 
     if 'UO' not in locals():
-        cm('Building UO...')
+        cb('Building UO...')
         t0 = time.time()
         UO = {
             'past':{
@@ -140,11 +141,11 @@ if 'load run data':
                     'steps_left':0,
                 }
         soD(UO,'UO')
-        cm('Made UO in',dp(time.time()-t0),'seconds')
+        cb('Made UO in',dp(time.time()-t0),'seconds')
     else:
         t0 = time.time()
         UO = loD('UO')
-        cm('in',time.time()-t0,'seconds')
+        cb('in',time.time()-t0,'seconds')
 
 
 
@@ -323,7 +324,7 @@ if '3d functions':
 
 
 
-def plot_3D_points_in_image(xys,color='r',sym='o',max_range=5,border=5,doubles=5,horizon_factor=1.0):
+def plot_3D_points_in_image(xys,color='r',sym='o',max_range=5,border=5,doubles=5,horizon_factor=1.0,ms=2):
     xys = na(xys)
     for q in range(doubles):
         if len(xys) > 0:
@@ -339,7 +340,7 @@ def plot_3D_points_in_image(xys,color='r',sym='o',max_range=5,border=5,doubles=5
     if len(pts) > 0:
         pts = pts*na([1,horizon_factor]) + na([0,94*(1-horizon_factor)])
         border_point = na([border,border])
-        pts_plot(border_point+pts,sym=sym,ms=2,color=color)
+        pts_plot(border_point+pts,sym=sym,ms=ms,color=color)
 
 
 
@@ -425,13 +426,18 @@ if 'path functionality':
 Colors = {'direct':'b','left':'r','right':'g'}
 U = UO
 
-if True:
+try:
     H = loD(Arguments['run']+'.xy.'+d2n(start,'_to_',stop))
     HH = {}
     for i in rlen(H['x']):
         HH[H['x'][i]] = H['y'][i]
-else:
+except:
+    cr('warning, no .xy. file')
     HH = False
+
+
+Lsteer = 49
+s_ = 0.75
 
 for i in range(start,stop,1):
 
@@ -441,21 +447,39 @@ for i in range(start,stop,1):
     if Arguments['print_motor_encoder']:
         print('motor',dp(L['motor'][i]),'encoder',dp(L['encoder'][i]))
 
-    
-    if L['motor'][i] < 52 or L['encoder_meo'][i] < 0.:
+    try:
+        if L['motor'][i] < Arguments['min_motor'] or L['encoder_meo'][i] < Arguments['min_encoder']:
             continue
+    except:
+        pass
+
+    if 'caffe_z2' in Arguments['run']:
+        if L['state'][i] not in [0,6]:
+            cm(L['state'][i],"==",L['state'][i],"L['state'][i] not in [0,6]")
+            pass#continue
 
     t0 = time.time()
-    xyi,alpha,d_alpha,a = grow_path(
-        L['gyro_heading_x_meo'][i],
-        L['encoder_meo'][i],
-        L['motor'][i],
-        xyi,
-        alpha,
-        i,
-        1 * sample_frequency,
-    )
 
+    try:
+        xyi,alpha,d_alpha,a = grow_path(
+            L['gyro_heading_x_meo'][i],
+            L['encoder_meo'][i],
+            L['motor'][i],
+            xyi,
+            alpha,
+            i,
+            1 * sample_frequency,
+        )
+    except:
+        xyi,alpha,d_alpha,a = grow_path(
+            0,
+            3,
+            55,
+            xyi,
+            alpha,
+            i,
+            1 * sample_frequency,
+        )
 
 
     times['grow_path'].append(time.time()-t0)
@@ -466,16 +490,17 @@ for i in range(start,stop,1):
     for k in past_future_list:
 
         S = U[k]['S']
-
+        
         for j in S:
-
+            
             if j > i:
-                continue
-
+                break
+            
             R = S[j]
-
+            
             if R['index'] == i:
 
+                
                 R['steps_left'] = U[k]['back_steps']
 
 
@@ -495,147 +520,162 @@ for i in range(start,stop,1):
     times['past_future'].append(time.time()-t0)
 
 
-    if 'graphics':
-        t0 = time.time()
-        e = 100
-        plot_top_view = False
-        if i % Arguments['mod'] == 0:
-            xy = xyi[:,:2]
-            if plot_top_view:
-                figure(1)
-                clf()
-                plot([-e,e],[0,0],'k:')
-                plot([0,0],[-e,e],'k:')
-                pts_plot(xy,sym='.',color='c',ms=4)
-            
-            W = { 'past':{'left':None,'right':None}, 'future':{'left':None,'right':None} }
-            for k in past_future_list:
-                T = {'left':0,'right':0}
-                #lctr = 0.0
-                #rctr = 0.0
-                Ctr = {'left':0,'right':0}
-                
-                S = U[k]['S']
-                
-                for j in S:
-                    
-                    R = S[j].copy()
-                    for side in ['left','right']:
-                        if R['steps_left']:
-                            Ctr[side] += 1
-
-                            #print(R['angles_'+side])
-                            #print(R[side])
-
-                            E = {'left':[(0,0)],'right':[(0,0)]}
-
-                            for j in rlen(R['angles_'+side]):
-                                a = R['angles_'+side][j]
-                                a = min(np.abs(a),400)
-                                marker_size = int(a/2.)
-                                #pts_plot(b['outer_countours_rotated_'+s][j] + o['xy'][i],Colors[s],sym='.',ms=marker_size)
-                                if j > 0:
-                                    if side == 'left':
-                                        aa = 180 - a
-                                    else:
-                                        aa = a - 180
-                                    D = get_offshoot( 
-                                        R[side][j-1],
-                                        R[side][j],
-                                        np.abs(a)/30.,
-                                        aa,
-                                    )
-                                    E[side].append(D)
-                            
-                            R[side] = na(E[side].copy())
-                            
-                            T[side] += R[side].copy()
-                            
-                            if plot_top_view:
-                                pts_plot(R[side],sym='.-',ms=2,color=Colors[side])
-
-                for side in ['left','right']:
-                    W[k][side] = T[side] / Ctr[side]
-                    if plot_top_view:
-                        pts_plot(W[k][side],sym='-',ms=2,color='k')
-
-            if plot_top_view:
-                if Arguments['use_past']:
-                    xylim(-50,50,-50,30)
-                else:
-                    xylim(-15,15,-1,30)
-                plt_square()
-                plt.title(i)
-                spause()
-
-
-
-
-
-
-
-
-
-
-
-
-            if HH:
-                hfr = HH[i]
-                #print(intr(hfr))
-                hf  = (94 - hfr)/44.5 
-            else:
-                hf = Arguments['horizon_factor']
-            #print(dp(hf))
-            q = 13
-            a1 = 6
-            a2 = 5
-            d0 = 5
-            mi_bordered_image(O['left_image']['vals'][i],figure_num=2,border=5,img_title=d2s('left_image',i))
-            
-            plot_3D_points_in_image(W['future']['left'][:a1,:],color='r',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=hf)
-            plot_3D_points_in_image(W['future']['left'][a2:q,:],color='r',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)
-            
-            plot_3D_points_in_image(W['future']['right'][:a1,:],color='g',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=hf)
-            plot_3D_points_in_image(W['future']['right'][a2:q,:],color='g',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)
-
-            if False:
-                plot_3D_points_in_image(W['future']['left'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)            
-                plot_3D_points_in_image(W['future']['right'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)
-                plot([0+5,168+5],[hfr+5,hfr+5],'r')
-
-            if intr(L['state'][i])== 2:
-                plt.text(3, 7, 'LEFT', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'red', 'alpha': 1, 'pad': 3})
-            elif intr(L['state'][i]) == 3:
-                plt.text(159, 7, 'RIGHT', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'green', 'alpha': 1, 'pad': 3})
-            elif intr(L['state'][i]) == 1:
-                plt.text(77.3, 7, 'CENTER', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'blue', 'alpha': 1, 'pad': 3})
-            
-            st = 1.5*(99-L['steer'][i]-49)+164/2
-            st = max(st,0)
-            st = min(st,164)
-            plot([5+164/2,5+st],[20,20],'b',linewidth=2)
-            plot([5+164/2,5+164/2],[15,25],'b',linewidth=2)
-
-
-            spause()
-            
-            if Arguments['save_3D_points_in_image']:
-                plt.savefig(
-                    opj(fig_path,d2p(i,'jpeg')),
-                    format='jpeg'
-                )
-            
-
-
-            show_PATH = False
-            if show_PATH:
-                if len(PATH) > Arguments['path_step']:
-                    figure(10)
+    try:
+        if 'graphics':
+            t0 = time.time()
+            e = 100
+            plot_top_view = False
+            if i % Arguments['mod'] == 0:
+                xy = xyi[:,:2]
+                if plot_top_view:
+                    figure(1)
                     clf()
-                    plt_square()
-                    pts_plot(PATH[0:len(PATH):Arguments['path_step']],color='k')
-
+                    plot([-e,e],[0,0],'k:')
+                    plot([0,0],[-e,e],'k:')
+                    pts_plot(xy,sym='.',color='c',ms=4)
                 
+                W = { 'past':{'left':None,'right':None}, 'future':{'left':None,'right':None} }
+                for k in past_future_list:
+                    T = {'left':0,'right':0}
+                    #lctr = 0.0
+                    #rctr = 0.0
+                    Ctr = {'left':0,'right':0}
+                    
+                    S = U[k]['S']
+                    
+                    for j in S:
+                        
+                        R = S[j].copy()
+                        for side in ['left','right']:
+                            
+                            if R['steps_left']:
+                                Ctr[side] += 1
+
+                                E = {'left':[(0,0)],'right':[(0,0)]}
+                                
+                                for j in rlen(R['angles_'+side]):
+
+                                    a = R['angles_'+side][j]
+                                    a = min(np.abs(a),400)
+                                    marker_size = int(a/2.)
+                                    #pts_plot(b['outer_countours_rotated_'+s][j] + o['xy'][i],Colors[s],sym='.',ms=marker_size)
+                                    if j > 0:
+                                        if side == 'left':
+                                            aa = 180 - a
+                                        else:
+                                            aa = a - 180
+                                        D = get_offshoot( 
+                                            R[side][j-1],
+                                            R[side][j],
+                                            np.abs(a)/30.,
+                                            aa,
+                                        )
+                                        E[side].append(D)
+                                
+                                R[side] = na(E[side].copy())
+                                
+                                T[side] += R[side].copy()
+                                
+                                if plot_top_view:
+                                    pts_plot(R[side],sym='.-',ms=2,color=Colors[side])
+
+
+                    for side in ['left','right']:
+                        #print(Ctr[side])
+                        W[k][side] = T[side] / Ctr[side] #R[side].copy()#
+                        if plot_top_view:
+                            pts_plot(W[k][side],sym='-',ms=2,color='k')
+
+
+                if plot_top_view:
+                    if Arguments['use_past']:
+                        xylim(-50,50,-50,30)
+                    else:
+                        xylim(-15,15,-1,30)
+                    plt_square()
+                    plt.title(i)
+                    spause()
+
+
+                if HH:
+                    hfr = HH[i]
+                    #print(intr(hfr))
+                    hf  = (94 - hfr)/44.5 
+                else:
+                    hf = Arguments['horizon_factor']
+                #print(dp(hf))
+                q = 13
+                a1 = 8
+                a2 = 7
+                d0 = 5
+                img = O['left_image']['vals'][i]
+                if True:#'steer_in_image':
+                    Lsteer = s_ * L['steer'][i] + (1-s_) * Lsteer
+                    print(L['steer'][i],int(Lsteer))
+                    st = 1.5*(99-Lsteer-49)+164/2
+                    st = max(st,0)
+                    st = min(st,164)
+                    if L['steer'][i] == 0 and L['motor'][i] == 0: # blank frames
+                        st = 164/2
+                    st = intr(st)
+                    
+                    a = int(min(164/2,st))
+                    b = int(max(164/2,st))
+                    #print(a,b)
+                    img[3:13,a:b,:] = [255,128,0] 
+                mi_bordered_image(img,figure_num=2,border=5,img_title=d2s(Arguments['run'],i))
+                
+                plot_3D_points_in_image(W['future']['left'][:a1,:],color='r',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=hf,ms=4)
+                plot_3D_points_in_image(W['future']['left'][a2:q,:],color='r',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf,ms=3)
+                
+                plot_3D_points_in_image(W['future']['right'][:a1,:],color='g',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=hf,ms=3)
+                plot_3D_points_in_image(W['future']['right'][a2:q,:],color='g',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf,ms=2)
+
+                if False:
+                    plot_3D_points_in_image(W['future']['left'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)            
+                    plot_3D_points_in_image(W['future']['right'][q:,:],color='b',sym='o-',max_range=95,border=5,doubles=0,horizon_factor=hf)
+                    plot([0+5,168+5],[hfr+5,hfr+5],'r')
+
+                if intr(L['state'][i])== 2:
+                    plt.text(3, 7, 'LEFT', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'red', 'alpha': 1, 'pad': 3})
+                elif intr(L['state'][i]) == 3:
+                    plt.text(159, 7, 'RIGHT', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'green', 'alpha': 1, 'pad': 3})
+                elif intr(L['state'][i]) == 1:
+                    plt.text(77.3, 7, 'CENTER', style='normal',fontsize=10, fontweight='bold',bbox={'facecolor': 'blue', 'alpha': 1, 'pad': 3})
+                
+
+                #plot([5+164/2,5+st],[20,20],'b',linewidth=2)
+                #plot([5+164/2,5+164/2],[15,25],'b',linewidth=2)
+
+
+                spause()
+                
+                if Arguments['save_3D_points_in_image']:
+                    plt.savefig(
+                        opj(fig_path,d2p(i,'jpeg')),
+                        format='jpeg'
+                    )
+                
+
+
+                show_PATH = False
+                if show_PATH:
+                    if len(PATH) > Arguments['path_step']:
+                        figure(10)
+                        clf()
+                        plt_square()
+                        pts_plot(PATH[0:len(PATH):Arguments['path_step']],color='k')
+
+
+
+    except KeyboardInterrupt:
+        cr('*** KeyboardInterrupt ***')
+        sys.exit()
+    except:
+        cr(i,'failed')                
+
+
+
 
     times['graphics'].append(time.time()-t0)
     
@@ -643,7 +683,7 @@ for i in range(start,stop,1):
     if i % 100 == 0:
         for k in times.keys():
             times_mean[k] = na(times[k]).mean()
-        kprint(times_mean,'times_mean')
+        kprint(times_mean,d2s(i,'times_mean'))
 
 
 

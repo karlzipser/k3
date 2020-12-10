@@ -17,6 +17,17 @@ All_runs = {
         'tegra-ubuntu_25Oct18_10h21m55s',
         'tegra-ubuntu_12Nov18_20h56m16s',
         'tegra-ubuntu_25Oct18_15h43m36s',
+
+        'caffe_z2_direct_Tilden_22Dec16_14h13m11s_Mr_Teal',
+        'caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange',
+        'caffe_z2_direct_Tilden_22Dec16_14h29m03s_Mr_Teal',
+
+        'caffe_z2_direct_local_31Dec12_16h15m29s_Mr_Silver',
+        'caffe_z2_direct_local_31Dec12_16h08m59s_Mr_Orange',
+        'caffe_z2_direct_local_31Dec12_16h15m44s_Mr_Yellow',
+        'caffe_z2_direct_local_25Nov16_15h56m18s_Mr_Teal',
+        'caffe_z2_direct_local_sidewalks_09Oct16_08h30m15s_Mr_Orange',
+
     ],
     'train' : [
         'Mr_Black_18Sep18_18h06m34s',

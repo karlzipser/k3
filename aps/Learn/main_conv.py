@@ -1,5 +1,28 @@
+
+#,p2a
+"""
+
+python3 k3/aps/Learn/main_conv.py\
+    --main 6\
+    --net_str conv1\
+    --save_output_2 True\
+    --batch_size 1\
+    --save_timer_time 999999\
+    --LR 0.\
+    --runs validate\
+    --manual_input0 0\
+    --GPU -1\
+    --resume True\
+    --graphics_timer_time 0\
+    --backwards False\
+    --single_run caffe_z2_direct_local_sidewalks_09Oct16_08h30m15s_Mr_Orange\
+    --save_figures2 no\
+
+"""
+#,p2b
+
 from k3 import *
-#a=get_Arguments
+
 import k3.aps.Learn.networks.net as networks_net
 """
 import Menu.main
@@ -27,9 +50,6 @@ M = {'Q':{
         'percent_loss_to_show':100,
         'loss_stds':8.0,
         'show_graphics':True,
-
-
- 
     },
 }}
 
@@ -40,26 +60,17 @@ python k3/aps/Learn/main_conv.py --main 6 --net_str conv1  --save_output_2 0 --b
 
 # 11/22/2020
 
-python k3/aps/Learn/main_conv.py\
-    --main 6\
-    --net_str conv1\
-    --save_output_2 True\
-    --batch_size 1\
-    --save_timer_time 999999\
-    --LR 0\
-    --runs validate\
-    --manual_input0 0\
-    --GPU -1\
-    --resume 1\
-    --graphics_timer_time 0\
-    --backwards 0\
-    --resume 1\
-    --single_run tegra-ubuntu_07Oct18_18h24m28s\
+
+
+
     --save_figures2 jpeg\
 
 """
 
 """
+
+
+caffe_z2_direct_Tilden_22Dec16_14h13m11s_Mr_Teal
 direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow
 direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow
 direct_Tilden_LCR_15Jul17_12h29m14s_Mr_Yellow
@@ -145,13 +156,13 @@ def main6():
         from .discriminator1 import Discriminator,weights_init
 
     if 'net_str' in list(Arguments.keys()):
-        clp('   FROM SYS_STR   ','`ybb',ra=0,p=1)
+        clp('   FROM SYS_STR   ','`ybb',ra=False,p=1)
         Nets = {
             'N0':Net_Main(M=M,sys_str=Net_strs[Arguments['net_str']].replace('\n',' ').replace('\t',' '),Arguments_=Arguments),
         }
     else:
         assert(False)
-        clp('   FROM COMMMAND LINE   ','`ybb',ra=0,p=1)
+        clp('   FROM COMMMAND LINE   ','`ybb',ra=False,p=1)
         Nets = {
             'N0':Net_Main(M=M,Arguments_=Arguments),
         }
@@ -189,7 +200,7 @@ def main6():
             if Nets['N0']['P']['resume']:
                 DISCRIMINATOR.load(Nets['N0']['P']['NETWORK_OUTPUT_FOLDER']+'.dcgan')
         except:
-            clp("*** DISCRIMINATOR.load(Nets[n]['P']['NETWORK_OUTPUT_FOLDER']+'.dcgan') failed ***",ra=1)
+            clp("*** DISCRIMINATOR.load(Nets[n]['P']['NETWORK_OUTPUT_FOLDER']+'.dcgan') failed ***",ra=True)
 
 
     graphics_on = False
@@ -334,12 +345,12 @@ def Main6_Output_Object(net_str='pro2pros'):
 
 
     if 'type' not in list(Arguments.keys()):
-        clp('   FROM SYS_STR   ','`ybb',ra=0,p=1)
+        clp('   FROM SYS_STR   ','`ybb',p=1)
         Nets = {
             'N0':Net_Main(M=M,sys_str=Net_strs[net_str].replace('\n',' ').replace('\t',' ')),
         }
     else:
-        clp('   FROM COMMMAND LINE   ','`ybb',ra=0,p=1)
+        clp('   FROM COMMMAND LINE   ','`ybb',p=1)
         Nets = {
             'N0':Net_Main(M=M,Arguments_=Arguments),
         }
@@ -460,14 +471,30 @@ Mains = {
 
 
 if __name__ == '__main__':
-
-        Arguments = get_Arguments()
-        if Arguments['main'] == 6:
-            kprint(Arguments)
-            clp('*** main6() ***',p=2)
-            if 'net_str' not in Arguments:
-                Arguments['net_str'] = ''
-            Mains[6]()
+    Defaults = {
+        ('main','blank'):int,
+        ('net_str','blank'):str,
+        ('save_output_2','blank'): bool,
+        ('batch_size','blank') :int,
+        ('save_timer_time','blank'): int,
+        ('LR','blank') : float,
+        ('runs','blank') : str,
+        ('manual_input0','blank') :int,
+        ('GPU','blank') :int,
+        ('resume','blank'):bool,
+        ('graphics_timer_time','blank'):int,
+        ('backwards','blank'):bool,
+        ('resume','blank'):bool,
+        ('single_run','blank'):str,
+        ('save_figures2','blank'):str,
+    }
+    Arguments = get_Arguments(Defaults)
+    if Arguments['main'] == 6:
+        #kprint(Arguments)
+        clp('*** main6() ***',p=2)
+        if 'net_str' not in Arguments:
+            Arguments['net_str'] = ''
+        Mains[6]()
 
 
 

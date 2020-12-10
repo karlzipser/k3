@@ -410,10 +410,11 @@ def graphics_function(N,M,P):#,X):
                     clp('Exception, shape(c) =',shape(c),'`wrb')
 
             if k_in_D('save_figures2',P):
-                fmt = 'pdf' 
-                if type(P['save_figures2']) is str:
-                    fmt = P['save_figures2']                    
-                plt.savefig(opj(fig_path,d2p(time_string,figname,fmt)),format=fmt)
+                if P['save_figures2'] != 'no':
+                    fmt = 'pdf' 
+                    if type(P['save_figures2']) is str:
+                        fmt = P['save_figures2']                    
+                    plt.savefig(opj(fig_path,d2p(time_string,figname,fmt)),format=fmt)
 
 
 

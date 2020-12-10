@@ -12,15 +12,18 @@ def setup(P):
     Runs = {}
 
     for path in sggo(opjD('Data/outer_contours/rotated2','*.h5py')):
-        #cm('path',path)
+        cm('*** path ***',path)
         #cm(path,r=1)
         r = fname(path).split('.')[0]
-        cm('r',r)
+        #cm('r',r)
         #cm(r,All_runs,r=1)
         #zprint(All_runs[P['runs']])
         if r in All_runs[P['runs']]:
+            cm(0,)
             if os.path.getsize(path) > 0:
+                cm(1)
                 if time.time() - os.path.getmtime(path) > 60:
+                    cm(2)
                     Runs[r] = {}
                     for k in [
                         'rotated',
@@ -33,11 +36,11 @@ def setup(P):
                         Runs[r][k] = None
                     Runs[r]['rotated'] = h5r(path)
                 else:
-                    cm('0',r=1)
+                    pass#cm('0',r=1)
             else:
-                cm('1',r=1)
+                pass#cm('1',r=1)
         else:
-            cm(r,'not in All_runs',r=1)
+            cm(r,'not in All_runs',r=0)
 
     P['good_indicies'] = []
 
@@ -67,7 +70,23 @@ def setup(P):
             if k == 'left_timestamp_metadata_right':
                 k = 'left_timestamp_metadata_right_ts'
             try:
-                Runs[r][k] = h5r(opj(opjD('Data'),list(H['paths'].keys())[0],r,kk+'.h5py'))
+                p = opj(opjD('Data'),list(H['paths'].keys())[0],r,kk+'.h5py')
+                #cm('p',p)
+                Ra = h5r(p)
+                Rk = Ra
+                """
+                cm('here')
+                cm(Ra.keys())#;assert(False)
+                if 'left/vals' in Ra:
+                    Rk = {k:{'left':{'vals':Ra}}}
+                    cm(Rk.keys(),Rk[k].keys(),Rk[k]['left'].keys())
+                    assert(False)
+                else:
+                    Rk = Ra
+                """
+                Runs[r][k] = Rk
+                
+                cg("found",k)
             except:
                 cm("didn't find",k)
 
@@ -83,6 +102,7 @@ def setup(P):
         P['good_indicies'] = lo(good_indicies_file)
     else:
         so(good_indicies_file,P['good_indicies'])
+
 
     P['Runs'] = Runs
     
@@ -172,6 +192,9 @@ def get_data_function(P):
                 P['gctr'] = gctr
                 flip = 0
                 gctr += 1
+                #cm(kys(Runs),r=1)
+                #cg(kys(Runs[r]),r=1)
+                #cm(kys(Runs[r]['original_timestamp_data']),r=1)
                 if gctr > len(Runs[r]['original_timestamp_data']['left_image']['vals']):
                     raw_enter()
 

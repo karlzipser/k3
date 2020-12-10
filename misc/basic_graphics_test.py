@@ -1,3 +1,6 @@
+"""#,bga
+python3 k3/misc/basic_graphics_test.py
+#,bgb"""
 
 from k3 import *
 

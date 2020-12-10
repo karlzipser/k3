@@ -297,4 +297,22 @@ def Percent(title='',prefix='',end_prefix=None):
         show
     )
 
+
+
+def percent(i,n,timer=None,title=''):
+    if timer is not None:
+        if not timer.check():
+            return
+        else:
+            timer.reset()
+    cs = get_terminal_size()[1]
+    p = int(100*i/n)
+    s = '  '+title+' |' + (intr(0.6*p/100*cs)) * '*' + max(0,(intr(0.6*(100-p)/100*cs))-1) * ' ' + str(p) + '% '
+    #s = ' ' * max(0,(3-len(str(p)))-1) + s
+    print(s,end='\r',flush=True)    
+
+
+
+
+
 #EOF

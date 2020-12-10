@@ -191,11 +191,11 @@ def kys(D):
     return list(D.keys())
 
 
-def set_Defaults(Defaults,Dst,verbose=True):
+def set_Defaults(Defaults,Dst,file='',verbose=True):
     for k in Dst.keys():
         if k not in Defaults.keys():
             if verbose:
-                print("*** Warning, argument '"+k+"' not in Defaults:\n\t",
+                print("*** Warning,",file,"argument '"+k+"' not in Defaults:\n\t",
                     list(Defaults.keys())
                 )
                 raw_enter()
@@ -219,7 +219,7 @@ def set_Defaults(Defaults,Dst,verbose=True):
                 b = type(Defaults[k])
 
             if type(Dst[k]) is not b:
-                print("*** Warning, argument '"+k+"' is not of the right type",
+                print("*** Warning,",file,"argument '"+k+"' is not of the right type",
                     "should be",b)
                 raw_enter()
                 
@@ -267,8 +267,10 @@ def args_to_dict(s):
     m = space(s)
     n = []
     keyword_found = False
+    ctr = -1
     for a in m:
-        if not str_is_float(a):
+        ctr += 1
+        if not str_is_float(a) or ctr == 0:
             if a[0] == '-':
                 n.append('KEYWORD='+a)
                 continue
@@ -302,6 +304,7 @@ def args_to_dict(s):
             assert False
 
         d = b[0].replace('-','')
+        #print('d',d)
         if len(b) == 1:
             U[d] = True
         elif len(b) == 2:
@@ -315,11 +318,13 @@ def args_to_dict(s):
                 U[d] = False
             else:
                 U[d] = b[1]
+            #print(U[d])
         else:
             U[d] = b[1:]
-    if 'positional_args' in U and U['positional_args'] == True:
+    #print_dic_simple(U)
+    if 'positional_args' in U and type(U['positional_args']) is bool and U['positional_args'] is True:
         del U['positional_args']
-
+    #print_dic_simple(U)
     return U
 
 a2d = args_to_dict
@@ -362,7 +367,7 @@ def _process_tuple_key(A):
 
 
 
-def get_Arguments(Defaults={},argstr=None,verbose=True):
+def get_Arguments(Defaults={},file='',argstr=None,verbose=True):
 
     if argstr is None:
         args = ' '.join(sys.argv[1:])
@@ -392,12 +397,12 @@ def get_Arguments(Defaults={},argstr=None,verbose=True):
                 if k[0] is REQUIRED:
 
                     if j not in Arguments:
-                        print('*** Error. '+qtd(j)+\
+                        print('*** Error,',file,qtd(j)+\
                             ' is a required cmd line arg. ***')
                         raw_enter()
                     elif k[1] is not type(Arguments[j]):
 
-                        print('*** Error. arg',qtd(j)+\
+                        print('*** Error for arg',file,qtd(j)+\
                             ' is wrong type, should be ',k[1],' ***')
                         raw_enter()
         
@@ -416,6 +421,15 @@ def get_Arguments(Defaults={},argstr=None,verbose=True):
     return Arguments
 
 
+"""
+https://stackoverflow.com/questions/2673385/how-to-generate-random-number-with-the-specific-length-in-python
+"""
+from random import randint
+
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 
 

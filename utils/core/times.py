@@ -34,9 +34,9 @@ class Timer:
             self.reset()
             return value
         return False
-    def message(self,message_str,color='grey',flush=False):
+    def message(self,message_str,color='grey',end='\r',flush=True):
         if self.check():
-            print(message_str+'\r'),
+            print(message_str,end=end,flush=flush),
             #sys.stdout.flush()
             self.reset()
     def percent_message(self,i,i_max,flush=False):
