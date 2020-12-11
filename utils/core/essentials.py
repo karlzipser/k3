@@ -369,6 +369,9 @@ def _process_tuple_key(A):
 
 def get_Arguments(Defaults={},file='',argstr=None,verbose=True):
 
+    if interactive():
+        return Defaults
+        
     if argstr is None:
         args = ' '.join(sys.argv[1:])
     else:   
