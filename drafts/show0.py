@@ -3,7 +3,7 @@
 """#,sq1a
 
 python3 k3/drafts/show0.py \
-    --src /Users/karlzipser/iCloud_Links/jpg \
+    --src /Users/karlzipser/iCloud_Links/jpg/2020 \
     --pattern '*.jpg' \
     --rcratio 1.2 \
 #,sq1b"""
@@ -47,12 +47,29 @@ def resize_to_extent(img,extent):
         return img
 
 
-MOUSE_ = {'xy':(-1,-1),'last_print':'---'}
+
+# Write some Text
+
+font                   = cv2.FONT_HERSHEY_SIMPLEX
+bottomLeftCornerOfText = (10,500)
+fontScale              = 1
+fontColor              = (255,255,255)
+lineType               = 2
+
+
+
+
+MOUSE_ = {'xy':(-1,-1),'last_print':'---','quit':False}
+MOUSE_['text_img'] = np.zeros((128,1024,3), np.uint8)
+
 def mouse_move(event):
+    time.sleep(0.001) # needed to allow main tread time to run
+    if MOUSE_['quit']:
+        sys.exit()
     x, y = event.xdata, event.ydata
     if x is None:
         return
-    #print(int(x),int(y))
+
     MOUSE_['xy'] = (x,y)
     if 'img_display_list' in MOUSE_:
         for I in MOUSE_['img_display_list']:
@@ -62,21 +79,32 @@ def mouse_move(event):
                         if x <= I['corner_x']+padsize+A['extent']:
                             s = I['file'].replace(opjh(),'')
                             if MOUSE_['last_print'] != s:
-                                #print(s)
                                 MOUSE_['last_print'] = s
-                                try:
-                                    cv2.destroyWindow(s_prev)
-                                except:
-                                    pass
                                 mci(
                                     resize_to_extent(
                                         Img_buffer[I['file']],
                                         A['extent2'],
                                     ),
-                                    #title=s,
+                                    title='mci'
                                 )
-                                MOUSE_['s_prev'] = s
-                                spause()
+                                MOUSE_['text_img'] *= 0
+                                cv2.putText(MOUSE_['text_img'],s, 
+                                    bottomLeftCornerOfText, 
+                                    font, 
+                                    fontScale,
+                                    fontColor,
+                                    lineType)
+
+                                #cv2.putText(MOUSE_['text_img'],d2n(s,' ',MOUSE_['quit']),(10,y), font, 0.5,(255,255,0),1, cv2.LINE_AA)
+                                
+                                txt = d2n(s,'\n',MOUSE_['quit'])
+                                y0, dy = 50, 20
+                                for i, line in enumerate(txt.split('\n')):
+                                    y = y0 + i*dy
+                                    cv2.putText(MOUSE_['text_img'],line,(10,y), font, 0.5,(255,255,0),1, cv2.LINE_AA)
+                                    #cv2.putText(img, line, (50, y ), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+
+                                mci(MOUSE_['text_img'],title='text_img')
                                 return
 
 
@@ -180,6 +208,8 @@ plt.connect('motion_notify_event', mouse_move)
 #plt.show()
 spause()
 
-mini_menu(A)
+mini_menu(A,menu_keys=['extent2'])
+MOUSE_['quit'] = True
+time.sleep(1)
 
 #EOF

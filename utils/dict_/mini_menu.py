@@ -46,7 +46,7 @@ def input_something(name,current):
 
 
 
-def mini_menu(A,clear=True,menu_name='MINI MEUNU'):
+def mini_menu(A,clear=True,menu_name='MINI MEUNU',menu_keys=None):
 
     while True:
 
@@ -57,7 +57,14 @@ def mini_menu(A,clear=True,menu_name='MINI MEUNU'):
 
             clp(menu_name,'(ctr-C to exit)','`ybb')
 
-            ks = sorted(kys(A))
+            if menu_keys is None:
+                menu_keys = kys(A)
+            else:
+                for k in menu_keys:
+                    assert k in kys(A)
+
+
+            ks = sorted(menu_keys)
             for i in rlen(ks):
                 k = ks[i]
                 s = A[k]
