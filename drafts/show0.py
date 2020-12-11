@@ -3,10 +3,11 @@
 """#,sq1a
 
 python3 k3/drafts/show0.py \
-    --src /Users/karlzipser/iCloud_Links/jpeg \
-    --pattern *.jpeg \
+    --src /Users/karlzipser/iCloud_Links/jpg \
+    --pattern *.jpg \
+    --rcratio 1. \
 #,sq1b"""
-#,a
+
 
 from k3 import *
 from pathlib import Path
@@ -18,18 +19,18 @@ def find(src,pattern,e=0,r=0,a=1):
     os_system("rm",tempfile)
     return find_list
 
-
-A = get_Arguments(
-    Defaults={
-    'src':opjh('Archived'),
-    'pattern': '_preview.jpg',
+Defaults={
+    'src':opjh('iCloud_Links/jpg'),
+    'pattern': '*.jpg',
     'extent' : 256,
     'ignore_underscore':True,
     'padval':127,
     'padsize':32,
-    'cols':40,
-    }
-)
+    'rcratio':1,#1.618,
+}
+A = get_Arguments(Defaults)
+
+Img_buffer = {}
 
 def resize_to_extent(img,extent):
     if extent != max(shape(img)):
@@ -62,12 +63,14 @@ def mouse_move(event):
                             if MOUSE_['last_print'] != s:
                                 print(s)
                                 MOUSE_['last_print'] = s
+                                mi(Img_buffer[I['file']],'closeup')
+                                spause()
                                 return
 
 
 if 'get image buffer':
 
-    Img_buffer = {}
+    
 
     fs = find(A['src'],A['pattern'],e=1)
 
@@ -82,6 +85,7 @@ if 'get image buffer':
         sf = Path(f).resolve().as_posix()
         try:
             Img_buffer[f] = zimread(sf)
+            cb('loaded',f)
         except:
             try:
                 del Img_buffer[f]
@@ -120,7 +124,7 @@ if 'make image display list':
         img_display_list.append(Img_display)
 
 if 'get list of square-embedded images':
-    A['cols'] = int(1.6*sqrt(len(kys(Img_buffer))))
+    A['cols'] = int(A['rcratio']*sqrt(len(kys(Img_buffer))))
     padsize = A['padsize']
     l = []
     min_x = 10*9
@@ -160,12 +164,5 @@ plt.connect('motion_notify_event', mouse_move)
 #plt.show()
 spause()
 raw_enter()
-
-
-
-
-
-#,b
-
 
 #EOF
