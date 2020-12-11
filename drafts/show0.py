@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-"""#,sq1a
+"""#,sq0a
 
 python3 k3/drafts/show0.py \
     --src /Users/karlzipser/iCloud_Links/jpg/2020 \
     --pattern '*.jpg' \
     --rcratio 1.2 \
-#,sq1b"""
+#,sq0b"""
 
 
 from k3 import *
@@ -98,6 +98,8 @@ def mouse_move(event):
                                 #cv2.putText(MOUSE_['text_img'],d2n(s,' ',MOUSE_['quit']),(10,y), font, 0.5,(255,255,0),1, cv2.LINE_AA)
                                 
                                 txt = d2n(s,'\n',MOUSE_['quit'])
+                                if 'Knot' in txt:
+                                    sys.exit()
                                 y0, dy = 50, 20
                                 for i, line in enumerate(txt.split('\n')):
                                     y = y0 + i*dy
