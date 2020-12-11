@@ -4,8 +4,8 @@
 
 python3 k3/drafts/show0.py \
     --src /Users/karlzipser/iCloud_Links/jpg \
-    --pattern *.jpg \
-    --rcratio 1. \
+    --pattern '*.jpg' \
+    --rcratio 1.2 \
 #,sq1b"""
 
 
@@ -26,7 +26,8 @@ Defaults={
     'ignore_underscore':True,
     'padval':127,
     'padsize':32,
-    'rcratio':1,#1.618,
+    'rcratio':1.1,#1.618,
+    'extent2': 700,
 }
 A = get_Arguments(Defaults)
 
@@ -61,9 +62,20 @@ def mouse_move(event):
                         if x <= I['corner_x']+padsize+A['extent']:
                             s = I['file'].replace(opjh(),'')
                             if MOUSE_['last_print'] != s:
-                                print(s)
+                                #print(s)
                                 MOUSE_['last_print'] = s
-                                mi(Img_buffer[I['file']],'closeup')
+                                try:
+                                    cv2.destroyWindow(s_prev)
+                                except:
+                                    pass
+                                mci(
+                                    resize_to_extent(
+                                        Img_buffer[I['file']],
+                                        A['extent2'],
+                                    ),
+                                    #title=s,
+                                )
+                                MOUSE_['s_prev'] = s
                                 spause()
                                 return
 
@@ -74,7 +86,11 @@ if 'get image buffer':
 
     fs = find(A['src'],A['pattern'],e=1)
 
+
     for f in fs:
+
+        if len(Img_buffer) > 10*10:
+            continue
 
         if f[0] == '_' and A['ignore_underscore']:
             continue
@@ -163,6 +179,7 @@ fig.tight_layout(pad=0)
 plt.connect('motion_notify_event', mouse_move)
 #plt.show()
 spause()
-raw_enter()
+
+mini_menu(A)
 
 #EOF
