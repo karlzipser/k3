@@ -38,10 +38,17 @@ l = []
 for e in d:
     if len(e) > 0:
         if e[0] == ' ' or e[0].isalpha():
-            l.append(e) 
+            l.append(e)
+
+
 clp(' zrun.py running',f+' ','`wbb')
 c = '\n'.join(l)
+
+if fname(f) not in c:
+    cE(qtd(fname(f)), "not in", qtd(c))
+    sys.exit(0)
+
 if 'python ' in c:
-	cr("*** warning, 'python' instead of 'python3' found",r=1)
+	cE("*** warning, 'python' instead of 'python3' found. This can cause failures.",r=1)
 os_system(c,e=1,a=1)
 

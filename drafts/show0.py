@@ -28,8 +28,18 @@ Defaults={
     'padsize':32,
     'rcratio':1.1,#1.618,
     'extent2': 700,
+
+
+    'dst':opjD('w1234.txt'),
+    'write_mode':'a',
+    'start_empty':True,
+
 }
 A = get_Arguments(Defaults)
+
+if A['start_empty']:
+    os_system('rm',A['dst'])
+
 
 Img_buffer = {}
 
@@ -40,37 +50,28 @@ def resize_to_extent(img,extent):
         width = int(img.shape[1] * q)
         height = int(img.shape[0] * q)
         dim = (width, height)
-        #print(shape(img),dim)
         return cv2.resize(img, dim, interpolation = cv2.INTER_LINEAR)
     else:
         print('no resizing')
         return img
 
 
-
-# Write some Text
-
-font                   = cv2.FONT_HERSHEY_SIMPLEX
-bottomLeftCornerOfText = (10,500)
-fontScale              = 1
-fontColor              = (255,255,255)
-lineType               = 2
-
-
-
-
-MOUSE_ = {'xy':(-1,-1),'last_print':'---','quit':False}
-MOUSE_['text_img'] = np.zeros((128,1024,3), np.uint8)
+MOUSE_ = {'xy':(-1,-1),'last_print':'---','quit':False,'last_k':None}
 
 def mouse_move(event):
+
     time.sleep(0.001) # needed to allow main tread time to run
-    if MOUSE_['quit']:
-        sys.exit()
-    x, y = event.xdata, event.ydata
+
+    x, y, k = event.xdata, event.ydata, event.key
+    if k == 'q':
+        cv2.destroyAllWindows()
+        CA()
+        #sys.exit()
+
     if x is None:
         return
 
-    MOUSE_['xy'] = (x,y)
+
     if 'img_display_list' in MOUSE_:
         for I in MOUSE_['img_display_list']:
             if y >= I['corner_y']+padsize:
@@ -78,8 +79,9 @@ def mouse_move(event):
                     if x >= I['corner_x']+padsize:
                         if x <= I['corner_x']+padsize+A['extent']:
                             s = I['file'].replace(opjh(),'')
-                            if MOUSE_['last_print'] != s:
+                            if MOUSE_['last_print'] != s or MOUSE_['last_k'] != k:
                                 MOUSE_['last_print'] = s
+                                MOUSE_['last_k'] = k
                                 mci(
                                     resize_to_extent(
                                         Img_buffer[I['file']],
@@ -87,39 +89,54 @@ def mouse_move(event):
                                     ),
                                     title='mci'
                                 )
-                                MOUSE_['text_img'] *= 0
-                                cv2.putText(MOUSE_['text_img'],s, 
-                                    bottomLeftCornerOfText, 
-                                    font, 
-                                    fontScale,
-                                    fontColor,
-                                    lineType)
 
-                                #cv2.putText(MOUSE_['text_img'],d2n(s,' ',MOUSE_['quit']),(10,y), font, 0.5,(255,255,0),1, cv2.LINE_AA)
-                                
-                                txt = d2n(s,'\n',MOUSE_['quit'])
-                                if 'Knot' in txt:
+                                if False:
+                                    MOUSE_['text_img'] *= 0
+                                    cv2.putText(MOUSE_['text_img'],s, 
+                                        bottomLeftCornerOfText, 
+                                        font, 
+                                        fontScale,
+                                        fontColor,
+                                        lineType)
+
+                                try:
+                                        if k is not None:
+                                            text_to_file(
+                                                A['dst'],
+                                                d2s(
+                                                    '(',
+                                                    qtd(I['file']),
+                                                    ',',
+                                                    qtd(k),
+                                                    ',',
+                                                    qtd(d2c(time.time(),random_with_N_digits(3))),
+                                                    ')',
+                                                ),
+                                                write_mode=A['write_mode'],
+                                            )
+
+                                except KeyboardInterrupt:
+                                    cE('*** KeyboardInterrupt ***')
+                                    text_to_file(A['dst'],"<QUIT>"+'\n',write_mode="a")
                                     sys.exit()
-                                y0, dy = 50, 20
-                                for i, line in enumerate(txt.split('\n')):
-                                    y = y0 + i*dy
-                                    cv2.putText(MOUSE_['text_img'],line,(10,y), font, 0.5,(255,255,0),1, cv2.LINE_AA)
-                                    #cv2.putText(img, line, (50, y ), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+                                except Exception as e:
+                                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                                    file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                                    cE('Exception!',exc_type,file_name,exc_tb.tb_lineno)
+                                    time.sleep(0.25)
 
-                                mci(MOUSE_['text_img'],title='text_img')
                                 return
 
 
 if 'get image buffer':
 
     
-
     fs = find(A['src'],A['pattern'],e=1)
 
 
     for f in fs:
 
-        if len(Img_buffer) > 10*10:
+        if len(Img_buffer) > 6*6:
             continue
 
         if f[0] == '_' and A['ignore_underscore']:
@@ -199,19 +216,14 @@ if 'get list of square-embedded images':
             I['corner_y']+padsize:I['corner_y']+padsize+A['extent'],
             I['corner_x']+padsize:I['corner_x']+padsize+A['extent'],:] =\
             I['square_embeding']
-    #l.append(I['square_embeding'])
 
-
-fig = figure('fig',facecolor=".5")
-#mi(vis_square2(l,padsize=8,padval=padval),'fig')
-mi(bkg)
-fig.tight_layout(pad=0)
-plt.connect('motion_notify_event', mouse_move)
-#plt.show()
-spause()
-
-mini_menu(A,menu_keys=['extent2'])
-MOUSE_['quit'] = True
-time.sleep(1)
-
+while True:
+    fig = figure('fig',facecolor=".5")
+    mi(bkg)
+    fig.tight_layout(pad=0)
+    plt.connect('motion_notify_event', mouse_move)
+    plt.connect('key_press_event', mouse_move)
+    spause()
+    input("type 'q' on matrix window to quit")
+    mini_menu(A)
 #EOF
