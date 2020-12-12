@@ -1,23 +1,18 @@
 #!/usr/bin/env python3
 
-"""#,sq0a
+"""#,s1a
 
-python3 k3/drafts/show0.py \
+python3 k3/drafts/show1.py \
     --src /Users/karlzipser/iCloud_Links/jpg/2020 \
     --pattern '*.jpg' \
     --rcratio 1.2 \
-#,sq0b"""
+#,s1b"""
 
 
 from k3 import *
 from pathlib import Path
 
-def find(src,pattern,e=0,r=0,a=1):
-    tempfile = opjD(d2p('find','temp',random_with_N_digits(9),'txt'))
-    os_system('find',src,'-name',qtd(pattern),">",tempfile,e=e,r=r,a=a)
-    find_list = txt_file_to_list_of_strings(tempfile)
-    os_system("rm",tempfile)
-    return find_list
+
 
 Defaults={
     'src':opjh('iCloud_Links/jpg'),
@@ -25,20 +20,20 @@ Defaults={
     'extent' : 256,
     'ignore_underscore':True,
     'padval':127,
-    'padsize':32,
+    'padsize':5,
     'rcratio':1.1,#1.618,
-    'extent2': 700,
+    'extent2': 350,
 
+    'max_num_images': 20,
 
-    'dst':opjD('w1234.txt'),
-    'write_mode':'a',
-    'start_empty':True,
+    'last_print':'---',
+    'last_k':None,
 
+    'Bload_Arguements':False,
+    'src_pattern':'',
+    'img_display_list':[]
 }
 A = get_Arguments(Defaults)
-
-if A['start_empty']:
-    os_system('rm',A['dst'])
 
 
 Img_buffer = {}
@@ -56,47 +51,50 @@ def resize_to_extent(img,extent):
         return img
 
 
-MOUSE_ = {'xy':(-1,-1),'last_print':'---','quit':False,'last_k':None}
+
 lst = []
+
+timer = Timer(10)
 
 def mouse_move(event):
 
-    """
-    event_dblclick = None
-    event_button = None
-    try:
-        event_dblclick = event.dblclick
-    except:
-        pass
-    try:
-        event_button = event.button
-    except:
-        pass
-    print(event_dblclick,event_button,event.xdata, event.ydata, event.key)
-    """
-
     time.sleep(0.01) # needed to allow main tread time to run
 
+    if timer.check():
+        timer.reset()
+        A['max_num_images'] = randint(16)
+        A['img_display_list'] = []
+        print(A['max_num_images'],len(A['img_display_list']))
+    _show()
+
     x, y, k = event.xdata, event.ydata, event.key
+
+    if k == ' ':
+        plot([0,500],[0,500])
+
+    if k == 'r':
+        mi(A['bkg_image']); fig.tight_layout(pad=0); spause()
+
     if k == 'q':
         cv2.destroyAllWindows()
         CA()
-        #sys.exit()
+        sys.exit()
 
     if x is None:
         return
 
+    padsize = A['padsize']
 
-    if 'img_display_list' in MOUSE_:
-        for I in MOUSE_['img_display_list']:
+    if 'img_display_list' in A:
+        for I in A['img_display_list']:
             if y >= I['corner_y']+padsize:
                 if y <= I['corner_y']+padsize+A['extent']:
                     if x >= I['corner_x']+padsize:
                         if x <= I['corner_x']+padsize+A['extent']:
                             s = I['file'].replace(opjh(),'')
-                            if MOUSE_['last_print'] != s or MOUSE_['last_k'] != k:# or event_button != None or event_dblclick != None:
-                                MOUSE_['last_print'] = s
-                                MOUSE_['last_k'] = k
+                            if A['last_print'] != s or A['last_k'] != k:# or event_button != None or event_dblclick != None:
+                                A['last_print'] = s
+                                A['last_k'] = k
                                 mci(
                                     resize_to_extent(
                                         Img_buffer[I['file']],
@@ -105,14 +103,6 @@ def mouse_move(event):
                                     title='mci'
                                 )
 
-                                if False:
-                                    MOUSE_['text_img'] *= 0
-                                    cv2.putText(MOUSE_['text_img'],s, 
-                                        bottomLeftCornerOfText, 
-                                        font, 
-                                        fontScale,
-                                        fontColor,
-                                        lineType)
 
                                 if True:#try:
                                         if k is not None:
@@ -127,29 +117,14 @@ def mouse_move(event):
                                                         'x':event.x,
                                                         'y':event.y,
                                                         'key':event.key,
-                                                        #'button':event_button,
-                                                        #'dblclick':event_dblclick,
+
                                                     },
                                             })
                                             Bsave(
                                                 lst,
                                                 'a'
                                             )
-                                            """
-                                            text_to_file(
-                                                A['dst'],
-                                                d2s(
-                                                    '(',
-                                                    qtd(I['file']),
-                                                    ',',
-                                                    qtd(k),
-                                                    ',',
-                                                    qtd(d2c(time.time(),random_with_N_digits(3))),
-                                                    ')',
-                                                ),
-                                                write_mode=A['write_mode'],
-                                            )
-                                            """
+
                                 """
                                 except KeyboardInterrupt:
                                     cE('*** KeyboardInterrupt ***')
@@ -165,15 +140,19 @@ def mouse_move(event):
                                 return
 
 
-if 'get image buffer':
 
-    
-    fs = find(A['src'],A['pattern'],e=1)
+def _get_image_buffer():
 
+    if A['src_pattern'] == opj(A['src'],A['pattern']):
+        return
+
+    print('Img_buffer loading...')
+
+    fs = sorted(find(A['src'],A['pattern'],e=1))
 
     for f in fs:
 
-        if len(Img_buffer) > 6*6:
+        if len(Img_buffer) > A['max_num_images']:
             continue
 
         if f[0] == '_' and A['ignore_underscore']:
@@ -192,14 +171,25 @@ if 'get image buffer':
             except:
                 pass
             cE("Couldn't read",sf)
+    A['src_pattern'] = opj(A['src'],A['pattern'])
+    A['img_display_list'] = []
 
-if 'make image display list':
+
+def _make_image_display_list():
+
+    if len(A['img_display_list']) > 0:
+        return
+
+    print('img_display_list being made...')
 
     blank = zeros((A['extent'],A['extent'],3),np.uint8)
-    img_display_list = []
+    A['img_display_list'] = []
 
-    for f in kys(Img_buffer):
-
+    ctr = 0
+    for f in sorted(kys(Img_buffer)):
+        if ctr > A['max_num_images']:
+            break
+        ctr += 1
         Img_display = {
             'file':f,
             'extent':A['extent'],
@@ -221,18 +211,20 @@ if 'make image display list':
         ] = Img_display['resized_img']
         Img_display['square_embeding'] = blank
 
-        img_display_list.append(Img_display)
+        A['img_display_list'].append(Img_display)
 
-if 'get list of square-embedded images':
+    _get_list_of_square_embedded_images__and__make_bkg_image()
+
+
+def _get_list_of_square_embedded_images__and__make_bkg_image():
     A['cols'] = int(A['rcratio']*sqrt(len(kys(Img_buffer))))
     padsize = A['padsize']
-    l = []
-    min_x = 10*9
-    min_y = 10^9
+    min_x = 10**9
+    min_y = 10**9
     max_x = 0
     max_y = 0
     rows,cols = 0,0
-    for I in img_display_list:
+    for I in A['img_display_list']:
         I['corner_x'] = cols * (A['extent'] + padsize)
         I['corner_y'] = rows * (A['extent'] + padsize)
         min_x = min(I['corner_x'],min_x)
@@ -245,46 +237,41 @@ if 'get list of square-embedded images':
             rows += 1
             cols = 0
 
-    MOUSE_['img_display_list'] = img_display_list
-
     bkg = zeros((max_y+2*padsize,max_x+2*padsize,3),np.uint8) + A['padval']
-    for I in img_display_list:
+    for I in A['img_display_list']:
         bkg[
             I['corner_y']+padsize:I['corner_y']+padsize+A['extent'],
             I['corner_x']+padsize:I['corner_x']+padsize+A['extent'],:] =\
             I['square_embeding']
 
-#while True:
-fig = figure('fig',facecolor=".5")
-mi(bkg)
-fig.tight_layout(pad=0)
-for e in ['motion_notify_event','button_press_event','key_press_event']:
-    plt.connect(e, mouse_move)
-
-spause()
-input("type 'q' on matrix window to quit")
-
-#    mini_menu(A)
+    A['bkg_image'] = bkg
+    _mi()
 
 
+def _mi():
+    if 'fig' not in A:
+        A['fig'] = figure('fig',facecolor=".5")
+        
+    mi(A['bkg_image'],'fig')
+    A['fig'].tight_layout(pad=0)
+    spause()
 
 
-"""
-'button_press_event'    MouseEvent  mouse button is pressed
-'button_release_event'  MouseEvent  mouse button is released
-'close_event'   CloseEvent  figure is closed
-'draw_event'    DrawEvent   canvas has been drawn (but screen widget not updated yet)
-'key_press_event'   KeyEvent    key is pressed
-'key_release_event' KeyEvent    key is released
-'motion_notify_event'   MouseEvent  mouse moves
-'pick_event'    PickEvent   artist in the canvas is selected
-'resize_event'  ResizeEvent figure canvas is resized
-'scroll_event'  MouseEvent  mouse scroll wheel is rolled
-'figure_enter_event'    LocationEvent   mouse enters a new figure
-'figure_leave_event'    LocationEvent   mouse leaves a figure
-'axes_enter_event'  LocationEvent   mouse enters a new axes
-'axes_leave_event'  LocationEvent   mouse leaves an axes
-"""
+def _show():
+    _get_image_buffer()
+    _make_image_display_list()
+
+
+def main():
+    _show()
+    for e in ['motion_notify_event','button_press_event','key_press_event']:
+        plt.connect(e, mouse_move)
+    input("type 'q' on matrix window to quit")
+
+
+
+if __name__ == '__main__':
+    main()
 
 
 #EOF

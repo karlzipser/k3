@@ -107,6 +107,14 @@ def mini_menu(A,clear=True,menu_name='MINI MEUNU',menu_keys=None):
             cb('leaving mini_menu')
             break
 
+
+
+
+
+
+
+
+
 if False:
     A={
         'path':'k3',

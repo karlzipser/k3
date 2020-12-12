@@ -11,7 +11,7 @@ def main(**A):
     print_dic_simple(B)
     
     
-def save_obj(obj, name,noisy=True,show_time=False,use_real_path=False):
+def save_obj(obj, name,noisy=False,show_time=False,use_real_path=False):
     assert_disk_locations([pname(name)])
     name = name.replace('.pkl','')
     if use_real_path:
@@ -22,7 +22,7 @@ def save_obj(obj, name,noisy=True,show_time=False,use_real_path=False):
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
     if noisy:
         timer = Timer()
-        a = d2s('. . . saved','`',name+'.pkl','`--rb')
+        a = d2s('. . . saved',name+'.pkl')
         if show_time:
             b = d2s('`','in',dp(timer.time()),'seconds.\r')
         else:
@@ -32,7 +32,7 @@ def save_obj(obj, name,noisy=True,show_time=False,use_real_path=False):
 
 
 
-def load_obj(name,noisy=True,time=False,use_real_path=False):
+def load_obj(name,noisy=False,time=False,use_real_path=False):
     assert_disk_locations([pname(name)])
     if noisy:
         timer = Timer()
@@ -53,12 +53,12 @@ def load_obj(name,noisy=True,time=False,use_real_path=False):
         
 lo = load_obj
 
-def loD(name,noisy=True,use_real_path=False):
+def loD(name,noisy=False,use_real_path=False):
     if use_real_path:
         name = os.path.realpath(name)
     return load_obj(opjD(name),noisy)
 
-def so(arg1,arg2,noisy=True):
+def so(arg1,arg2,noisy=False):
     if True:#try:
         if type(arg1) == str and type(arg2) != str:
             save_obj(arg2,arg1,noisy)
@@ -72,7 +72,7 @@ def so(arg1,arg2,noisy=True):
     else:#except:
         print("exec(EXCEPT_STR)")
 
-def soD(arg1,arg2,noisy=True):
+def soD(arg1,arg2,noisy=False):
     if True:#try:
         if type(arg1) == str and type(arg2) != str:
             save_obj(arg2,opjD(arg1),noisy)

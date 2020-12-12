@@ -119,11 +119,34 @@ def files_to_dict(
     
 
 
-
 def files_to_list(path,**K):
     return all_values(files_to_dict(path,**K))
 
 
+
+def find_list_of_files_recursively(path,pattern,verbose=True):
+    F = find_files_recursively(path,pattern,FILES_ONLY=True,verbose=verbose)
+    l = []
+    m = []
+    if 'o' not in locals():
+        o = []
+    for p in F['paths']:
+        for f in F['paths'][p]:
+            #clp(p,'`r--',f,'`g--')
+            
+            assert (p,f) not in l
+            g = opj(F['src'],p,f)
+            l.append((p,f))
+            if False:#f in m or g in o:
+                cm(f,'in m, or',g,'in o')
+                continue
+            else:
+                m.append(f)
+            
+            n = len(sggo(g))
+            assert n == 1
+            o.append(g)
+    return o
 
 
 def main(**A):

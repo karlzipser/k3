@@ -20,7 +20,7 @@ def list_of_strings_to_txt_file(path_and_filename,str_lst,write_mode="w"):
 
 
 def text_to_file(f,t,write_mode="w"):
-    list_of_strings_to_txt_file(f,t.split('\n'))
+    list_of_strings_to_txt_file(f,t.split('\n'),write_mode=write_mode)
 
 
 def file_to_text(f):
@@ -150,6 +150,7 @@ def find_files_recursively(
     ignore_underscore=True,
     ignore_Trash=True,
     followlinks=True,
+    verbose=True,
 ):
     """
     https://stackoverflow.com/questions/2186525/use-a-glob-to-find-files-recursively-in-python
@@ -160,7 +161,8 @@ def find_files_recursively(
     #timer = Timer(5)
     if src[-1] != '/':
         src = src + '/'
-    print('src =' ,src,', pattern = ',"\"",pattern,"\"")
+    if verbose:
+        print('src =' ,src,', pattern = ',"\"",pattern,"\"")
     for root, dirnames, filenames in os.walk(src,followlinks=followlinks):
         assert(not(FILES_ONLY and DIRS_ONLY))
         if FILES_ONLY:
@@ -203,9 +205,9 @@ def find_files_recursively(
     data['parent_folders'] = [fname(f) for f in folders.keys()]
     data['src'] = src
     data['pattern'] = pattern
-    print(ctr,'matches,',len(data['parent_folders']),'parent folders.')
+    if verbose:
+        print(ctr,'matches,',len(data['parent_folders']),'parent folders.')
     return data
-
 
 
 #

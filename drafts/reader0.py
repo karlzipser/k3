@@ -10,6 +10,8 @@ from k3 import *
 
 Defaults={
     'src':opjD('w123.txt'),
+    ('timestamp','Put timestamp on every entry'):True,
+    'clear_screen':True,
 }
 A = get_Arguments(Defaults)
 
@@ -22,10 +24,12 @@ while True:
         if t > mt:
             mt = t
             txt = file_to_text(A['src'])
-            clear_screen()
-            print(cf(time_str(mode='Pretty2'),'`--u'),'\n\n',txt)
-            if "<QUIT>" in txt:
-                break
+            if A['clear_screen']:
+                clear_screen()
+            if A['timestamp']:
+                print(cf(time_str(mode='Pretty2'),'`--u'))
+            print(txt)
+
     except KeyboardInterrupt:
         cE('*** KeyboardInterrupt ***')
         sys.exit()
@@ -33,5 +37,11 @@ while True:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         cE('Exception!',exc_type,file_name,exc_tb.tb_lineno)
-        time.sleep(0.25)
+        time.sleep(1)
+
+
+
+
+
+
 #EOF

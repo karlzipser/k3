@@ -92,6 +92,42 @@ def gpu_stats(num=500):
 
 
 
+def Bsave(D,name,bucket=opjh('bucket'),max_older=3):
+    olds = sggo(bucket,d2n(name,'.*'))
+    temp = opj(bucket,d2n('----',name,'.',time.time(),'.',random_with_N_digits(9),'.pkl'))
+    os_system('mkdir -p',bucket)
+    so(D,temp)
+    final = opj(bucket,d2n(name,'.',time.time(),'.',random_with_N_digits(9),'.pkl'))
+    os_system('mv',temp,final)
+    if len(sggo(opj(bucket,d2n('----',name,'.*')))) > 0:
+        os_system('rm',opj(bucket,d2n('----',name,'.*')))
+    for i in range(max(0,(len(olds)-max_older+1))):
+        os_system('rm',olds[i],e=0)
+
+
+_loadDic = {'last_mtime':0}
+def Bload(name,bucket=opjh('bucket')):
+    fs = sggo(bucket,name+'*')
+    M = {}
+    for f in fs:
+        M[os.path.getmtime(f)] = f
+    new_f = M[sorted(kys(M))[-1]]
+    mtime = os.path.getmtime(new_f)
+    if mtime <= _loadDic['last_mtime']:
+        return None
+    else:
+        _loadDic['last_mtime'] = mtime
+        return lo(new_f)
+
+
+def find(src,pattern,e=0,r=0,a=1):
+    tempfile = opjD(d2p('find','temp',random_with_N_digits(9),'txt'))
+    os_system('find',src,'-name',qtd(pattern),">",tempfile,e=e,r=r,a=a)
+    find_list = txt_file_to_list_of_strings(tempfile)
+    os_system("rm",tempfile)
+    return find_list
+
+    
 if __name__ == '__main__':
     
     s = "os_system('ls',e=1,r=0)"
