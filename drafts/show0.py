@@ -71,6 +71,9 @@ def mouse_move(event):
         return
 
     MOUSE_['xy'] = (x,y)
+    if x<10 and y<10:
+        print("x<10 and y<10")
+        sys.exit()
     if 'img_display_list' in MOUSE_:
         for I in MOUSE_['img_display_list']:
             if y >= I['corner_y']+padsize:
@@ -99,6 +102,7 @@ def mouse_move(event):
                                 
                                 txt = d2n(s,'\n',MOUSE_['quit'])
                                 if 'Knot' in txt:
+                                    print("if 'Knot' in txt:")
                                     sys.exit()
                                 y0, dy = 50, 20
                                 for i, line in enumerate(txt.split('\n')):

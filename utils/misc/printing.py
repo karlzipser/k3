@@ -233,7 +233,8 @@ def errPrint(*s,**kwargs):
     if 'f' not in kwargs or kwargs['f']:
         kwargs['f'] = 1
         del kwargs['f']
-        s = cf('*** Error: ','`wrb',' ',*s,' ','`wrbr',' ***','`wrb',s1='')
+        #s = cf('*** Error: ','`wrb',' ',*s,' ','`wrbr',' ***','`wrb',s1='')
+        s = cf('*** ','`wrb',' ',*s,' ','`wrbr',' ***','`wrb',s1='')
     clp(s,**kwargs)
     #sys.exit(0) #
     #raise Exception(fline()) #os._exit(1)

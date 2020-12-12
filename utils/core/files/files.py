@@ -19,7 +19,7 @@ def list_of_strings_to_txt_file(path_and_filename,str_lst,write_mode="w"):
     f.close()
 
 
-def text_to_file(f,t):
+def text_to_file(f,t,write_mode="w"):
     list_of_strings_to_txt_file(f,t.split('\n'))
 
 
