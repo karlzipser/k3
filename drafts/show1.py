@@ -3,9 +3,10 @@
 """#,s1a
 
 python3 k3/drafts/show1.py \
-    --src /Users/karlzipser/iCloud_Links/jpg/2020 \
-    --pattern '*.jpg' \
+    --src /Users/karlzipser/iCloud_Links/jpeg/2020 \
+    --pattern '*.jpeg' \
     --rcratio 1.2 \
+    --Bload_Arguements True \
 #,s1b"""
 
 
@@ -15,8 +16,8 @@ from pathlib import Path
 
 
 Defaults={
-    'src':opjh('iCloud_Links/jpg'),
-    'pattern': '*.jpg',
+    'src':opjh('iCloud_Links/jpeg'),
+    'pattern': '*.jpeg',
     'extent' : 256,
     'ignore_underscore':True,
     'padval':127,
@@ -29,7 +30,7 @@ Defaults={
     'last_print':'---',
     'last_k':None,
 
-    'Bload_Arguements':False,
+    'Bload_Arguements':True,
     'src_pattern':'',
     'img_display_list':[]
 }
@@ -60,11 +61,23 @@ def mouse_move(event):
 
     time.sleep(0.01) # needed to allow main tread time to run
 
-    if timer.check():
-        timer.reset()
-        A['max_num_images'] = randint(16)
-        A['img_display_list'] = []
-        print(A['max_num_images'],len(A['img_display_list']))
+    if False:#timer.check():
+        timer.reset()        
+        Bsave(
+            {
+                'max_num_images':randint(16),
+                'img_display_list':[],
+                'padsize':randint(50),
+                'padval':randint(256),
+                'extent2': 100+randint(250),
+                'rcratio': 2*rnd(1),
+            },
+            'show1',
+        )
+
+    if A['Bload_Arguements']:
+        Bload('show1',Dst=A)
+
     _show()
 
     x, y, k = event.xdata, event.ydata, event.key

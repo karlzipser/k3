@@ -105,19 +105,27 @@ def Bsave(D,name,bucket=opjh('bucket'),max_older=3):
         os_system('rm',olds[i],e=0)
 
 
-_loadDic = {'last_mtime':0}
-def Bload(name,bucket=opjh('bucket')):
+_Bload = {'last_mtime':0}
+def Bload(name,Dst=None,bucket=opjh('bucket')):
     fs = sggo(bucket,name+'*')
+    #print(fs)
+    if len(fs) == 0:
+        return None
     M = {}
     for f in fs:
         M[os.path.getmtime(f)] = f
     new_f = M[sorted(kys(M))[-1]]
     mtime = os.path.getmtime(new_f)
-    if mtime <= _loadDic['last_mtime']:
+    if mtime <= _Bload['last_mtime']:
         return None
     else:
-        _loadDic['last_mtime'] = mtime
-        return lo(new_f)
+        _Bload['last_mtime'] = mtime
+        D = lo(new_f)
+        if type(Dst) is dict and type(D) is dict:
+            for k_ in kys(D):
+                assert k_ in Dst
+                Dst[k_] = D[k_]
+        return D
 
 
 def find(src,pattern,e=0,r=0,a=1):

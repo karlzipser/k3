@@ -14,15 +14,30 @@ Defaults={
 }
 A = get_Arguments(Defaults)
 
+M = {
+    'max_num_images':randint(16),
+    'img_display_list':[],
+    'padsize':randint(50),
+    'padval':randint(256),
+    'extent2': 100,
+    'rcratio': 1.5,
+}
 
 while True:
+
+
+    mini_menu(M,once=True)
+    Bsave(M,'show1')
+
     if True:#try:
+
         time.sleep(0.001)
-        d = Bload(A['name'],A['bucket'])
+        d = Bload(A['name'])
         if d is not None:
-            #zprint(D)
             D = d[-1]
             print(fname(D['file']),D['key'])
+
+
     """
     except KeyboardInterrupt:
         cE('*** KeyboardInterrupt ***')
