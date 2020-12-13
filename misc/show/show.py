@@ -1,24 +1,16 @@
 #!/usr/bin/env python3
 
-"""#,s1a
+"""#,show.a
 
-python3 k3/drafts/show1.py \
+python3 k3/misc/show/show.py \
     --src /Users/karlzipser/iCloud_Links/jpg/2020 \
     --pattern '*.jpg' \
     --rcratio 1.2 \
     --Bload_Arguements True \
 
-#,s1b"""
+#,show.b"""
 
-"""#,s11a
 
-python3 k3/drafts/show1.py \
-    --src /Users/karlzipser/iCloud_Links/jpg/2020 \
-    --pattern '*.jpg' \
-    --rcratio 0.5 \
-    --Bload_Arguements True \
-
-#,s11b"""
 
 from k3 import *
 
@@ -33,7 +25,7 @@ Defaults={
     'rcratio':1.1,#1.618,
     'extent2': 350,
 
-    'max_num_images': 20,
+    'max_num_images': 9,
 
     'last_print':'---',
     'last_k':None,
@@ -44,8 +36,7 @@ Defaults={
 }
 A = get_Arguments(Defaults)
 
-
-
+starttime = time.time()
 
 Img_buffer = {}
 
@@ -64,38 +55,18 @@ def resize_to_extent(img,extent):
 
 lst = []
 
-timer = Timer(10)
 
-def mouse_move(event):
+
+def handle_events(event):
 
     time.sleep(0.01) # needed to allow main tread time to run
 
-    if False:#timer.check():
-        timer.reset()        
-        Bsave(
-            {
-                'max_num_images':randint(16),
-                'img_display_list':[],
-                'padsize':randint(50),
-                'padval':randint(256),
-                'extent2': 100+randint(250),
-                'rcratio': 2*rnd(1),
-            },
-            'show1',
-        )
-
     if A['Bload_Arguements']:
-        Bload('show1',Dst=A)
+        Bload('reader',Dst=A,starttime=starttime)
 
     _show()
 
     x, y, k = event.xdata, event.ydata, event.key
-
-    if k == ' ':
-        plot([0,500],[0,500])
-
-    if k == 'r':
-        mi(A['bkg_image']); fig.tight_layout(pad=0); spause()
 
     if k == 'q':
         cv2.destroyAllWindows()
@@ -143,9 +114,9 @@ def mouse_move(event):
                                     })
                                     Bsave(
                                         lst,
-                                        'a'
+                                        'show'
                                     )
-
+                                    clp(k,':',s,'`--rb')
                                 return
 
 
@@ -153,6 +124,9 @@ def mouse_move(event):
 def _get_image_buffer():
 
     from pathlib import Path
+
+    if len(Img_buffer) > 0:
+        return
 
     if len(A['src_patterns']) > 0 and \
         opj(A['src'],A['pattern']) == A['src_patterns'][-1]:
@@ -202,7 +176,7 @@ def _make_image_display_list():
 
     ctr = 0
     for f in sorted(kys(Img_buffer)):
-        print(A['src'],f)
+        #print(A['src'],f)
         if A['src'] not in f:
             continue
         if ctr >= A['max_num_images']:
@@ -269,7 +243,6 @@ def _get_list_of_square_embedded_images__and__make_bkg_image():
 def _mi():
     if 'fig' not in A:
         A['fig'] = figure('fig',facecolor=".5")
-        
     mi(A['bkg_image'],'fig')
     A['fig'].tight_layout(pad=0)
     spause()
@@ -282,10 +255,15 @@ def _show():
 
 def main():
     _show()
-    for e in ['motion_notify_event','button_press_event','key_press_event']:
-        plt.connect(e, mouse_move)
-    input("type 'q' on matrix window to quit")
-
+    #fig = plt.figure('fig')
+    cid0 = A['fig'].canvas.mpl_connect('key_press_event', handle_events)
+    cid1 = A['fig'].canvas.mpl_connect('button_press_event', handle_events)
+    cid2 = A['fig'].canvas.mpl_connect('motion_notify_event', handle_events)
+    #print(cid0, cid1, cid2)
+    #for e in ['motion_notify_event','button_press_event','key_press_event']:
+    #    plt.connect(e, handle_events)
+    #input("type 'q' on matrix window to quit")
+    plt.pause(10**9)
 
 
 if __name__ == '__main__':

@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 
-"""#,r1a
+"""#,reader.a
 
-python3 k3/drafts/reader1.py \
-    --name a \
-#,r1b"""
+python3 k3/misc/show/reader.py 
+
+#,reader.b"""
 
 from k3 import *
 
 Defaults={
-    'name':'a',
     'bucket':opjh('bucket'),
 }
 A = get_Arguments(Defaults)
 
 M = {
-    'src':opjh('iCloud_Links/jpg'),
+    'src':opjh('iCloud_Links/jpg/2020'),
     'pattern': '*.jpg',
     'max_num_images':randint(16),
     'img_display_list':[],
@@ -25,18 +24,23 @@ M = {
     'rcratio': 1.5,
 }
 
+
+
 while True:
 
+    time.sleep(0.001)
 
     r = mini_menu(M,once=True)
+
     if r == 'done':
         break
-    Bsave(M,'show1')
+
+    Bsave(M,'reader')
 
     try:
 
-        time.sleep(0.001)
-        d = Bload(A['name'])
+        d = Bload('show')
+        cm(type(d))
         if d is not None:
             D = d[-1]
             print(fname(D['file']),D['key'])

@@ -103,16 +103,26 @@ def mini_menu(A,clear=True,menu_name='MINI MEUNU',menu_keys=None,once=False):
             else:
                 cE('failed to update',k,r=1)
 
+            if once:
+                return 'once'
+
         except KeyboardInterrupt:
             cb('leaving mini_menu')
-            break
+            return 'done'
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             cE(exc_type,file_name,exc_tb.tb_lineno)
 
-        if once:
-            return
+
+
+
+
+
+
+
+
+
 
 
 

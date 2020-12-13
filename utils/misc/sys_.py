@@ -105,29 +105,34 @@ def Bsave(D,name,bucket=opjh('bucket'),max_older=3):
         os_system('rm',olds[i],e=0)
 
 
-_Bload = {}
-def Bload(name,Dst=None,bucket=opjh('bucket'),starttime=0):
+<<<<<<< HEAD
+_Bload = {'last_mtime':0}
+def Bload(name,Dst=None,bucket=opjh('bucket')):
     fs = sggo(bucket,name+'*')
+    #print(fs)
     if len(fs) == 0:
         return None
+=======
+_loadDic = {'last_mtime':0}
+def Bload(name,bucket=opjh('bucket')):
+    fs = sggo(bucket,name+'*')
+>>>>>>> 7089b8a01e30f3eccef73164c7d4da65caf998fb
     M = {}
     for f in fs:
         M[os.path.getmtime(f)] = f
     new_f = M[sorted(kys(M))[-1]]
     mtime = os.path.getmtime(new_f)
-    if mtime < starttime:
+<<<<<<< HEAD
+    if mtime <= _Bload['last_mtime']:
         return None
-    if name not in _Bload:
-        _Bload[name] = {}
-    elif mtime <= _Bload[name]['last_mtime']:
-        return None
-    _Bload[name]['last_mtime'] = mtime
-    D = lo(new_f)
-    if type(Dst) is dict and type(D) is dict:
-        for k_ in kys(D):
-            assert k_ in Dst
-            Dst[k_] = D[k_]
-    return D
+    else:
+        _Bload['last_mtime'] = mtime
+        D = lo(new_f)
+        if type(Dst) is dict and type(D) is dict:
+            for k_ in kys(D):
+                assert k_ in Dst
+                Dst[k_] = D[k_]
+        return D
 
 
 def find(src,pattern,e=0,r=0,a=1):
@@ -138,7 +143,16 @@ def find(src,pattern,e=0,r=0,a=1):
     return find_list
 
     
-    
+=======
+    if mtime <= _loadDic['last_mtime']:
+        return None
+    else:
+        _loadDic['last_mtime'] = mtime
+        return lo(new_f)
+
+
+
+>>>>>>> 7089b8a01e30f3eccef73164c7d4da65caf998fb
 if __name__ == '__main__':
     
     s = "os_system('ls',e=1,r=0)"
