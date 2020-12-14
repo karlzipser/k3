@@ -14,8 +14,8 @@ A_={
 }
 while True:
 	time.sleep(A['min']*60)
-	cm(0)
+	#cm(0)
 	os_system("osascript -e 'Tell application \"System Events\" to display dialog",qtd(A['txt']),"with title \""+A['title']+"\"'")
-	cm(1)
+	#cm(1)
 
 #EOF

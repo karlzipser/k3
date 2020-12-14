@@ -8,29 +8,35 @@ python3 k3/misc/show/reader.py
 
 from k3 import *
 
-Defaults={
+A = get_Arguments(Defaults={
     'bucket':opjh('bucket'),
-}
-A = get_Arguments(Defaults)
+})
 
 M = {
-    'src':opjh('iCloud_Links/jpg/2020'),
-    'pattern': '*.jpg',
-    'max_num_images':randint(16),
-    'img_display_list':[],
-    'padsize':randint(50),
-    'padval':randint(256),
-    'extent2': 100,
-    'rcratio': 1.5,
+    'max_num_images':10,#IGNORE_INT,
+    #'img_display_list':[],
+    'padsize':1,#IGNORE_INT,
+    'padval':1,#IGNORE_INT,
+    'extent2': 500,#IGNORE_INT,
+    'rcratio': 1.0,#,IGNORE_FLOAT,
+    '_path':opjh('Pictures'),
+    '_pattern':'*.jpg',
+    'imgs':[]
 }
-
 
 
 while True:
 
     time.sleep(0.001)
 
+    prev = (M['_path'],M['_pattern'])
     r = mini_menu(M,once=True)
+    if (M['_path'],M['_pattern']) != prev:
+        M['imgs'] = sorted(find(M['_path'],M['_pattern'],e=1))
+        M['imgs'] = M['imgs'][:M['max_num_images']]
+
+        pprint(M['imgs'])
+        #raw_enter()
 
     if r == 'done':
         break
@@ -40,14 +46,10 @@ while True:
     try:
 
         d = Bload('show')
-        cm(type(d))
         if d is not None:
             D = d[-1]
             print(fname(D['file']),D['key'])
 
-
-
-    
     except KeyboardInterrupt:
         cE('*** KeyboardInterrupt ***')
         sys.exit()

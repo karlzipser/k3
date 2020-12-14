@@ -104,9 +104,9 @@ def Bsave(D,name,bucket=opjh('bucket'),max_older=3):
     for i in range(max(0,(len(olds)-max_older+1))):
         os_system('rm',olds[i],e=0)
 
-
+IGNORE_INT,IGNORE_FLOAT,IGNORE_STR = -99999,-9999.99,'-9999.99'
 _Bload = {}
-def Bload(name,Dst=None,bucket=opjh('bucket'),starttime=0):
+def Bload(name,Dst=None,bucket=opjh('bucket'),starttime=0,ignore_underscore=True):
     fs = sggo(bucket,name+'*')
     if len(fs) == 0:
         return None
@@ -125,8 +125,15 @@ def Bload(name,Dst=None,bucket=opjh('bucket'),starttime=0):
     D = lo(new_f)
     if type(Dst) is dict and type(D) is dict:
         for k_ in kys(D):
+            if k_[0] == '_' and ignore_underscore:
+                continue
+            #if D[k_] in [IGNORE_INT,IGNORE_FLOAT,IGNORE_STR]:
+            #    continue
+            if k_ not in Dst:
+                cE("Bload:",k_,'not in',Dst)
             assert k_ in Dst
             Dst[k_] = D[k_]
+            cm('Dst[',k_,'] =',D[k_])
     return D
 
 
