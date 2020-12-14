@@ -10,6 +10,8 @@ python3 k3/misc/show/show.py \
 
 
 from k3 import *
+import k3.misc.show.key_counter as key_counter
+
 
 A = get_Arguments(Defaults={
     'imgs':sggo(opjh('Pictures/*.jpg')),
@@ -26,6 +28,7 @@ A = get_Arguments(Defaults={
     'Img_buffer':{},
     'starttime':time.time(),
     'lst':[],
+    'Keys':{}
 })
 
 
@@ -118,6 +121,10 @@ def handle_events(event):
                                         'show'
                                     )
                                     clp("'"+k+"'",':',s,'`--rb')
+                                    if I['file'] not in A['Keys']:
+                                        A['Keys'][I['file']] = {}
+                                    key_counter.account_for_key(A['Keys'][I['file']],k)
+                                    print(key_counter.get_key_str(A['Keys'][I['file']]))
                                 return
 
 
