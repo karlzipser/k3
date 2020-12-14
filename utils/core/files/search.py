@@ -10,6 +10,20 @@ def sggo(d,*args):
     a = opj(d,*args)
     return sgg(a)
 
+def sorted_by_cmtime(list_of_files):#,c=True):
+    Mtimes = {}
+    #if c:
+    #    fn = os.path.getctime
+    #else:
+    #    fn = os.path.getmtime
+    for f in list_of_files:
+        Mtimes[f] = min(os.path.getctime(f),os.path.getmtime(f))
+    lst0 = sorted(Mtimes.items(), key=lambda x:x[1])
+    lst1 = []
+    for l in lst0:
+        lst1.append(l[0])
+    return lst1
+
 def get_files_sorted_by_mtime(path_specification):
     files = sggo(path_specification)
     Mtimes = {}

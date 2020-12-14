@@ -21,20 +21,23 @@ M = {
     'rcratio': 1.0,#,IGNORE_FLOAT,
     '_path':opjh('Pictures'),
     '_pattern':'*.jpg',
-    'imgs':[]
+    'imgs':[],
+    '_start':0,
 }
 
+_stop = 0
 
 while True:
 
     time.sleep(0.001)
 
-    prev = (M['_path'],M['_pattern'])
+    prev = (M['_path'],M['_pattern'],M['_start'],_stop)
     r = mini_menu(M,once=True)
-    if (M['_path'],M['_pattern']) != prev:
-        M['imgs'] = sorted(find(M['_path'],M['_pattern'],e=1))
-        M['imgs'] = M['imgs'][:M['max_num_images']]
-
+    M['_start'] = max(0,min(M['_start'],len(M['imgs'])))
+    _stop = M['_start']+M['max_num_images']
+    if (M['_path'],M['_pattern'],M['_start'],_stop) != prev:
+        M['imgs'] = sorted_by_cmtime(find(M['_path'],M['_pattern'],e=1))
+        M['imgs'] = M['imgs'][M['_start']:_stop]
         pprint(M['imgs'])
         #raw_enter()
 

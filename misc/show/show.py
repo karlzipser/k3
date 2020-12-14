@@ -169,7 +169,9 @@ def _make_image_display_list():
     #A['img_display_list'] = []
 
     ctr = 0
-    for f in sorted(A['imgs']):#sorted(kys(Img_buffer)):
+    for f in A['imgs']:
+        print(os.path.getctime(f),os.path.getmtime(f))
+        #sorted(]):#sorted(kys(Img_buffer)):
         if ctr >= A['max_num_images']:
             break
         ctr += 1

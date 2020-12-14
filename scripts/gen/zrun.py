@@ -8,8 +8,8 @@ A = get_Arguments({
 
 A['p'] = A['positional_args']
 
-assert(A['p'][-1] == 'a')
-
+if A['p'][-1] != 'a':
+    A['p'] = A['p'] + '.a'
 start = '#,'+A['p']
 stop = start[:-1] + 'b'
 
