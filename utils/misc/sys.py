@@ -133,7 +133,7 @@ def Bload(name,Dst=None,bucket=opjh('bucket'),starttime=0,ignore_underscore=True
                 cE("Bload:",k_,'not in',Dst)
             assert k_ in Dst
             Dst[k_] = D[k_]
-            cm('Dst[',k_,'] =',D[k_])
+            #cm('Dst[',k_,'] =',D[k_])
     return D
 
 

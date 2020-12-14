@@ -13,7 +13,7 @@ A = get_Arguments(Defaults={
 })
 
 M = {
-    'max_num_images':10,#IGNORE_INT,
+    '_max_num_images':10,#IGNORE_INT,
     #'img_display_list':[],
     'padsize':1,#IGNORE_INT,
     'padval':1,#IGNORE_INT,
@@ -33,10 +33,14 @@ while True:
 
     prev = (M['_path'],M['_pattern'],M['_start'],_stop)
     r = mini_menu(M,once=True)
-    M['_start'] = max(0,min(M['_start'],len(M['imgs'])))
-    _stop = M['_start']+M['max_num_images']
+    _stop = M['_start']+M['_max_num_images'] 
     if (M['_path'],M['_pattern'],M['_start'],_stop) != prev:
-        M['imgs'] = sorted_by_cmtime(find(M['_path'],M['_pattern'],e=1))
+        os_system("""find 'Pictures/17May2013_photos/17May2013_photos' -name "*.JPG" > Desktop/find.temp.274276068.txt""")
+        found = find(M['_path'],M['_pattern'],e=1)
+        #cm(found,r=0)
+        M['imgs'] = sorted_by_cmtime(found)
+        #cy(M['imgs'],r=1)
+        print(M['_start'],_stop)
         M['imgs'] = M['imgs'][M['_start']:_stop]
         pprint(M['imgs'])
         #raw_enter()

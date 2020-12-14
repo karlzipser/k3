@@ -19,18 +19,15 @@ A = get_Arguments(Defaults={
     'padsize':5,
     'rcratio':1.1,#1.618,
     'extent2': 350,
-    'max_num_images': 9,
     'last_print':'---',
     'last_k':None,
     'Bload_Arguements':True,
-    'img_display_list':[]
+    'img_display_list':[],
+    'Img_buffer':{},
+    'starttime':time.time(),
+    'lst':[],
 })
 
-
-if 'setup globals':
-    starttime = time.time()
-    Img_buffer = {}
-    lst = []
 
 image_info_area_height = 100
 
@@ -40,14 +37,14 @@ def handle_events(event):
 
     if A['Bload_Arguements']:
         lst_bkp = A['imgs']
-        if Bload('reader',Dst=A,starttime=starttime):
+        if Bload('reader',Dst=A,starttime=A['starttime']):
             if len(A['imgs']) == 0:
                 A['imgs'] = lst_bkp
             A['img_display_list'] = []
+
     _show()
 
     x, y, k = event.xdata, event.ydata, event.key
-
 
     if k == 'q':
         cv2.destroyAllWindows()
@@ -72,19 +69,18 @@ def handle_events(event):
                                 if k == ' ':
                                     print(s)
                                 img = resize_to_extent(
-                                        Img_buffer[I['file']],
+                                        A['Img_buffer'][I['file']],
                                         A['extent2'],
                                     )
                                 q = zeros((image_info_area_height,shape(img)[1],3),np.uint8)
                                 imgq = np.concatenate((img,q),axis=0) 
-                                fontsize = 0.4#min(max(shape(imgq)[1]/1300,0.3),0.8)
-                                #print(fontsize)
+                                fontsize = 0.4
                                 cv2.putText(
                                     imgq,
                                     pname(s)+'/',
                                     (10,shape(imgq)[0]-30),
                                     cv2.FONT_HERSHEY_SIMPLEX,
-                                    fontsize,#.3,
+                                    fontsize,
                                     (150,150,150),
                                     1,
                                     cv2.LINE_AA
@@ -104,7 +100,7 @@ def handle_events(event):
                                     title='mci'
                                 )
                                 if k is not None and k != ' ':
-                                    lst.append({
+                                    A['lst'].append({
                                             'writer':__file__,
                                             'file':I['file'],
                                             'key':k,
@@ -118,7 +114,7 @@ def handle_events(event):
                                             },
                                     })
                                     Bsave(
-                                        lst,
+                                        A['lst'],
                                         'show'
                                     )
                                     clp("'"+k+"'",':',s,'`--rb')
@@ -133,23 +129,20 @@ def _get_image_buffer():
 
     for f in A['imgs']:
 
-        if f in Img_buffer:
+        if f in A['Img_buffer']:
             continue
-
-        #if len(Img_buffer) >= A['max_num_images']:
-        #    continue
 
         if f[0] == '_' and A['ignore_underscore']:
             continue
 
         sf = Path(f).resolve().as_posix()
         try:
-            Img_buffer[f] = zimread(sf)
+            A['Img_buffer'][f] = zimread(sf)
             cb('loaded',f)
             change = True
         except:
             try:
-                del Img_buffer[f]
+                del A['Img_buffer'][f]
             except:
                 pass
             cE("Couldn't read",sf)
@@ -163,17 +156,10 @@ def _make_image_display_list():
     if len(A['img_display_list']) > 0:
         return
 
-    print('img_display_list being made...')
-
     blank = zeros((A['extent'],A['extent'],3),np.uint8)
-    #A['img_display_list'] = []
 
     ctr = 0
     for f in A['imgs']:
-        print(os.path.getctime(f),os.path.getmtime(f))
-        #sorted(]):#sorted(kys(Img_buffer)):
-        if ctr >= A['max_num_images']:
-            break
         ctr += 1
         Img_display = {
             'file':f,
@@ -184,7 +170,7 @@ def _make_image_display_list():
             'corner_y':0,
             }
 
-        Img_display['resized_img'] = resize_to_extent( Img_buffer[f], A['extent'] )
+        Img_display['resized_img'] = resize_to_extent( A['Img_buffer'][f], A['extent'] )
 
         h,w,d = shape(Img_display['resized_img'])
         blank = 0 * blank + A['padval']
@@ -202,7 +188,7 @@ def _make_image_display_list():
 
 
 def _get_list_of_square_embedded_images__and__make_bkg_image():
-    A['cols'] = int(A['rcratio']*sqrt(len(kys(Img_buffer))))
+    A['cols'] = int(A['rcratio']*sqrt(len(A['img_display_list'])))
     padsize = A['padsize']
     min_x = 10**9
     min_y = 10**9
