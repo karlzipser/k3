@@ -31,7 +31,7 @@ export HISTSIZE=100000
 export PYTHONUNBUFFERED=1 
 # needed for time.sleep() to work properly
 
-alias warn='python3 k3/scripts/gen/warn.py'
+alias warn='python3 k3/scripts/osx/warn.py'
 alias bkp='python3  k3/scripts/gen/bkp.py'
 alias kgrep='python3 k3/scripts/gen/kgrep.py'
 alias mclip='python3 k3/scripts/gen/mclip.py'

@@ -137,24 +137,29 @@ def Bload(name,Dst=None,bucket=opjh('bucket'),starttime=0,ignore_underscore=True
     return D
 
 
+# find iCloud_Links  \( -name '*.JPG' -o -name "*.jpg" \) -print
+
 def find(src,pattern,e=0,r=0,a=1):
-    tempfile = opjD(d2p('find','temp',random_with_N_digits(9),'txt'))
+    tempfile = opjD(d2p('find','temp',time.time(),random_with_N_digits(9),'txt'))
     os_system('find',src,'-name',qtd(pattern),">",tempfile,e=e,r=r,a=a)
     find_list = txt_file_to_list_of_strings(tempfile)
+    find_list = sorted(find_list)
     os_system("rm",tempfile)
     return find_list
 
     
-def should_I_start(_file_,dt=60):
+def should_I_start(_file_,dt=60,verbose=False):
     path = opjh('bucket/times',get_safe_name(_file_))
     os_system('mkdir -p',pname(path),e=0)
     if len(sggo(path)) > 0:
         mt = os.path.getmtime(path)
     else:
         mt = 0
-    print('time since',fname(_file_),'last touched =',dp(time.time() - mt))
+    if verbose:
+        print('time since',fname(_file_),'last touched =',dp(time.time() - mt))
     if time.time() - mt < dt:
-        print('not starting',fname(_file_))
+        if verbose:
+            print('not starting',fname(_file_))
         sys.exit()
     return path
     

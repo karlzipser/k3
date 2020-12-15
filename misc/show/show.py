@@ -8,6 +8,10 @@ python3 k3/misc/show/show.py \
 
 #,show.b"""
 
+# background loading
+# easier to shift forward and backwards
+# listing of what is available
+# auto-labelling within range
 
 from k3 import *
 import k3.misc.show.key_counter as key_counter
@@ -256,7 +260,7 @@ def main():
     cid1 = A['fig'].canvas.mpl_connect('button_press_event', handle_events)
     cid2 = A['fig'].canvas.mpl_connect('motion_notify_event', handle_events)
     plt.pause(10**9)
-
+    raw_input()
 
 if __name__ == '__main__':
     main()
