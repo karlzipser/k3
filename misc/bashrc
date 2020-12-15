@@ -39,7 +39,7 @@ alias stowe='python3 k3/scripts/gen/stowe.py'
 alias ke='python3 k3/scripts/gen/ke.py'
 alias bk3='python3 k3/scripts/gen/bk3.py'
 alias ky='python3 k3/scripts/gen/ky.py'
-alias zrun='python3 k3/scripts/gen/zrun.py'
+alias z='python3 k3/scripts/gen/zrun.py'
 
 alias nav='python3 k3/utils/dict_/dict_nav.py'
 

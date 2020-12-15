@@ -15,8 +15,8 @@ A = get_Arguments(Defaults={
 M = {
     '_max_num_images':10,#IGNORE_INT,
     #'img_display_list':[],
-    'padsize':1,#IGNORE_INT,
-    'padval':1,#IGNORE_INT,
+    'padsize':5,#IGNORE_INT,
+    'padval':0,#IGNORE_INT,
     'extent2': 500,#IGNORE_INT,
     'rcratio': 1.0,#,IGNORE_FLOAT,
     '_path':opjh('Pictures'),

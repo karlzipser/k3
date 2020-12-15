@@ -17,7 +17,7 @@ A = get_Arguments(Defaults={
     'imgs':sggo(opjh('Pictures/*.jpg')),
     'extent' : 256,
     'ignore_underscore':True,
-    'padval':127,
+    'padval':0,
     'padsize':5,
     'rcratio':1.1,#1.618,
     'extent2': 350,
@@ -28,9 +28,14 @@ A = get_Arguments(Defaults={
     'Img_buffer':{},
     'starttime':time.time(),
     'lst':[],
-    'Keys':{}
+    'Keys':{},
 })
 
+D = Bload('show_keys',starttime=0)
+if D is None:
+    Bsave(A['Keys'],'show_keys')
+else:
+    A['Keys'] = D
 
 image_info_area_height = 100
 
@@ -69,8 +74,12 @@ def handle_events(event):
                             if A['last_print'] != s or A['last_k'] != k:
                                 A['last_print'] = s
                                 A['last_k'] = k
-                                if k == ' ':
-                                    print(s)
+                                if True:#k == ' ':
+                                    clp('\n'+qtd(s),'`---')
+                                    try:
+                                        print(key_counter.get_key_str(A['Keys'][I['file']]))
+                                    except:
+                                        pass
                                 img = resize_to_extent(
                                         A['Img_buffer'][I['file']],
                                         A['extent2'],
@@ -120,11 +129,13 @@ def handle_events(event):
                                         A['lst'],
                                         'show'
                                     )
-                                    clp("'"+k+"'",':',s,'`--rb')
+                                    
                                     if I['file'] not in A['Keys']:
                                         A['Keys'][I['file']] = {}
                                     key_counter.account_for_key(A['Keys'][I['file']],k)
+                                    clp('\n'+"'"+k+"'",':',qtd(fname(s)),'`--rb')
                                     print(key_counter.get_key_str(A['Keys'][I['file']]))
+                                    Bsave(A['Keys'],'show_keys')
                                 return
 
 
@@ -145,7 +156,7 @@ def _get_image_buffer():
         sf = Path(f).resolve().as_posix()
         try:
             A['Img_buffer'][f] = zimread(sf)
-            cb('loaded',f)
+            cb('loaded',fname(f))
             change = True
         except:
             try:
@@ -228,7 +239,7 @@ def _get_list_of_square_embedded_images__and__make_bkg_image():
 
 def _mi():
     if 'fig' not in A:
-        A['fig'] = figure('fig',facecolor=".5")
+        A['fig'] = figure('fig',facecolor="0.0")
     mi(A['bkg_image'],'fig')
     A['fig'].tight_layout(pad=0)
     spause()

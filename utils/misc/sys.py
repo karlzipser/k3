@@ -145,6 +145,19 @@ def find(src,pattern,e=0,r=0,a=1):
     return find_list
 
     
+def should_I_start(_file_,dt=60):
+    path = opjh('bucket/times',get_safe_name(_file_))
+    os_system('mkdir -p',pname(path),e=0)
+    if len(sggo(path)) > 0:
+        mt = os.path.getmtime(path)
+    else:
+        mt = 0
+    print('time since',fname(_file_),'last touched =',dp(time.time() - mt))
+    if time.time() - mt < dt:
+        print('not starting',fname(_file_))
+        sys.exit()
+    return path
+    
     
 if __name__ == '__main__':
     
