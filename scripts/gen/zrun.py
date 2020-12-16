@@ -2,6 +2,8 @@
 
 from k3.utils import *
 
+record_PID(__file__)
+
 A = get_Arguments({
 	('positional_args', "project start code, must end in 'a'") : str,
 },__file__)

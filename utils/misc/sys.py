@@ -204,6 +204,34 @@ def memory():
 
 
 
+def record_PID(_file_,just_one=False):
+    #cg(1,r=1)
+    import psutil
+    os_system('mkdir -p',opjb('pids'))
+    fs = sggo(opjb('pids','*'))
+    #cm(fs,r=1)
+    for f in fs:
+        #print(f,_file_)
+        if _file_ is not None and fname(_file_) in f:
+            if just_one:
+                print(_file_,'can only be run one at a time.')
+                sys.exit()
+        try:
+            p = int(fname(f).split('.')[0])
+            #cm(p,r=1)
+            psutil.Process(p)
+        except:
+            #cr(f,'not valid PID')
+            os_system('rm',f,e=1)
+    if _file_ == None:
+        return
+    pid = str(os.getpid())
+    print("This process",_file_,"has the PID", pid) 
+    os_system('touch',opjb('pids',pid+'.'+fname(_file_)))
+
+record_PID(None) # this will check for dead processes each time k3 imported
+
+
 if __name__ == '__main__':
     
     s = "os_system('ls',e=1,r=0)"

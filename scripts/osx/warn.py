@@ -2,6 +2,8 @@
 
 from k3.utils import *
 
+record_PID(__file__,just_one=True)
+
 try:
 	from bucket.idata.warn import rndWarning
 except:

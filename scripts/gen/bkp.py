@@ -2,6 +2,8 @@
 
 from k3.utils import *
 
+record_PID(__file__,just_one=True)
+
 cb(__file__)
 
 A = get_Arguments({
@@ -44,3 +46,4 @@ while True:
     time.sleep(A['sec'])
 
 #EOF
+

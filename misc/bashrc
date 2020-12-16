@@ -34,7 +34,7 @@ export PYTHONUNBUFFERED=1
 alias warn='python3 k3/scripts/osx/warn.py'
 alias bkp='python3  k3/scripts/gen/bkp.py'
 alias kgrep='python3 k3/scripts/gen/kgrep.py'
-alias pgrep="top | awk '{print \$1,\$2,\$3,\$4,\$8}' | grep Python"
+alias pygrep="top | awk '{print \$1,\$2,\$3,\$4,\$8}' | grep Python"
 alias mclip='python3 k3/scripts/gen/mclip.py'
 alias stowe='python3 k3/scripts/gen/stowe.py'
 alias ke='python3 k3/scripts/gen/ke.py'
@@ -44,7 +44,6 @@ alias z='python3 k3/scripts/gen/zrun.py'
 
 alias nav='python3 k3/utils/dict_/dict_nav.py'
 
-alias pytop="top | grep Python"
 
 alias sb="
 	if [[ -d '/Volumes' ]]

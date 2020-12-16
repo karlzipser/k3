@@ -14,6 +14,7 @@ python3 k3/misc/show/show.py \
 # auto-labelling within range
 
 from k3 import *
+record_PID(__file__)
 import k3.misc.show.key_counter as key_counter
 
 
