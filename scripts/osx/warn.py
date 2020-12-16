@@ -2,25 +2,42 @@
 
 from k3.utils import *
 
-print(__file__)
+try:
+	from bucket.idata.warn import rndWarning
+except:
+	cE("Couldn't import rndWarning")
+	assert False
 
-#path = should_I_start(__file__)
-
-#os_system('python3 k3/scripts/gen/bkp.py &') 
+cr(__file__)
 
 A = get_Arguments({
-	('txt', 'warning text') : "Move now, stop sitting in one place!",
-	('title','dialogue title') :'Warning!',
 	('min', 'repeat every --min minutes')        : 15,
 })
 
-#starttime = time.time()
+timer = Timer(A['min']*60)
+print_timer = Timer(60)
+print_timer.trigger()
 
-print('warning...')
+
 while True:
+	if print_timer.check():
+		print_timer.reset()
+		cr(
+			'Warning in',
+			datetime.timedelta(seconds=int(A['min']*60 - timer.time())),
+		)
+	if timer.check():
+		timer.reset()
 
-	for i in range(A['min']*60):
-		time.sleep(1)
-	os_system("osascript -e 'Tell application \"System Events\" to display dialog",qtd(A['txt']),"with title \""+A['title']+"\"'")
+		txt,title = rndWarning()
+
+		result = do_dialog( txt, title )
+
+		if result == '':
+			cE('button returned:CANCEL')
+		else:
+			cg(result)
+
+	time.sleep(30)
 
 #EOF

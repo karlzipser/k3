@@ -2,19 +2,15 @@
 
 from k3.utils import *
 
-print(__file__)
+cb(__file__)
 
 A = get_Arguments({
     ('path', 'path to backup')     : opjh('k3'),
     ('dst', 'where to put backup') : opjh('k3-bkp'),
-    ('sec', 'check for backup every --sec sec') : 10,
+    ('sec', 'check for backup every --sec sec') : 30,
     ('pat', 'pattern for backup files') : '*.py',
     'verbose':False,
 })
-
-
-
-
 
 
 times = [0]
@@ -24,7 +20,7 @@ while True:
     fs = find_list_of_files_recursively(A['path'],A['pat'],verbose=A['verbose'])
 
     if A['verbose']:
-        print(len(fs),'files with pattern',A['pat'],'in',A['path'])
+        cb(len(fs),'files with pattern',A['pat'],'in',A['path'])
 
     p = opj(A['dst'],fname(A['path']))
 
@@ -41,7 +37,7 @@ while True:
                 d = d.replace('.py',tstr+'.py')
                 os_system('mkdir -p',pname(d),e=0)
                 os_system('cp',f,qtd(d),e=0)
-                clp('***',d,'`-bb')
+                clp('***',d,'`wbb')
 
     times.append(time.time())
 

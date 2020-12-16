@@ -34,6 +34,9 @@ def opjh(*args):
 def opjD(*args):
     return opjh('Desktop',opj(*args))
 
+def opjb(*args):
+    return opjh('bucket',opj(*args))
+
 def opjk(*args):
     return opjh('k3',opj(*args))
 

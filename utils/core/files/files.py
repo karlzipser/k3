@@ -214,5 +214,7 @@ def find_files_recursively(
 #
 ############
 
+def get_temp_filename(path=opjD()):
+    return opj(path,d2p('__temp__',time.time(),random_with_N_digits(9),'txt'))
 
 #EOF

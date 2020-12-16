@@ -2,21 +2,26 @@
 
 from k3.utils import *
 
-#print(__file__)
-
 path = should_I_start(__file__)
 
-os_system('python3 k3/scripts/gen/bkp.py &') 
-os_system('python3 k3/scripts/osx/warn.py &') 
+cg(__file__)
 
+startfiles = [
+	"scripts/gen/bkp.py",
+	"scripts/osx/warn.py"
+]
+
+for s in startfiles:
+	os_system('python3',opjk(s),'&') 
 
 starttime = time.time()
 
 while True:
 	for i in range(6):
 		if True:
-			print(dp(time.time() - starttime))
+			cg('time since starttime =',datetime.timedelta(seconds=int(time.time() - starttime)))
 			os_system('touch',path,e=1)
-		time.sleep(10)
+		time.sleep(30)
+
 
 #EOF

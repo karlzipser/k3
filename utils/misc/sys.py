@@ -91,18 +91,19 @@ def gpu_stats(num=500):
 
 
 
-
+iCloud_bucket = opjh("Library/Mobile Documents/com~apple~CloudDocs/iCloud-bucket")
 def Bsave(D,name,bucket=opjh('bucket'),max_older=3):
     olds = sggo(bucket,d2n(name,'.*'))
     temp = opj(bucket,d2n('----',name,'.',time.time(),'.',random_with_N_digits(9),'.pkl'))
-    os_system('mkdir -p',bucket)
-    so(D,temp)
     final = opj(bucket,d2n(name,'.',time.time(),'.',random_with_N_digits(9),'.pkl'))
-    os_system('mv',temp,final)
-    if len(sggo(opj(bucket,d2n('----',name,'.*')))) > 0:
-        os_system('rm',opj(bucket,d2n('----',name,'.*')))
+    os_system('mkdir -p',bucket)
+    so(temp,D,noisy=True)
+    os_system('mv',qtd(temp),qtd(final))
+    for f in sggo(opj(bucket,d2n('----',name,'.*'))):
+        os_system('rm',qtd(f),e=1)
     for i in range(max(0,(len(olds)-max_older+1))):
-        os_system('rm',olds[i],e=0)
+        os_system('rm',qtd(olds[i]),e=0)
+
 
 IGNORE_INT,IGNORE_FLOAT,IGNORE_STR = -99999,-9999.99,'-9999.99'
 _Bload = {}
@@ -163,7 +164,46 @@ def should_I_start(_file_,dt=60,verbose=False):
         sys.exit()
     return path
     
-    
+
+
+def do_dialog(text,title):
+    tempfile = get_temp_filename(path=opjb())
+    os_system(
+        "osascript -e 'Tell application \"System Events\" to display dialog",
+        qtd(text),
+        "with title \""+title+"\"' > " + tempfile
+    )
+    output = file_to_text(tempfile)
+    os_system('rm',tempfile)
+    return output
+
+
+
+def memory():
+    """
+    Get node total memory and memory usage
+    http://stackoverflow.com/questions/17718449/determine-free-ram-in-python
+    """
+    if using_osx():
+        import psutil
+        m = psutil.virtual_memory()
+        return m.percent
+    else:
+        with open('/proc/meminfo', 'r') as mem:
+            ret = {}
+            tmp = 0
+            for i in mem:
+                sline = i.split()
+                if str(sline[0]) == 'MemTotal:':
+                    ret['total'] = int(sline[1])
+                elif str(sline[0]) in ('MemFree:', 'Buffers:', 'Cached:'):
+                    tmp += int(sline[1])
+            ret['free'] = tmp
+            ret['used'] = int(ret['total']) - int(ret['free'])
+        return ret
+
+
+
 if __name__ == '__main__':
     
     s = "os_system('ls',e=1,r=0)"

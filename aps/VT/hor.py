@@ -5,16 +5,18 @@
 from k3.utils.vis.other import *
 
 
-r = "direct_Tilden_LCR_15Jul17_10h52m51s_Mr_Yellow"
-p = opj("/Volumes/Tilden/Tilden/LCR/h5py",r,'original_timestamp_data.h5py')
+r = "caffe_z2_direct_local_sidewalks_09Oct16_08h30m15s_Mr_Orange"
+p = opj("/Volumes/osx-12-5-2020-2TB/temp/h5py",r,'original_timestamp_data.h5py')
 O = h5r(p)
 
-start,stop = 68300, 68900
+start,stop = 2017,3300
+start -= 60
+stop += 60
 
 fig = figure(1)
 h = 94/2
 hs = []
-for i in range(start,stop,30):
+for i in range(start,stop,10):
     print(i)
     g = O['left_image']['vals'][i]
     clf()
@@ -54,5 +56,29 @@ hist(hs[:,1])
 plt.xlim(0,94)
 spause()
 
+"""
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_local_sidewalks_09Oct16_08h30m15s_Mr_Orange
+2017,3300
 
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange
+4900,5225
+
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_Tilden_22Dec16_14h29m03s_Mr_Teal
+20400,21035
+
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange
+1961,2318
+
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange
+9107,9357
+
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange
+329,523
+
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange
+18610,18890
+
+/Volumes/osx-12-5-2020-2TB/temp/h5py/caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange
+24393,24928
+"""
 #EOF

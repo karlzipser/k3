@@ -1,3 +1,50 @@
+#,a
+ffs=sorted(find('Pictures','*.jpeg'))
+fs = []
+for f in ffs:
+    fs.append(pname(pname(f)))
+fs = sorted(list(set(fs)))
+for f in fs:
+    print(f)
+
+# F=files_to_dict('Pictures/Desktop pictures copy')
+fs = fs[:100]
+if False:
+    for j in range(1,len(fs)):
+        print(j)
+        p = pname(fs[j-1]).split('/')[0] + '/'
+        for i in range(j,len(fs)):
+            if fs[i][:len(p)] == p:
+                fs[i] = len(p) * ' ' + fs[i][len(p):]
+
+for h in range(1,4):
+    for i in range(len(fs)-1,-1,-1):
+        p = fs[i]
+        for u in range(h):
+            p = pname(p)
+        for j in range(i-1,0,-1):
+            #print(i,j)
+            q = fs[j]
+            for u in range(h):
+                q = pname(q)
+            if q == p:
+                fs[i] = len(p) * ' ' +fname(fs[i])
+                break
+
+for f in fs:
+    print(f)
+
+F = files_to_dict('Pictures/Desktop pictures copy')
+
+def a(F):
+    O = {}
+    ks = sorted(kys(F))
+    for i in rlen(ks):
+        k = ks[i]
+
+
+#,b
+
 
 if False:
     F = find_files_recursively(opjh('Movies'),'*.mp4',FILES_ONLY=True)
@@ -137,7 +184,5 @@ save_as_h5py(opj(dst,'original_timestamp_data.h5py'),O,{'left_image/vals':np.uin
 
 
 #,b
-
-
 
 #EOF

@@ -2,24 +2,81 @@
 #,a
 from k3 import *
 
-#,p1a
+#,p1.a
 """
 
 python3 k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
     --run caffe_z2_direct_local_sidewalks_09Oct16_08h30m15s_Mr_Orange\
-    --start 0\
-    --stop -1\
+    --start 1957\
+    --stop 3360\
     --mod 1\
     --future_back_steps 8\
     --use_past False\
     --save_3D_points_in_image True\
     --save_path /Volumes/osx-data/3D_points_in_image_multistep\
     --horizon_factor 1.\
-    -s 0.5\
+    -s 0.1\
     --steer_scale 2.0
 
 """
-#,p1b
+#,p1.b
+
+#,p1x.a
+"""
+
+python3 k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
+    --run caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange\
+    --start 4840\
+    --stop 5285\
+    --mod 1\
+    --future_back_steps 8\
+    --use_past False\
+    --save_3D_points_in_image True\
+    --save_path /Volumes/osx-data/3D_points_in_image_multistep\
+    --horizon_factor 1.\
+    -s 0.1\
+    --steer_scale 2.0
+
+"""
+#,p1x.b
+
+#,p1y.a
+"""
+
+python3 k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
+    --run caffe_z2_direct_Tilden_22Dec16_14h29m03s_Mr_Teal\
+    --start 20340\
+    --stop 21095\
+    --mod 1\
+    --future_back_steps 8\
+    --use_past False\
+    --save_3D_points_in_image True\
+    --save_path /Volumes/osx-data/3D_points_in_image_multistep\
+    --horizon_factor 1.\
+    -s 0.1\
+    --steer_scale 2.0
+
+"""
+#,p1y.b
+
+#,p1z.a
+"""
+
+python3 k3/aps/VT/recover_driving_map_stuff/trajectory_plotting_example6__mod.py\
+    --run caffe_z2_direct_Tilden_23Dec16_15h22m12s_Mr_Orange\
+    --start 18550\
+    --stop 18950\
+    --mod 1\
+    --future_back_steps 8\
+    --use_past False\
+    --save_3D_points_in_image True\
+    --save_path /Volumes/osx-data/3D_points_in_image_multistep\
+    --horizon_factor 1.\
+    -s 0.1\
+    --steer_scale 2.0
+
+"""
+#,p1z.b
 
 """
 direct_Tilden_LCR_12Jul17_09h41m48s_Mr_Yellow
@@ -437,7 +494,7 @@ except:
 
 
 Lsteer = 49
-s_ = 0.75
+s_ = 0.1
 
 for i in range(start,stop,1):
 
@@ -612,7 +669,7 @@ for i in range(start,stop,1):
                 if True:#'steer_in_image':
                     Lsteer = s_ * L['steer'][i] + (1-s_) * Lsteer
                     print(L['steer'][i],int(Lsteer))
-                    st = 1.5*(99-Lsteer-49)+164/2
+                    st = 2.0*(99-Lsteer-49)+164/2
                     st = max(st,0)
                     st = min(st,164)
                     if L['steer'][i] == 0 and L['motor'][i] == 0: # blank frames
@@ -622,7 +679,7 @@ for i in range(start,stop,1):
                     a = int(min(164/2,st))
                     b = int(max(164/2,st))
                     #print(a,b)
-                    img[3:13,a:b,:] = [255,128,0] 
+                    img[3:13,a:b,:] = [0,0,255]#[255,128,0] 
                 mi_bordered_image(img,figure_num=2,border=5,img_title=d2s(Arguments['run'],i))
                 
                 plot_3D_points_in_image(W['future']['left'][:a1,:],color='r',sym='o-',max_range=95,border=5,doubles=d0,horizon_factor=hf,ms=4)
