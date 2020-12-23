@@ -30,3 +30,9 @@ h = " Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ψ Ωμ ν ξ ο πϪ ϫ Ϭ ϭ �
 
 
 """
+
+python MagicScript.py && osascript -e 'tell application (path to frontmost application as text) to display dialog "The script has completed" buttons {"OK"} with icon caution'
+
+osascript -e 'choose from list {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"} with title "Calendar Picker" with prompt "Choose one or more days" OK button name "These Days" cancel button name "No Days" default items {"Monday"} with multiple selections allowed'
+
+set theFoldersToProcess to choose folder with prompt "Please select the folders containing images to process:" with multiple selections allowed

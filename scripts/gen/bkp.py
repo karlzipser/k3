@@ -9,7 +9,7 @@ cb(__file__)
 A = get_Arguments({
     ('path', 'path to backup')     : opjh('k3'),
     ('dst', 'where to put backup') : opjh('k3-bkp'),
-    ('sec', 'check for backup every --sec sec') : 30,
+    ('sec', 'check for backup every --sec sec') : 10,
     ('pat', 'pattern for backup files') : '*.py',
     'verbose':False,
 })

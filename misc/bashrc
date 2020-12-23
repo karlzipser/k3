@@ -44,7 +44,7 @@ alias z='python3 k3/scripts/gen/zrun.py'
 
 alias nav='python3 k3/utils/dict_/dict_nav.py'
 
-
+alias start='python3 k3/scripts/osx/start.py'
 alias sb="
 	if [[ -d '/Volumes' ]]
 	then

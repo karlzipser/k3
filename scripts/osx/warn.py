@@ -4,11 +4,14 @@ from k3.utils import *
 
 record_PID(__file__,just_one=True)
 
+
 try:
+	# ln -s Library/Mobile\ Documents/com\~apple\~CloudDocs/iCloud-bucket/idata bucket/idata
 	from bucket.idata.warn import rndWarning
 except:
-	cE("Couldn't import rndWarning")
+	cE("Couldn't import rndWarning, try making symbolic link.")
 	assert False
+
 
 cr(__file__)
 
@@ -32,6 +35,7 @@ while True:
 		timer.reset()
 
 		txt,title = rndWarning()
+		#txt,title = 'Warning','Move around'
 
 		result = do_dialog( txt, title )
 
