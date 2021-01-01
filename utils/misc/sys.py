@@ -236,7 +236,10 @@ record_PID(None) # this will check for dead processes each time k3 imported
 
 
 
-def select_with_Finder(location,folder=True,multiple=True):
+def _select_with_Finder(location,folder=True,multiple=True):
+    
+    if not os.path.isdir(location):
+        return None
     if folder:
         what = 'theFolderToProcess'
         choose = 'to choose folder with prompt'
@@ -292,11 +295,28 @@ def select_with_Finder(location,folder=True,multiple=True):
             l1.append(opj(*l3))
     return l1
 
-if False: #eg
-    location = "/Users/karlzipser/iCloud_Links"
-    l = select_with_Finder(location,multiple=True)
-    for m in l:
-        os_system('open',qtd(m),e=1)
+
+
+
+def select_file(path=opjh()):
+    return _select_with_Finder(path,folder=False,multiple=False)
+
+def select_files(path=opjh()):
+    return _select_with_Finder(path,folder=False,multiple=True)
+
+def select_folder(path=opjh()):
+    return _select_with_Finder(path,folder=True,multiple=False)
+
+def select_folders(path=opjh()):
+    return _select_with_Finder(path,folder=True,multiple=True)
+
+
+
+
+
+
+
+
 
 
 

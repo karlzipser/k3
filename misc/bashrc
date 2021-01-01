@@ -32,6 +32,8 @@ export PYTHONUNBUFFERED=1
 # needed for time.sleep() to work properly
 
 alias warn='python3 k3/scripts/osx/warn.py'
+alias sf='python3 k3/scripts/osx/select_file.py'
+
 alias bkp='python3  k3/scripts/gen/bkp.py'
 alias kgrep='python3 k3/scripts/gen/kgrep.py'
 alias pygrep="top | awk '{print \$1,\$2,\$3,\$4,\$8}' | grep Python"
@@ -58,4 +60,9 @@ alias sb="
 	fi
 "
 # ln -s /Users/karlzipser/Library/Mobile\ Documents/com\~apple\~CloudDocs/iCloud-bucket/idata idata
+
+
+
+alias drafts='open https://mail.google.com/mail/u/0/#drafts'
+
 #EOF

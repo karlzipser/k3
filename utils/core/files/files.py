@@ -215,6 +215,15 @@ def find_files_recursively(
 ############
 
 def get_temp_filename(path=opjD()):
-    return opj(path,d2p('__temp__',time.time(),random_with_N_digits(9),'txt'))
+    t = time.time()
+    r = opj(path,d2p('__temp__',t,random_with_N_digits(9),'txt'))
+    while t >= time.time():
+        print("get_temp_filename sleeping")
+        time.sleep(1/10**9)
+    return r
+
+#for i in range(10000000):
+#    get_temp_filename()
+
 
 #EOF
