@@ -59,9 +59,9 @@ alias sb="
 		source ~/.bashrc
 	fi
 "
-# ln -s /Users/karlzipser/Library/Mobile\ Documents/com\~apple\~CloudDocs/iCloud-bucket/idata idata
+# ln -s /Users/karlzipser/Library/Mobile\ Documents/com\~apple\~CloudDocs/
 
-
+iCloud-bucket/idata idata
 
 alias drafts='open https://mail.google.com/mail/u/0/#drafts'
 
@@ -70,5 +70,13 @@ alias sf="python3 k3/scripts/osx/select_file.py"
 alias acc='python k3/scripts/gen/access_D.py'
 
 alias zp='python k3/scripts/gen/zprint.py'
+
+alias vlc='open /Applications/VLC.app'
+alias sub='open /Applications/Sublime\ Text.app'
+alias sub='open /Applications/GIMP-2.10.app'
+alias txt='open /System/Applications/TextEdit.app'
+alias qck='open /System/Applications/QuickTime\ Player.app'
+alias mes='open /System/Applications/Messages.app'
+alias syp='open /System/Applications/System\ Preferences.app'
 
 #EOF

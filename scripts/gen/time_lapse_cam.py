@@ -5,7 +5,7 @@ from k3.utils import *
 python3 k3/scripts/gen/time_lapse_cam.py\
     --mint .1\
     --show\
-    --long 30.\
+    --long 3.\
     --diff 117062205.\
     --desired 10\
 """
@@ -39,7 +39,7 @@ for k in kys(A):
 print(mint_,show_,flip_,path_,diff_,long_,desired_,record_,graph_,beep_)
 
 
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(1)
 
 d = datetime.date.today()
 
@@ -77,15 +77,17 @@ while True:
 
             img_dif.append( 
                 sum(sum(sum(
-                    (prev_frame.astype(float) - frame.astype(float) )**2
+                    (prev_frame[100:,:,:].astype(float) - frame[100:,:,:].astype(float) )**2
                 )))
             )
             
             if graph_:
                 figure(1,figsize=(10,2))
                 clf()
-                plot(img_dif,'k')
-                plot([0,len(img_dif)],[diff_,diff_],'r')
+                ln = min(len(img_dif),100)
+                plot(img_dif[-ln:],'k')
+                
+                plot([0,ln],[diff_,diff_],'r')
                 
                 ylim([0,5*diff_])
                 spause()
@@ -120,19 +122,20 @@ while True:
                 imsave(fname_,frame)#rgbframe)
 
 
-        n = 0
-        t = time.time()
-        for i in range(-1,-len(shot_times),-1):
-            if t - shot_times[i] > long_:
-                break
-            n += 1
-        if n > desired_:
-            diff_ *= 1.01
-            cg('up')
-        elif n < desired_:
-            diff_ *= (1/1.01)
-            cr('down')
-        print(n,int(diff_))
+        if False:
+            n = 0
+            t = time.time()
+            for i in range(-1,-len(shot_times),-1):
+                if t - shot_times[i] > long_:
+                    break
+                n += 1
+            if n > desired_:
+                diff_ *= 1.01
+                cg('up')
+            elif n < desired_:
+                diff_ *= (1/1.01)
+                cr('down')
+            print(n,int(diff_))
 
         if show_:
             if record:
@@ -140,7 +143,8 @@ while True:
                     c = [0,0,255]
                 else:
                     c = [0,255,0]
-                frame[5:20,2:20,:]=c
+                #frame[:100,:,:]=255
+                frame[5:20,5:20,:]=c
             cv2.imshow('Video',frame)# np.fliplr(scipy.misc.imresize(frame,100)))
 
 
