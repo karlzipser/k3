@@ -8,7 +8,7 @@ def zprint(
     t='',
     r=0,
     p=0,
-    use_color=1,
+    use_color=0,
     use_line_numbers=0,
     do_print=1,
     ignore_keys=[],

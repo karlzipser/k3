@@ -6,7 +6,7 @@ from k3.utils import *
 A = get_Arguments({
     ('p', 'start path')     : opjh(),
     ('v', 'variable name') : 'sf_output',
-    ('a', 'append') : False,
+    ('a', 'append') : True,
 })
 
 try:
@@ -38,6 +38,8 @@ else:
 	D[v] = l
 
 soD(D,'D')
+
+print(l,stdout=True)
 
 
 #EOF

@@ -5,7 +5,7 @@ from k3.utils.misc.printing import *
 def os_system(*args,e=0,r=0,a=1):
     s = d2s(*args)
     if(e):
-        clp('$',s,'`---')
+        clp('   $',s,'`y--')
     if a:
         os.system(s)
     if r:
@@ -293,6 +293,7 @@ def _select_with_Finder(location,folder=True,multiple=True):
         if len(l3) > 0:
             l3 = ['/Volumes'] + l3
             l1.append(opj(*l3))
+
     return l1
 
 

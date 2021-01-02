@@ -1,3 +1,18 @@
+
+
+def print(*args, stdout=False, **kwargs):
+    import sys
+    import builtins as __builtins__
+    if stdout:
+        f = sys.stdout
+    else:
+        f = sys.stderr
+    return __builtins__.print(*args, file=f, **kwargs)
+
+#print('test of stdout',stdout=True)
+
+
+
 imports = (
     'os',
     'os.path',

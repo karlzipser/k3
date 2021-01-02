@@ -134,6 +134,11 @@ cb -s --val1 -i 0
 set msg to "Input three letters for each of first letter, second letter, and third letter. Separate your responses by a comma (e.g. aaa,bbb,ccc)"
 set delimAnswer to text returned of (display dialog msg default answer "--aaa --bbbb --cccc")
 
+
+echo $(python3 k3/scripts/osx/select_files.py)
+a=$(python3 k3/scripts/osx/select_files.py)
+mclip -m $a
+
 """
 
 #EOF
