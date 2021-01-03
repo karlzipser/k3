@@ -5,16 +5,16 @@ from k3.utils import *
 python3 k3/scripts/gen/time_lapse_cam.py\
     --mint .1\
     --show\
-    --long 3.\
+    --long 20.\
     --diff 117062205.\
-    --desired 10\
-    --max 10\
-    --camera 0\
-    --flip True\
+    --max 120\
+    --camera 1\
+    --flip False\
     --gtime 0.5\
+    --show_diff False
 """
 #,tcam.b
-
+#\ #117062205.
 
 def xtrans(xs,min_,max_,dstmax):
     #a = (xs + offset) / scale
@@ -63,14 +63,7 @@ def zplot(
             if type(x_prev) is not bool:
                 cv2.line(img,(x_prev,y_prev),(x,y),color,thickness)
 
-if False:
-    xs = rndn(100)
-    ys = rndn(100)
-    x = xtrans(xs,-8,8,1000)
-    y = xtrans(ys,-8,8,1000)
-    a=z55(rndn(1000,1000,3))
-    zplot(a,x,y,'b.',radius=5,cthickness=4)
-    mi(a)
+
 
 A = get_Arguments(
     {
@@ -80,14 +73,14 @@ A = get_Arguments(
         ('path','path'):opjh('scratch'),
         ('diff','image difference diff_'):190000000.,
         ('long','longer interval (s)'):60.,
-        ('desired','desired # shots in long interval'):5,
         ('record','record for real'):False,
         ('graph','show graph'):False,
         ('beep','beep'):False,
         ('camera','0 = internal, 1 = USB camera'):0,
-        ('max','max recording time (min)'):10,
+        ('max','max recording time (min)'):60,
         ('gtime','interval between graph plots'):0.1,
         ('tsteps','steps of timeseries to show'):500,
+        ('show_diff','difference image'):False,
     },
     file=__file__,
 )
@@ -140,16 +133,23 @@ while True:
             
 
         ret, frame = video_capture.read()
-        if flip_:
-            frame__ = cv2.flip(frame,1)
-        else:
-            frame__ = frame.copy()
+
+        if True:#not show_diff_:
+            if flip_:
+                frame__ = cv2.flip(frame,1)
+            else:
+                frame__ = frame.copy()
 
         if type(prev_frame) is not bool:
 
             frame_diff = (prev_frame[offset:,:,:].astype(float) - frame[offset:,:,:].astype(float) )**2
             #mci(z55(frame_diff),title='diff')
             
+            if show_diff_:
+                frame__ = z55(frame_diff)
+                if flip_:
+                    frame__ = cv2.flip(frame__,1)
+
             img_dif.append( 
                 
                 sum(sum(sum(frame_diff)))
@@ -191,7 +191,7 @@ while True:
                 plt.close('all')
                 graph_off = True
 
-        if len(img_dif) > 0 and img_dif[-1] > diff_:
+        if len(img_dif) > 0 and (img_dif[-1] > diff_ and diff_ > 0):
             record = True
         else:
             record = False
@@ -261,6 +261,9 @@ while True:
 
     elif k & 0xFF == ord('f'):
         flip_ = not flip_
+
+    elif k & 0xFF == ord('s'):
+        show_diff_ = not show_diff_
 
 video_capture.release()
 cv2.destroyAllWindows()
