@@ -214,7 +214,7 @@ def record_PID(_file_,just_one=False):
         #print(f,_file_)
         if _file_ is not None and fname(_file_) in f:
             if just_one:
-                print(_file_,'can only be run one at a time.')
+                #print(_file_,'can only be run one at a time.')
                 sys.exit()
         try:
             p = int(fname(f).split('.')[0])

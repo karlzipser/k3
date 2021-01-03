@@ -4,16 +4,20 @@ from k3.utils import *
 
 record_PID(__file__,just_one=True)
 
-cb(__file__)
 
-A = get_Arguments({
-    ('path', 'path to backup')     : opjh('k3'),
-    ('dst', 'where to put backup') : opjh('k3-bkp'),
-    ('sec', 'check for backup every --sec sec') : 10,
-    ('pat', 'pattern for backup files') : '*.py',
-    'verbose':False,
-})
+A = get_Arguments(
+    {
+        ('path', 'path to backup')     : opjh('k3'),
+        ('dst', 'where to put backup') : opjh('k3-bkp'),
+        ('sec', 'check for backup every --sec sec') : 10,
+        ('pat', 'pattern for backup files') : '*.py',
+        'verbose':False,
+    },
+    verbose=True,
+    file=__file__,
+)
 
+#print_dic_simple(A,title=__file__)
 
 times = [0]
 

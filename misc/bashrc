@@ -61,7 +61,7 @@ alias sb="
 "
 # ln -s /Users/karlzipser/Library/Mobile\ Documents/com\~apple\~CloudDocs/
 
-iCloud-bucket/idata idata
+#iCloud-bucket/idata idata
 
 alias drafts='open https://mail.google.com/mail/u/0/#drafts'
 

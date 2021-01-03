@@ -270,8 +270,11 @@ def args_to_dict(s):
     ctr = -1
     for a in m:
         ctr += 1
+        #print(a,0)
         if not str_is_float(a) or ctr == 0:
-            if a[0] == '-':
+            #print(a,1)
+            if a[0] == '-' and not str_is_float(a):
+                #print(a,2)
                 n.append('KEYWORD='+a)
                 continue
         if not keyword_found:
@@ -366,6 +369,29 @@ def _process_tuple_key(A):
         del A[k]
 
 
+A_to_vars_exec_str = """
+for k in kys(A):
+    if k[0] != '-':
+        s = A[k]
+        if False:
+            if type(s) is str:
+                s = qtd(s)
+            else:
+                s = str(s)
+            #exec(k+'_ = '+s)
+        locals()[k+'_'] = s
+
+if False:
+    for k in kys(A):
+        if k[0] != '-':
+            s = A[k]
+            if type(s) is str:
+                s = qtd(s)
+            else:
+                s = str(s)
+            #exec(k+'_ = '+s)
+"""
+
 
 def get_Arguments(Defaults={},file='',argstr=None,verbose=True):
 
@@ -419,7 +445,7 @@ def get_Arguments(Defaults={},file='',argstr=None,verbose=True):
         sys.exit()
 
     if verbose:
-        print_dic_simple(Arguments,title='\nArguments:')
+        box(print_dic_simple(Arguments,title=file,print_=False))
 
     return Arguments
 

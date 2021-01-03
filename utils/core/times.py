@@ -10,10 +10,8 @@ class Timer:
             return True
         else:
             return False
-    def c(self):
-        return self.check()
-    def check2(self):
-        if time.time() - self.start_time > self.time_s:
+    def rcheck(self):
+        if self.check():#time.time() - self.start_time > self.time_s:
             self.reset()
             return True
         else:

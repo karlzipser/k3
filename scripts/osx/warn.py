@@ -2,7 +2,7 @@
 
 from k3.utils import *
 
-
+record_PID(__file__,just_one=True)
 
 
 try:
@@ -14,15 +14,21 @@ except:
 	assert False
 
 
-cr(__file__)
+#cr(__file__)
 
-A = get_Arguments({
-	('min', 'repeat every --min minutes')        : 15,
-	('sd', 'SD of random variation, in minutes') : 1,
-	('one','only one instance can run') : True,
-})
+A = get_Arguments(
+	{
+		('min', 'repeat every --min minutes')        : 15,
+		('sd', 'SD of random variation, in minutes') : 1,
+		#('one','only one instance can run') : True,
+    },
+    verbose=True,
+    file=__file__,
+)
 
-record_PID(__file__,just_one=A['one'])
+
+
+
 
 def get_timer():
 	r = rndn()*A['sd']
@@ -38,10 +44,12 @@ print_timer.trigger()
 while True:
 	if print_timer.check():
 		print_timer.reset()
+		"""
 		cr(
 			'Warning in',
 			datetime.timedelta(seconds=int(timer.time_s - timer.time())),
 		)
+		"""
 	if timer.check():
 
 		timer = get_timer()
