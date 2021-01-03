@@ -16,28 +16,61 @@ python3 k3/scripts/gen/time_lapse_cam.py\
 #,tcam.b
 
 
+def xtrans(xs,min_,max_,dstmax):
+    #a = (xs + offset) / scale
+    #a = dstmax * a
+    a = xs - min_
+    b = a / (max_ - min_)
+    c = b * dstmax
+    return c
 
-
-def q(img,xys,xscale=1.,xoffset=0.,yscale=1.,yoffset=0.,sym='.-',thickness=1):
+def zplot(
+    img,
+    xs,
+    ys,
+    sym='.-',
+    color=False,
+    thickness=1,
+    cthickness=1,
+    radius=4,
+):
     x,x_prev = False,False
-    for xy in xys:
-        x_,y_ = xy[0],xy[1]
+
+    for i in rlen(xs):
+
         if type(x) is not bool:
             x_prev = x
             y_prev = y
-        x = intr(x_ * xscale)
-        y = intr(y_ * yscale)
-        if 'r' in sym:
+
+        x,y = intr(xs[i]),intr(ys[i])
+
+        if color:
+            assert len(color)==3
+
+        elif 'r' in sym:
             color = (255,0,0)
+
         elif 'b' in sym:
             color = (0,0,255)
+
         else:
-            color = (255,255,0)
+            color = (128,128,0)
+
         if '.' in sym:
-            cv2.circle(img,(x,y),4,color,5)
+            cv2.circle(img,(x,y),radius,color,cthickness)
+
         if '-' in sym:
             if type(x_prev) is not bool:
                 cv2.line(img,(x_prev,y_prev),(x,y),color,thickness)
+
+if False:
+    xs = rndn(100)
+    ys = rndn(100)
+    x = xtrans(xs,-8,8,1000)
+    y = xtrans(ys,-8,8,1000)
+    a=z55(rndn(1000,1000,3))
+    zplot(a,x,y,'b.',radius=5,cthickness=4)
+    mi(a)
 
 A = get_Arguments(
     {
@@ -54,6 +87,7 @@ A = get_Arguments(
         ('camera','0 = internal, 1 = USB camera'):0,
         ('max','max recording time (min)'):10,
         ('gtime','interval between graph plots'):0.1,
+        ('tsteps','steps of timeseries to show'):500,
     },
     file=__file__,
 )
@@ -106,6 +140,10 @@ while True:
             
 
         ret, frame = video_capture.read()
+        if flip_:
+            frame__ = cv2.flip(frame,1)
+        else:
+            frame__ = frame.copy()
 
         if type(prev_frame) is not bool:
 
@@ -118,22 +156,37 @@ while True:
             )
             
             if graph_:
-                if graph_timer.rcheck():
+                if True:#graph_timer.rcheck():
 
-                    if graph_off:
-                        graph_off = False
-                        figure(1,figsize=(8,1.5))
-                    clf()
-                    ln = min(len(img_dif),50)
-                    plot(img_dif[-ln:],'k')
+                    #if graph_off:
+                    #    graph_off = False
+                        #figure(1,figsize=(8,1.5))
+                    #clf()
+                    ln = min(len(img_dif),tsteps_)
+                    #plot(img_dif[-ln:],'k')
                     if record_:
                         line_color = 'r'
                     else:
                         line_color = 'g'
-                    plot([0,ln],[diff_,diff_],line_color)
+                    #plot([0,ln],[diff_,diff_],line_color)
                     
-                    ylim([0,5*diff_])
-                    spause()
+                    #ylim([0,5*diff_])
+                    #spause()
+                    #print(shape(frame))
+                    #print(ln)
+                    xs = arange(0,tsteps_)
+                    ys = 0*xs
+                    ys[-ln:] = na(img_dif[-ln:])
+                    width = shape(frame)[1]
+                    x = xtrans(xs,0,max(xs),width)
+                    y = xtrans(ys,0,190000000*25,width)
+                    zplot(frame__,x,y,'b-',radius=5,cthickness=4)
+                    xs = na([0,1])
+                    ys = na([diff_,diff_])
+                    x = xtrans(xs,0,1,width)
+                    y = xtrans(ys,0,190000000*25,width)
+                    zplot(frame__,x,y,'r-',radius=5,cthickness=4)                    
+
             else:
                 plt.close('all')
                 graph_off = True
@@ -166,12 +219,6 @@ while True:
                 imsave(fname_,frame)#rgbframe)
 
         if show_:
-
-            if flip_:
-                frame__ = cv2.flip(frame,1)
-            else:
-                frame__ = frame.copy()
-
 
             if record:
                 if record_:
@@ -212,7 +259,9 @@ while True:
         diff_ *= (1/1.1)
         print('diff_',dp(diff_))
 
-    
+    elif k & 0xFF == ord('f'):
+        flip_ = not flip_
+
 video_capture.release()
 cv2.destroyAllWindows()
 
