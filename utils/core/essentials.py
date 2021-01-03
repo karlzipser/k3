@@ -379,6 +379,7 @@ for k in kys(A):
             else:
                 s = str(s)
             #exec(k+'_ = '+s)
+        print('creating',k+'_')
         locals()[k+'_'] = s
 
 if False:
