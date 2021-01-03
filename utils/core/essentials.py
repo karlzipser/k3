@@ -370,6 +370,7 @@ def _process_tuple_key(A):
 
 
 A_to_vars_exec_str = """
+__l = []
 for k in kys(A):
     if k[0] != '-':
         s = A[k]
@@ -379,8 +380,12 @@ for k in kys(A):
             else:
                 s = str(s)
             #exec(k+'_ = '+s)
-        print('creating',k+'_')
-        locals()[k+'_'] = s
+        #print('creating',k+'_')
+        k_ = k+'_'
+        __l.append(k_)
+        locals()[k_] = s
+print('created',__l)
+del k,k_,s
 
 if False:
     for k in kys(A):
@@ -446,7 +451,7 @@ def get_Arguments(Defaults={},file='',argstr=None,verbose=True):
         sys.exit()
 
     if verbose:
-        box(print_dic_simple(Arguments,title=file,print_=False))
+        box(print_dic_simple(Arguments,title=' '+file.split('/')[-1],print_=False))
 
     return Arguments
 
