@@ -8,13 +8,12 @@ python3 k3/scripts/gen/time_lapse_cam.py\
     --long 20.\
     --diff 117062205.\
     --max 120\
-    --camera 1\
     --flip False\
     --gtime 0.5\
     --show_diff False
 """
 #,tcam.b
-#\ #117062205.
+
 
 def xtrans(xs,min_,max_,dstmax):
     #a = (xs + offset) / scale
@@ -74,20 +73,28 @@ A = get_Arguments(
         ('diff','image difference diff_'):190000000.,
         ('long','longer interval (s)'):60.,
         ('record','record for real'):False,
-        ('graph','show graph'):False,
+        ('graph','show graph'):True,
         ('beep','beep'):False,
-        ('camera','0 = internal, 1 = USB camera'):0,
+        #('camera','0 = internal, 1 = USB camera'):0,
         ('max','max recording time (min)'):60,
         ('gtime','interval between graph plots'):0.1,
         ('tsteps','steps of timeseries to show'):500,
         ('show_diff','difference image'):False,
+        ('thickness','line thickness'):2,
+        ('cthickness','circle line thickness'):2,
     },
     file=__file__,
 )
 exec(A_to_vars_exec_str)
 
 
-video_capture = cv2.VideoCapture(camera_)
+video_capture = cv2.VideoCapture(0)
+ret, frame = video_capture.read()
+if frame is None: 
+    video_capture = cv2.VideoCapture(1)
+    ret, frame = video_capture.read()
+    cE('camera not found')
+    assert False
 
 d = datetime.date.today()
 
@@ -119,7 +126,7 @@ graph_change_timer = Timer(1/2)
 
 graph_off = True
 
-offset = 100 # this is because of a specific camera glitch
+offset = 0 # 100 # this is because of a specific camera glitch
 
 while True:
 
@@ -158,34 +165,24 @@ while True:
             if graph_:
                 if True:#graph_timer.rcheck():
 
-                    #if graph_off:
-                    #    graph_off = False
-                        #figure(1,figsize=(8,1.5))
-                    #clf()
                     ln = min(len(img_dif),tsteps_)
-                    #plot(img_dif[-ln:],'k')
+
                     if record_:
                         line_color = 'r'
                     else:
                         line_color = 'g'
-                    #plot([0,ln],[diff_,diff_],line_color)
-                    
-                    #ylim([0,5*diff_])
-                    #spause()
-                    #print(shape(frame))
-                    #print(ln)
                     xs = arange(0,tsteps_)
                     ys = 0*xs
                     ys[-ln:] = na(img_dif[-ln:])
-                    width = shape(frame)[1]
+                    height,width,_ = shape(frame)
                     x = xtrans(xs,0,max(xs),width)
                     y = xtrans(ys,0,190000000*25,width)
-                    zplot(frame__,x,y,'b-',radius=5,cthickness=4)
+                    zplot(frame__,width-x,height-y,'b-',radius=5,thickness=thickness_,cthickness=cthickness_)
                     xs = na([0,1])
                     ys = na([diff_,diff_])
                     x = xtrans(xs,0,1,width)
                     y = xtrans(ys,0,190000000*25,width)
-                    zplot(frame__,x,y,'r-',radius=5,cthickness=4)                    
+                    zplot(frame__,width-x,height-y,'r-',radius=5,thickness=thickness_,cthickness=cthickness_)                    
 
             else:
                 plt.close('all')
@@ -264,6 +261,27 @@ while True:
 
     elif k & 0xFF == ord('s'):
         show_diff_ = not show_diff_
+
+    elif k & 0xFF == ord('1'):
+        thickness_ = 1
+
+    elif k & 0xFF == ord('2'):
+        thickness_ = 2
+
+    elif k & 0xFF == ord('3'):
+        thickness_ = 3
+
+    elif k & 0xFF == ord('4'):
+        thickness_ = 4
+
+    elif k & 0xFF == ord('5'):
+        thickness_ = 5
+
+    elif k & 0xFF == ord('6'):
+        thickness_ = 6
+
+    elif k & 0xFF == ord('7'):
+        thickness_ = 7
 
 video_capture.release()
 cv2.destroyAllWindows()
