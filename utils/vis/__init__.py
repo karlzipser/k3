@@ -9,4 +9,6 @@ from k3.utils.vis.files import *
 
 from k3.utils.vis.compose import *
 
+from k3.utils.vis.other import *
+
 #EOF

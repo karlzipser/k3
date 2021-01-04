@@ -243,7 +243,7 @@ for i in range(3):
 
 #, b
 
-#,a
+#, a
 txt = """
 I like to <cello-sascha saschais 0.9> one </cello> often. I like to <cello-a b 0.9999> <quartet-a b 0.9999> two </cello> often."I like to  one </quartet> often. I like to <cello-a b 0.9999> two </cello> often."
 """
@@ -267,7 +267,16 @@ for t in R:
         r = pattern.search(txt,r.start() + 1)
 
 
+#, b
+
+#,a
+txt = "<cello abc def><quartet>"
+open_tag = "<([a-z|A-Z]+)(.*?)>"
+x = re.findall(open_tag,txt)
+
+
 #,b
+
 
 for k in R:
     r = R[k]

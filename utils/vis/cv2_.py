@@ -64,6 +64,55 @@ try:
             print('resize_to_extent(): no resizing')
             return img
 
+    def xtrans(xs,min_,max_,dstmax):
+        #a = (xs + offset) / scale
+        #a = dstmax * a
+        a = xs - min_
+        b = a / (max_ - min_)
+        c = b * dstmax
+        return c
+
+    def zplot(
+        img,
+        xs,
+        ys,
+        sym='.-',
+        color=False,
+        thickness=1,
+        cthickness=1,
+        radius=4,
+    ):
+        x,x_prev = False,False
+
+        for i in rlen(xs):
+
+            if type(x) is not bool:
+                x_prev = x
+                y_prev = y
+
+            x,y = intr(xs[i]),intr(ys[i])
+
+            if color:
+                assert len(color)==3
+
+            elif 'r' in sym:
+                color = (255,0,0)
+
+            elif 'b' in sym:
+                color = (0,0,255)
+
+            else:
+                color = (128,128,0)
+
+            if '.' in sym:
+                cv2.circle(img,(x,y),radius,color,cthickness)
+
+            if '-' in sym:
+                if type(x_prev) is not bool:
+                    cv2.line(img,(x_prev,y_prev),(x,y),color,thickness)
+
+
+
 except:
     print("Don't have cv2")
 

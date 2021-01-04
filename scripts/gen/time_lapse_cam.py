@@ -3,7 +3,7 @@ from k3.utils import *
 #,tcam.a
 """
 python3 k3/scripts/gen/time_lapse_cam.py\
-    --mint .1\
+    --mint 1.\
     --show\
     --long 20.\
     --diff 117062205.\
@@ -13,54 +13,6 @@ python3 k3/scripts/gen/time_lapse_cam.py\
     --show_diff False
 """
 #,tcam.b
-
-
-def xtrans(xs,min_,max_,dstmax):
-    #a = (xs + offset) / scale
-    #a = dstmax * a
-    a = xs - min_
-    b = a / (max_ - min_)
-    c = b * dstmax
-    return c
-
-def zplot(
-    img,
-    xs,
-    ys,
-    sym='.-',
-    color=False,
-    thickness=1,
-    cthickness=1,
-    radius=4,
-):
-    x,x_prev = False,False
-
-    for i in rlen(xs):
-
-        if type(x) is not bool:
-            x_prev = x
-            y_prev = y
-
-        x,y = intr(xs[i]),intr(ys[i])
-
-        if color:
-            assert len(color)==3
-
-        elif 'r' in sym:
-            color = (255,0,0)
-
-        elif 'b' in sym:
-            color = (0,0,255)
-
-        else:
-            color = (128,128,0)
-
-        if '.' in sym:
-            cv2.circle(img,(x,y),radius,color,cthickness)
-
-        if '-' in sym:
-            if type(x_prev) is not bool:
-                cv2.line(img,(x_prev,y_prev),(x,y),color,thickness)
 
 
 
@@ -82,19 +34,24 @@ A = get_Arguments(
         ('show_diff','difference image'):False,
         ('thickness','line thickness'):2,
         ('cthickness','circle line thickness'):2,
+        ('gscale','scale for plot'):1.0,
     },
     file=__file__,
 )
 exec(A_to_vars_exec_str)
 
 
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(1)
 ret, frame = video_capture.read()
-if frame is None: 
-    video_capture = cv2.VideoCapture(1)
+
+if frame is None:
+    #time.sleep(1)
+    video_capture.release()
+    video_capture = cv2.VideoCapture(0)
     ret, frame = video_capture.read()
-    cE('camera not found')
-    assert False
+    if frame is None:
+        cE('camera not found')
+        assert False
 
 d = datetime.date.today()
 
@@ -176,12 +133,12 @@ while True:
                     ys[-ln:] = na(img_dif[-ln:])
                     height,width,_ = shape(frame)
                     x = xtrans(xs,0,max(xs),width)
-                    y = xtrans(ys,0,190000000*25,width)
+                    y = xtrans(ys,0,190000000*25*gscale_,width)
                     zplot(frame__,width-x,height-y,'b-',radius=5,thickness=thickness_,cthickness=cthickness_)
                     xs = na([0,1])
                     ys = na([diff_,diff_])
                     x = xtrans(xs,0,1,width)
-                    y = xtrans(ys,0,190000000*25,width)
+                    y = xtrans(ys,0,190000000*25*gscale_,width)
                     zplot(frame__,width-x,height-y,'r-',radius=5,thickness=thickness_,cthickness=cthickness_)                    
 
             else:
@@ -248,13 +205,21 @@ while True:
     elif k & 0xFF == ord('r') or k == 3: # right arrow
         record_ = not record_
 
-    elif k & 0xFF == ord('u') or k == 0: # up arrow
+    elif k == 0: # up arrow
         diff_ *= 1.1
         print('diff_',dp(diff_))
 
-    elif k & 0xFF == ord('d') or k == 1: # down arrow
+    elif k == 1: # down arrow
         diff_ *= (1/1.1)
         print('diff_',dp(diff_))
+
+    elif k & 0xFF == ord('d'): # down scale
+        gscale_ *= 1.1
+        print('gscale_',dp(gscale_))
+
+    elif k & 0xFF == ord('u'): # up scale
+        gscale_ *= (1/1.1)
+        print('gscale_',dp(gscale_))
 
     elif k & 0xFF == ord('f'):
         flip_ = not flip_
