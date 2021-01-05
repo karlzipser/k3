@@ -269,14 +269,166 @@ for t in R:
 
 #, b
 
-#,a
-txt = "<cello abc def><quartet>"
-open_tag = "<([a-z|A-Z]+)(.*?)>"
-x = re.findall(open_tag,txt)
+#, a
+"""
+book = [
+    chapters: [
+     {
+        summary:,
+        rating:,
+        sections: [
+            {
+                summary:,
+                rating:,
+                paragraphs [
+                    {
+                        tags:,
+                        text:''
+                    },
+                    {
+                        tags:,
+                        text:''
+                    },
+                    {
+                        tags:,
+                        text:''
+                    },
+                ],
+            },
+            {
+                summary:,
+                rating:,
+                paragraphs [
+                    {
+                        tags:,
+                        text:''
+                    },
+                    {
+                        tags:,
+                        text:''
+                    },
+                    {
+                        tags:,
+                        text:''
+                    },
+                ],
+            },
+    },
+]
+"""
 
+
+
+
+
+
+txt = "<section><cello abc def><quartet></love></cello>"
+
+T = {
+    'open' : "<([a-z|A-Z]+)(.*?)>",
+    'close' : "</([a-z|A-Z]+)>",
+}
+
+for k in T:
+    x = re.findall(T[k],txt)
+    print(k,x)
+
+
+#, b
+
+
+#, a
+txt = """He seemed to radiate like the sun, and Sacha was his earth, his most favored satellite. Sara seemed to feel eclipsed before her, as indeed Sacha stepped a bit in front of her. Sacha's glow was irrepressible and Sara found it impossible to feel that she had a place between them, it confused her and she felt uncomfortable. She saw how Thomas reacted to Sacha's charm, she felt she should be threatened, but their manner was so natural and beautiful that she couldn't help but feel charmed, it was more like seeing her son with a beautiful woman than feeling her boyfriend was being stolen from her. She felt a voyeuristic pleasure in seeing them. Sacha smiled and moved her arms and hands as she spoke, Thomas smiled and grinned and he was handsome. Sara thought, how beautiful that he can be so close to his student. She felt like she knew Sacha already for a long time, although they had just met. It was strange. Sacha seemed to radiate happiness and self confidence, the feeling made Sara feel happy too. Then Sacha turned to her and spoke to her and joined her into the conversation. She had such natural good manners, Sara couldn't help but be fond of her.\\"""
+Then Sacha came back to her to ask her about playing the violin, what the secrets to good intonation are, and Sara shared what she knew how to explain in words, and tried not to say more than she really knew, for it was all to easy to let words form ideas that had little resemblance to what she actually did. It would be like asking an athlete how he runs. What could he explain?\\
+A voice inside Sara told her that Sacha was a threat to her, but the voice seemed half-hearted, the words spoken with a smile, and she disregarded the warning. Sacha seemed genuinely interested in her, how could she be a rival? Sacha was asking if she could have some introductory lessons on the violin. Sara said again that the technique for the two instruments conflicted, and that it was necessary to choose.\\
+"But how can I choose if I don't learn something about both instruments?"\\
+Sara laughed at the inevitable logic of what she was saying. Sacha looked directly into her eyes when she spoke. She seemed to have a benevolent power over Sara, she only wanted to submit and be embraced by Sacha's charisma. Sacha had a genuine and deep interest in what Sara did, she was fascinated by ever detail, and Sara felt happy to be accomplished at something that Sacha found so important.\\
+In the back of her mind, Sacha was aware of some practical problems. How was she going to get Thomas away from Sara this evening so that they could make love? She noticed that Thomas and Sara did not touch each other here in public.\\"""
+
+
+r = "(.*?)(\\\\$)"
+
+x = re.findall(r,txt)
+print(x)
+
+
+#, b
+
+
+#,a
+f = '/Users/karlzipser/Desktop/novel_form0.rtf'
+text_versions = [ file_to_text(f) ]
+
+rules = (
+    ( '<T>',        '\\t'),
+    ( '<N>',        '\\n'),
+    ( '<BS>',        "\\\\" ),
+    ( '<CR>',       "<BS><N>" ),
+    ( '<SECTION>',  "<CR>[' '|(<T>)|/.|<CR>]*<CR>" ),
+)
+
+
+for r in rules:
+    pat,repl = r[1],r[0]
+    #clp('\n\n',pat,'`--ub',repl,'`--ub')
+    x = re.sub(pat,repl,text_versions[-1])
+    text_versions.append(x)
+
+sections = text_versions[-1].split('<SECTION>')
+assert '{' in sections[0]
+assert '}' in sections[-1]
+for i in range(1,len(sections)-1):
+    s = sections[i]
+    assert '{' not in s
+    assert '}' not in s
+    paragraphs = s.split('<CR>')
+    for j in range(0,len(paragraphs)):
+        p = paragraphs[j]
+        clp('\nSection',i,'paragraph',j+1,'`--b')
+        if j == 0 and p.startswith('<T>'):
+
+            cr('Warning, starts with <T>')
+
+        elif j == 0 and not p.startswith('<T>'):
+            cg('Ok')
+
+        elif not p.startswith('<T>'):
+            if p[0] == ' ':
+                cr('warning, starts with a space')
+            cr(j,'warning, does NOT start with <T>, adding')
+            p = '<T>' + p
+
+        elif p.startswith('<T>'):
+            cg('ok')
+
+            paragraphs[j] = p
+    sections[i] = paragraphs
+
+
+l = [sections[0],'\\\n\\\n']
+for i in range(1,len(sections)-1):
+    for p in sections[i]:
+        l.append(p+'\\\n')
+    l.append('\\\n\\\n')
+
+
+l.append(
+    """\\pard\\tx720\\tx1440\\tx2160\\tx2880\\tx3600\\tx4320\\tx5040\\tx5760\\tx6480\\tx7200\\tx7920\\tx8640\\li722\\fi-16\\ri-738\\pardirnatural\\qc\\partightenfactor0
+\\cf0    
+. . .\\
+\\
+""")
+
+l.append(sections[-1])
+
+o = '\n\n'.join(l)
+o = o.replace('<T>','\t')
+o = o.replace('<N>','\n')
+o = o.replace('<BS>','\\')
+
+text_to_file(f.replace('.rtf','.out.rtf'),o)
 
 #,b
-
 
 for k in R:
     r = R[k]
