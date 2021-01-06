@@ -1,6 +1,6 @@
 from k3.utils import *
 
-#,tcam.a
+#,tcam0.a
 """
 python3 k3/scripts/gen/time_lapse_cam.py\
     --mint 1.\
@@ -10,11 +10,27 @@ python3 k3/scripts/gen/time_lapse_cam.py\
     --max 120\
     --flip False\
     --gtime 0.5\
-    --show_diff False
+    --show_diff False\
+    --beep_time 4\
 """
-#,tcam.b
+#,tcam0.b
 
 
+#,tcam1.a
+"""
+python3 k3/scripts/gen/time_lapse_cam.py\
+    --mint .1\
+    --show\
+    --long 0.3333\
+    --diff -1.\
+    --max 120\
+    --flip False\
+    --gtime 0.5\
+    --show_diff False\
+    --beep_time 30\
+    --record\
+"""
+#,tcam1.b
 
 A = get_Arguments(
     {
@@ -26,7 +42,7 @@ A = get_Arguments(
         ('long','longer interval (s)'):60.,
         ('record','record for real'):False,
         ('graph','show graph'):True,
-        ('beep','beep'):False,
+        ('beep_time','min beep time'):-1,
         #('camera','0 = internal, 1 = USB camera'):0,
         ('max','max recording time (min)'):60,
         ('gtime','interval between graph plots'):0.1,
@@ -59,6 +75,8 @@ short_timer = Timer(mint_)
 long_timer = Timer(long_)
 max_timer = Timer(max_*60)
 graph_timer = Timer(gtime_)
+if beep_time_ > 0:
+    beep_timer = Timer(beep_time_)
 
 path = opj(
     path_,
@@ -84,6 +102,8 @@ graph_change_timer = Timer(1/2)
 graph_off = True
 
 offset = 0 # 100 # this is because of a specific camera glitch
+
+ctr = 0
 
 while True:
 
@@ -160,18 +180,20 @@ while True:
 
             shot_times.append(time.time())
 
-            fname_ = opj(path,d2p(dp(time.time()),'jpg'))
+            
 
             if record_:
                 q = '* '
             else:
                 q = '- '
-            print(q+fname(fname_))
-            if beep_:
-                beep()
-            if record_:
-                imsave(fname_,frame)#rgbframe)
+            print(q)#+fname(fname_))
 
+            if record_:
+                fname_ = opj(path,d2p(ctr,'jpg'))
+                imsave(fname_,frame)#rgbframe)
+                ctr += 1
+                if beep_time_ > 0 and beep_timer.rcheck():
+                    beep()
         if show_:
 
             if record:
@@ -179,7 +201,7 @@ while True:
                     c = [0,0,255]
                 else:
                     c = [0,255,0]
-                frame__[5:105,5:105,:]=c
+                frame__[5:205,-205:-5,:]=c
             
 
 

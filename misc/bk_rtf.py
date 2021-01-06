@@ -1,8 +1,8 @@
 
 #,a
-
-f = '/Users/karlzipser/Desktop/novel_form0.out.rtf'
-
+clear_screen()
+f = '/Users/karlzipser/Desktop/novel_form0.rtf'
+f = select_file(opjD())[0]
 text_versions = [ file_to_text(f) ]
 
 
@@ -19,7 +19,8 @@ for r in rules:
     replacement_,pattern_ = r[0],r[1]
     x = re.sub(pattern_,replacement_,text_versions[-1])
     text_versions.append(x)
-
+    print('\n\n\n*** ',pattern_,'-->',replacement_,' ***\n\n',text_versions[-1])
+    raw_enter()
 
 big_ = 50
 regular_ = 38
@@ -33,6 +34,7 @@ if len(fc):
     text_versions.append(q)
 
 
+
 num_tabs_ = 2
 
 def strip_paragraph_start(p):
@@ -41,6 +43,9 @@ def strip_paragraph_start(p):
 
 
 sections = text_versions[-1].split('<SECTION>')
+
+cg(len(sections),r=True)
+
 assert '{' in sections[0]
 assert '}' in sections[-1]
 for i in range(1,len(sections)-1):
@@ -57,9 +62,9 @@ for i in range(1,len(sections)-1):
 
     for j in range(0,len(paragraphs)):
         p = paragraphs[j]
-        #cg(p,r=True)
+        cg(p,r=True)
         p = strip_paragraph_start(p)
-        #cy(p,r=True)
+        cw(p,r=True)
         if i == 1 and j == 0:
             #cm(p,p[0])
             if True:
