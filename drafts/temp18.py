@@ -356,7 +356,7 @@ print(x)
 
 
 #,a
-f = '/Users/karlzipser/Desktop/novel_form0.rtf'
+f = '/Users/karlzipser/Desktop/novel_form0.out.rtf'
 text_versions = [ file_to_text(f) ]
 
 rules = (
@@ -374,16 +374,45 @@ for r in rules:
     x = re.sub(pat,repl,text_versions[-1])
     text_versions.append(x)
 
+fl = "<BS>fs50[' ']+([A-Z])[' ']*['<N>']*[' ']*<BS>fs38[' ']*"
+fc = re.findall(fl,text_versions[-1])
+assert len(fc) == 1
+q = re.sub(fl,fc[0],text_versions[-1])
+text_versions.append(q)
+
+
+def pure_text(s):
+    rs = [
+        "<BS>[a-z0-9]+[' ']*",
+        "<[A-Z0]+>",
+        " [' ']+",
+    ]
+    for r in rs:
+        s = re.sub(r,' ',s)
+    if s[0] == ' ':
+        s = s[1:]
+    return s
+
 sections = text_versions[-1].split('<SECTION>')
 assert '{' in sections[0]
 assert '}' in sections[-1]
 for i in range(1,len(sections)-1):
+    if "<BS>'95 <BS>'95 <BS>'95" in sections[i]:
+        cb(sections[i],r=False)
+        sections[i] = ['<N>']
+        continue
     s = sections[i]
     assert '{' not in s
     assert '}' not in s
     paragraphs = s.split('<CR>')
     for j in range(0,len(paragraphs)):
         p = paragraphs[j]
+        if False:#i == 1 and j == 0:
+            cg(p[0],'\n',p)
+            a = p[0]
+            p = "\\fs50 "+a+"\n\\fs38\n"+p[1:]
+            print(p)
+            paragraphs[j] = p
         clp('\nSection',i,'paragraph',j+1,'`--b')
         if j == 0 and p.startswith('<T>'):
 
@@ -415,7 +444,7 @@ for i in range(1,len(sections)-1):
 l.append(
     """\\pard\\tx720\\tx1440\\tx2160\\tx2880\\tx3600\\tx4320\\tx5040\\tx5760\\tx6480\\tx7200\\tx7920\\tx8640\\li722\\fi-16\\ri-738\\pardirnatural\\qc\\partightenfactor0
 \\cf0    
-. . .\\
+\\'95 \\'95 \\'95\\
 \\
 """)
 
@@ -426,8 +455,9 @@ o = o.replace('<T>','\t')
 o = o.replace('<N>','\n')
 o = o.replace('<BS>','\\')
 
-text_to_file(f.replace('.rtf','.out.rtf'),o)
-
+ff = f.replace('.rtf','.out.rtf')
+text_to_file(ff,o)
+cy('wrote',ff)
 #,b
 
 for k in R:
