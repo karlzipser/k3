@@ -7,7 +7,7 @@ python3 k3/scripts/gen/time_lapse_cam.py\
     --show\
     --long 20.\
     --diff 117062205.\
-    --max 120\
+    --max 520\
     --flip False\
     --gtime 0.5\
     --show_diff False\
@@ -16,21 +16,21 @@ python3 k3/scripts/gen/time_lapse_cam.py\
 #,tcam0.b
 
 
-#,tcam1.a
+#,tcam.a
 """
 python3 k3/scripts/gen/time_lapse_cam.py\
-    --mint .1\
+    --mint 2.5\
     --show\
-    --long 0.3333\
+    --long 5.\
     --diff -1.\
-    --max 120\
+    --max 12000\
     --flip False\
     --gtime 0.5\
     --show_diff False\
-    --beep_time 30\
+    --beep_time 600\
     --record\
 """
-#,tcam1.b
+#,tcam.b
 
 A = get_Arguments(
     {
@@ -209,7 +209,7 @@ while True:
 
 
 
-    time.sleep(0.001)
+    time.sleep(mint_/10)
     
     k = cv2.waitKey(1)
 
