@@ -67,7 +67,7 @@ while True:
 
         s = os.statvfs('/')
 
-        fr = int((s.f_bavail * s.f_frsize) / 1024 / 1000000)
+        fr = dp((s.f_bavail * s.f_frsize) / 1024 / 1000000)
 
         
 

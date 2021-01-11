@@ -191,20 +191,22 @@ def kys(D):
     return list(D.keys())
 
 
-def set_Defaults(Defaults,Dst,file='',verbose=True):
+def set_Defaults(Defaults,Dst,file='',verbose=True,r=True):
     for k in Dst.keys():
         if k not in Defaults.keys():
             if verbose:
                 print("*** Warning,",file,"argument '"+k+"' not in Defaults:\n\t",
                     list(Defaults.keys())
                 )
-                raw_enter()
+                if r:
+                    raw_enter()
     for k in Defaults.keys():
         if k not in Dst.keys():
             if Defaults[k] is REQUIRED:
                 print('*** Error. '+qtd(k)+\
                     ' is a required cmd line arg. ***')
-                raw_enter()
+                if r:
+                    raw_enter()
                 print_dic_simple(Defaults,'Defaults')
                 os.sys.exit()
             else:
@@ -219,9 +221,10 @@ def set_Defaults(Defaults,Dst,file='',verbose=True):
                 b = type(Defaults[k])
 
             if type(Dst[k]) is not b:
-                print("*** Warning,",file,"argument '"+k+"' is not of the right type",
+                print("!*** Warning,",file,"argument '"+k+"' is not of the right type",
                     "should be",b)
-                raw_enter()
+                if r:
+                    raw_enter()
                 
 
     
@@ -399,7 +402,7 @@ if False:
 """
 
 
-def get_Arguments(Defaults={},file='',argstr=None,verbose=True):
+def get_Arguments(Defaults={},file='',argstr=None,verbose=True,r=True):
 
     if interactive():
         return Defaults
@@ -434,17 +437,19 @@ def get_Arguments(Defaults={},file='',argstr=None,verbose=True):
                     if j not in Arguments:
                         print('*** Error,',file,qtd(j)+\
                             ' is a required cmd line arg. ***')
-                        raw_enter()
+                        if r:
+                            raw_enter()
                     elif k[1] is not type(Arguments[j]):
 
                         print('*** Error for arg',file,qtd(j)+\
                             ' is wrong type, should be ',k[1],' ***')
-                        raw_enter()
+                        if r:
+                            raw_enter()
         
 
     _process_tuple_key(Defaults)
 
-    set_Defaults(Defaults,Arguments,verbose=verbose)
+    set_Defaults(Defaults,Arguments,verbose=verbose,r=r)
 
     if 'h' in Arguments and Arguments['h']:
         print_dic_simple(Arguments,title='\nArguments:')

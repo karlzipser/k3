@@ -355,7 +355,7 @@ print(x)
 #, b
 
 
-#,a
+
 f = '/Users/karlzipser/Desktop/novel_form0.out.rtf'
 text_versions = [ file_to_text(f) ]
 
@@ -470,6 +470,27 @@ for k in R:
             print(k,i,qtd(y))
         except:
             break
+
+#,a
+
+path  = opjD("a")#opjD("_2008 one -- Editing version 12-27-2020")
+newp = opjD("a_new")
+fs = sggo(path,'*.rtf')
+
+
+os_system('mkdir -p',newp)
+
+for f in fs:
+    if fname(f)[0] != '_':
+        print(f)
+        os_system('python3 k3/misc/bk_rtf3.py --in',qtd(f),'--out',qtd(opj(newp,fname(f))),e=1)
+        #break
+
+
+
+#,b
+
+
 
 #EOF
 
