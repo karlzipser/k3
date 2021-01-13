@@ -321,7 +321,6 @@ book = [
 
 
 
-
 txt = "<section><cello abc def><quartet></love></cello>"
 
 T = {
@@ -379,6 +378,7 @@ fc = re.findall(fl,text_versions[-1])
 assert len(fc) == 1
 q = re.sub(fl,fc[0],text_versions[-1])
 text_versions.append(q)
+
 
 
 def pure_text(s):
@@ -440,7 +440,6 @@ for i in range(1,len(sections)-1):
         l.append(p+'\\\n')
     l.append('\\\n\\\n')
 
-
 l.append(
     """\\pard\\tx720\\tx1440\\tx2160\\tx2880\\tx3600\\tx4320\\tx5040\\tx5760\\tx6480\\tx7200\\tx7920\\tx8640\\li722\\fi-16\\ri-738\\pardirnatural\\qc\\partightenfactor0
 \\cf0    
@@ -480,15 +479,16 @@ fs = sggo(path,'*.rtf')
 
 os_system('mkdir -p',newp)
 
-for f in fs:
+for f in fs[:11]:
     if fname(f)[0] != '_':
         print(f)
-        os_system('python3 k3/misc/bk_rtf3.py --in',qtd(f),'--out',qtd(opj(newp,fname(f))),e=1)
+        number = int(fnamene(f).split(' ')[0])
+        g = str(number)+'.rtf'
+        os_system('python3 k3/misc/bk_rtf4.py --number',number,'--in',qtd(f),'--out',qtd(opj(newp,g)),e=1)
         #break
 
-
-
 #,b
+
 
 
 
