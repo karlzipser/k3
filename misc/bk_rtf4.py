@@ -147,6 +147,8 @@ t = t.replace('<n>','\n')
 t = t.replace('<italics>',"\n\\f1\\i\n")
 t = t.replace('</italics>',"\n\\f0\\i0\n")
 
+t = t.replace('__',"\\fs"+str(small_font_//4)+" __\n\\fs"+str(small_font_)+"\n")
+
 if num_tabs_ == 2:
     t = re.sub("\t",'\t\t',t)
 

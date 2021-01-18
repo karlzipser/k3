@@ -479,18 +479,22 @@ fs = sggo(path,'*.rtf')
 
 os_system('mkdir -p',newp)
 
-for f in fs[:11]:
+for f in fs:
     if fname(f)[0] != '_':
-        print(f)
-        number = int(fnamene(f).split(' ')[0])
-        g = str(number)+'.rtf'
-        os_system('python3 k3/misc/bk_rtf4.py --number',number,'--in',qtd(f),'--out',qtd(opj(newp,g)),e=1)
-        #break
+        if '40' in fname(f)[:2]:
+            print(f)
+            number = fnamene(f).split(' ')[0]
+            g = number+'.rtf'
+            os_system('python3 k3/misc/bk_rtf4.py --number',number,'--in',qtd(f),'--out',qtd(opj(newp,g)),e=1)
+            #break
 
 #,b
 
-
-
+if False:
+    fs = sggo(opjD('a','*.rtf'))
+    for f in fs:
+        if '  ' in f:
+            os_system('mv',qtd(f),qtd(f.replace('  ',' ')),a=1,e=1)
 
 #EOF
 
