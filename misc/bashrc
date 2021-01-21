@@ -32,7 +32,10 @@ export PYTHONUNBUFFERED=1
 # needed for time.sleep() to work properly
 
 alias warn='python3 k3/scripts/osx/warn.py'
+alias tf='python3 k3/scripts/osx/tofolder.py'
 alias sf='python3 k3/scripts/osx/select_file.py'
+alias rif='python3 k3/scripts/osx/rate_images_in_folder.py'
+alias fj='python3 k3/scripts/osx/fjoin.py'
 
 alias bkp='python3  k3/scripts/gen/bkp.py'
 alias kgrep='python3 k3/scripts/gen/kgrep.py'

@@ -13,13 +13,13 @@ A = get_Arguments(
     {
     	'paths':[],
         'new':'',
+        'name':'',
     },
     file=__file__,
     r=False,
 )
-#if type(A['path']) is list:
-#    A['path'] = ' '.join(A['in'])
 
+A['name'] = get_safe_name(A['name'])
 exec(A_to_vars_exec_str)
 
 #image_extensions = ['jpg','jpeg','png']
@@ -27,7 +27,9 @@ exec(A_to_vars_exec_str)
 if len(paths_) == 0:
     paths_ = select_folders(opjh())
 if new_ == '':
-    new_ = opjD(d2p('new',time_str('FileSafe')))
+    if name_ == '':
+        name_ = 'new'
+    new_ = opjD(d2p(name_,time_str('FileSafe')))
 #print(new_)
 #print(paths_)
 
