@@ -11,6 +11,7 @@ from k3.utils import *
 
 A = get_Arguments(
     {
+        'path':opjD(),
         'name':'',
         'del':False,
     },
@@ -18,10 +19,12 @@ A = get_Arguments(
     r=False,
 )
 
+if type(A['path']) is list:
+    A['path'] = ' '.join(A['in'])
 
 exec(A_to_vars_exec_str)
 
-fs = select_files(opjD())
+fs = select_files(path_)
 
 if del_:
     for f in fs:

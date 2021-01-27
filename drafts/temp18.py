@@ -470,7 +470,7 @@ for k in R:
         except:
             break
 
-#,a
+#, a
 
 path  = opjD("a")#opjD("_2008 one -- Editing version 12-27-2020")
 newp = opjD("a_new")
@@ -488,13 +488,24 @@ for f in fs:
             os_system('python3 k3/misc/bk_rtf4.py --number',number,'--in',qtd(f),'--out',qtd(opj(newp,g)),e=1)
             #break
 
-#,b
+#, b
 
 if False:
     fs = sggo(opjD('a','*.rtf'))
     for f in fs:
         if '  ' in f:
             os_system('mv',qtd(f),qtd(f.replace('  ',' ')),a=1,e=1)
+
+#,a
+x = [37, 42, 47, 52]
+y = [52, 36,  5,  0]
+from scipy import interpolate
+f = interpolate.interp1d(x, y)
+xnew = np.arange(37, 52, 1./12.)
+ynew = f(xnew)
+plot(x, y, 'o', xnew, ynew, '-')
+(1-float(q(45))/100.)
+#,b
 
 #EOF
 

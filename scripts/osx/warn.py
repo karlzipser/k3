@@ -25,7 +25,7 @@ A = get_Arguments(
     verbose=True,
     file=__file__,
 )
-
+exec(A_to_vars_exec_str)
 
 
 
@@ -37,33 +37,37 @@ def get_timer():
 
 timer = get_timer()
 
-print_timer = Timer(60)
-print_timer.trigger()
-
 
 while True:
-	if print_timer.check():
-		print_timer.reset()
-		"""
-		cr(
-			'Warning in',
-			datetime.timedelta(seconds=int(timer.time_s - timer.time())),
-		)
-		"""
-	if timer.check():
 
-		timer = get_timer()
+	cm('Time since .activity changed:',
+		int(
+			time.time() - os.path.getmtime(opjh('.activity'))
+		),
+		's',
+		'timer:',
+		int(timer.time()),
+		's',
+	)
+	cm()
 
-		txt,title = bucket.idata.warn.rndWarning()
-		#txt,title = 'Warning','Move around'
+	if time.time() - os.path.getmtime(opjh('.activity')) <= min_ * 60:
 
-		result = do_dialog( txt, title )
+		if timer.check():
 
-		if result == '':
-			cE('button returned:CANCEL')
-		else:
-			cg(result)
+			timer = get_timer()
 
-	time.sleep(30)
+			txt,title = bucket.idata.warn.rndWarning()
+			#txt,title = 'Warning','Move around'
+
+			result = do_dialog( txt, title )
+
+			if result == '':
+				cE('button returned:CANCEL')
+			else:
+				cg(result)
+
+	time.sleep(min_ * 60 / 60)
+
 
 #EOF

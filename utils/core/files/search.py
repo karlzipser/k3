@@ -138,29 +138,83 @@ def files_to_list(path,**K):
 
 
 
-def find_list_of_files_recursively(path,pattern,verbose=True):
+def find_list_of_files_recursively(path,pattern,verbose=True,ignore=[]):
     F = find_files_recursively(path,pattern,FILES_ONLY=True,verbose=verbose)
     l = []
-    m = []
     if 'o' not in locals():
         o = []
     for p in F['paths']:
+        continue_ = False
+        for i in ignore:
+            #print('ignore =',i,'p =',p)
+            #cy('ignore =',i,'p =',p)
+            if i in p:
+                continue_ = True
+                break
+        if continue_:
+            #cr('ignoring',p)
+            continue
         for f in F['paths'][p]:
-            #clp(p,'`r--',f,'`g--')
-            
+            #if verbose:
+            #    clp(p,'`r--',f,'`g--')        
             assert (p,f) not in l
             g = opj(F['src'],p,f)
+            #g = opj(p,f)
+            #g = g.encode('unicode_escape')
+            print('***',g,os.path.exists(g))
             l.append((p,f))
-            if False:#f in m or g in o:
-                cm(f,'in m, or',g,'in o')
-                continue
-            else:
-                m.append(f)
-            
-            n = len(sggo(g))
-            assert n == 1
+            assert os.path.exists(g)
             o.append(g)
     return o
+
+
+
+#,a
+def find_files(
+    start=opjD(),
+    patterns=["*"],
+    ignore=['Photos Library','Photo Booth'],
+    file_list=[],
+    __top=True,
+    recursive=True,
+):
+
+    for pattern in patterns:
+        #print('start:',start,'len(file_list):',len(file_list))
+        _fs= sggo(start,pattern)
+
+        for f in _fs:
+            #print(f)
+            if os.path.isfile(f):
+                file_list.append(f)
+
+    a = sggo(start,'*')
+
+    if recursive:
+        ds = []
+        for b in a:
+            if os.path.isdir(b):
+                _ignore = False
+                for ig in ignore:
+                    if ig in b:
+                        _ignore = True
+                        break
+                if not _ignore:
+                    ds.append(b)
+                else:
+                    print('ignoring',b)
+
+        for d in ds:
+            find_files(
+                start=d,patterns=patterns,ignore=ignore,file_list=file_list,__top=False,
+                recursive=True)
+    
+    if __top:
+        return sorted(file_list)
+
+#,b
+
+
 
 
 def main(**A):

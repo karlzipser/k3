@@ -13,16 +13,14 @@ key_for = 'key for '
 A = get_Arguments(
     {
     	'path':'',
-        'links':'',
-        'name':'',
-        'saved' : False,
+        'name':'no_name',
         key_for+'quit' : 'q',
-        key_for+'Quit no save' : 'Q',
         key_for+'back' : 'j',
         key_for+'forward' : 'k',
-        key_for+'save' : 's',
+        key_for+'act' : 'a',
         key_for+'select' : ' ',
         key_for+'un-select' : 'u',
+        key_for+'get name' : 'n',
         key_for+'1 step' : '1',
         key_for+'2 step' : '2',
         key_for+'3 step' : '3',
@@ -32,39 +30,42 @@ A = get_Arguments(
         key_for+'7 step' : '7',
         key_for+'8 step' : '8',
         key_for+'9 step' : '9',
+        'action' : 'ln',
+        'r' : False,
+        'max' : 100,
+        'offset' : 0,
+        'ignore' : ['Photos Library'],
+        'start' : opjh(),
     },
     file=__file__,
     r=False,
 )
 if type(A['path']) is list:
-    A['path'] = ' '.join(A['in'])
+    cE("can't handle path with white space now.")
+    assert(False)
 
 exec(A_to_vars_exec_str)
 
-image_extensions = ['jpg','jpeg','png']
-
 
 if path_ == '':
-    path_ = select_folder(opjh())[0]
-
-if links_ == '':
-    #l = fname(path_).split('.--.')[1]
-    l = fname(path_)
-    l = re.sub("^.+\.--\.",'',l)
-    l = d2n('links.',time_str('FileSafe'),'.--.',l )
-    if name_ != '':
-        l = '_'+name_ + '.' + l
-    else:
-        l = '_' + l
-    links_ = opjD(l)
+    path_ = select_folder(start_)[0]
 
 imgs = []
 
-fs = sggo(path_,'*')
+if r_:
+    fs = find_files(
+        start=path_,
+        patterns=['*.jpeg','*.jpg','*.png','*.JPG','*.JPEG','*.JPG','*.PNG'],
+        ignore=[],
+        recursive=r_
+    )   
 
-for f in fs:
-    if exname(f).lower() in image_extensions:
-        imgs.append(f)
+fs = sorted(fs)
+m = min(offset_+max_,len(fs))
+fs = fs[offset_:offset_+m]
+
+imgs = fs
+
 
 I = {}
 
@@ -124,18 +125,42 @@ for i in rlen(steps):
 stp = 1
 i = 0
 
-def save():
-    if A['name'] == '':
-        A['name'] = get_safe_name(input('Enter name => '))
-        if A['name'] != '_':
-            A['name'] = '_' + A['name']
+def _get_name():
+    name = get_safe_name(input('Enter name => '))
+    if name != '_':
+        name = '_' + name
+    return name
+
+def act():
+    #if A['name'] == '':
+    #    A['name'] = get_name()
+    l = fname(path_)
+    l = re.sub("^.+\.--\.",'',l)
+    if action_ == 'links':
+        a = 'links.'
+    else:
+        a = ''
+    l = d2n(a,time_str('FileSafe'),'.--.',l )
+
+    if name_ != '':
+        l = '_' + name_ + '.' + l
+    else:
+        l = '_' + l
+
+    links_ = opjD(l)
+
     os_system('mkdir -p',qtd(d2p(links_,A['name'])),e=1)
     real_paths = []
     for f in selected:
-        os_system('ln -s',qtd(opjh(f)),qtd(opjh(d2p(links_,A['name']),fname(f))),e=1,a=1)
+        if action_ == 'ln':
+            os_system('ln -s',qtd(opjh(f)),qtd(opjh(d2p(links_,A['name']),fname(f))),e=1,a=1)
+        elif action_ == 'cp':
+            os_system('cp',qtd(opjh(f)),qtd(opjh(d2p(links_,A['name']))),e=1,a=1)
+        elif action_ == 'mv':
+            os_system('mv',qtd(opjh(f)),qtd(opjh(d2p(links_,A['name']))),e=1,a=1)
+
         real_paths.append(os.path.realpath(f))
-        list_of_strings_to_txt_file(opjD(A['name']),real_paths)
-    A['saved'] = True
+        list_of_strings_to_txt_file(opjD(d2p('paths',A['name'],'txt')),real_paths)
 
 
 while True:
@@ -148,24 +173,22 @@ while True:
 
 
     if  h == key_for+'quit':
-        save()
+        #act()
         break
 
-    if  h == key_for+'Quit no save':
-        break
+
 
     elif h == key_for+'forward':
         i += stp
         if i >= n:
             i = n-1
-        print(i)
+        cg(d2n(i,') ',f))
 
     elif h == key_for+'back':
         i -= stp
         if i < 0:
             i = 0
-        #print('left arrow',i)
-        print(i)
+        cb(d2n(i,') ',f))
 
     elif key_for in h and 'step' in h:
         stp = int(A[h])
@@ -188,21 +211,15 @@ while True:
         else:
             selected.remove(f)
             print('-',f)
-
-
-    elif h == key_for+'save':
-        save()
-
+            
+    elif h == key_for+'act':
+        act()
+        break
 
 
 
 DONE = True
 
-if False:#not A['saved']:
-    s = input('Save? [y]/n ')
-    if s == 'n':
-        pass
-    else:
-        save()
+
 
 #EOF
