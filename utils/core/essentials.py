@@ -74,6 +74,7 @@ def eg(f,cs=False):
 
 
 def intr(n):
+    import numpy as np
     return np.int(np.round(n))
 
 

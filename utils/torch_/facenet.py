@@ -1,5 +1,6 @@
 from k3 import *
-
+from k3.utils.vis import *
+from collections import namedtuple
 
 def Facenet():
 
@@ -32,13 +33,17 @@ def Facenet():
          get_boxes, draw_boxes
     )
 
-if False: #e.g.
-    img = zimread('path')
+if __name__ == '__main__':
+    
+    path = select_file()[0]
+    img = zimread(path)
     F = Facenet()
     a,b,c = F.get_boxes(img)   
     d = F.draw_boxes(img,a,c) 
     CA()
     mi(d)
+    spause()
+    raw_enter()
 #,b
 
 #EOF

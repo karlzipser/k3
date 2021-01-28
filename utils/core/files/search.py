@@ -211,7 +211,7 @@ def find_files(
                 recursive=True)
     
     if __top:
-        return sorted(file_list)
+        return sorted(list(set(file_list)),key=natural_keys)
 
 #,b
 
