@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from k3.utils import *
+from k3.utils.core.znp import *
 
 record_PID(__file__,just_one=True)
 
@@ -40,18 +41,19 @@ timer = get_timer()
 
 while True:
 
-	cm('Time since .activity changed:',
-		int(
-			time.time() - os.path.getmtime(opjh('.activity'))
-		),
-		's',
-		'timer:',
-		int(timer.time()),
-		's',
-	)
-	cm()
+	if False:
+		cm('Time since .activity changed:',
+			int(
+				time.time() - os.path.getmtime(opjh('.activity'))
+			),
+			's',
+			'timer:',
+			int(timer.time()),
+			's',
+		)
+		cm()
 
-	if time.time() - os.path.getmtime(opjh('.activity')) <= min_ * 60:
+	if True:#time.time() - os.path.getmtime(opjh('.activity')) <= min_ * 60:
 
 		if timer.check():
 

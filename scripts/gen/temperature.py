@@ -2,6 +2,10 @@
 
 from k3.utils import *
 
+#print('hi')
+#sys.exit()
+from k3.utils.core.znp import *
+
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--Fahrenheit','-f',required=False,type=float,)

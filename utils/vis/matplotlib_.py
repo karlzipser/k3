@@ -1,6 +1,6 @@
 
 from k3.utils.misc import *
-
+from k3.utils.core.arrays import *
 import matplotlib
 import matplotlib.pyplot as plt  # the Python plotting package
 plt.ion()

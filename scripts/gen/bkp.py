@@ -17,13 +17,12 @@ A = get_Arguments(
     file=__file__,
 )
 
-#print_dic_simple(A,title=__file__)
-
 times = [0]
 
 while True:
     
-    fs = find_list_of_files_recursively(A['path'],A['pat'],verbose=A['verbose'])
+    #fs = find_list_of_files_recursively(A['path'],A['pat'],verbose=A['verbose'])
+    fs = find_files(A['path'],A['pat'])#,verbose=A['verbose'])
 
     if A['verbose']:
         cb(len(fs),'files with pattern',A['pat'],'in',A['path'])

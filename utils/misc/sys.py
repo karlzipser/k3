@@ -226,7 +226,7 @@ def record_PID(_file_,just_one=False):
     if _file_ == None:
         return
     pid = str(os.getpid())
-    print("This process",_file_,"has the PID", pid) 
+    print("Process",_file_,"has the PID", pid) 
     os_system('touch',opjb('pids',pid+'.'+fname(_file_)))
 
 record_PID(None) # this will check for dead processes each time k3 imported

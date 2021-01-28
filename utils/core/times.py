@@ -101,6 +101,7 @@ def time_str(mode='FileSafe',t=0):
     modes are:
     FileSafe, Pretty, Pretty2, TimeShort
     """
+    import datetime
     if not t:
         now = datetime.datetime.now()
     else:

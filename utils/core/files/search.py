@@ -161,7 +161,7 @@ def find_list_of_files_recursively(path,pattern,verbose=True,ignore=[]):
             g = opj(F['src'],p,f)
             #g = opj(p,f)
             #g = g.encode('unicode_escape')
-            print('***',g,os.path.exists(g))
+            #print('***',g,os.path.exists(g))
             l.append((p,f))
             assert os.path.exists(g)
             o.append(g)
@@ -178,7 +178,8 @@ def find_files(
     __top=True,
     recursive=True,
 ):
-
+    if __top:
+        file_list = []
     for pattern in patterns:
         #print('start:',start,'len(file_list):',len(file_list))
         _fs= sggo(start,pattern)

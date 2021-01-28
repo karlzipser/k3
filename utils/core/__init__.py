@@ -14,7 +14,7 @@ from k3.utils.core.times import *
 
 from k3.utils.core.strings import *
 
-from k3.utils.core.arrays import *
+#from k3.utils.core.arrays import *
 
 from k3.utils.core.input_ import *
 

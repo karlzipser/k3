@@ -1,5 +1,6 @@
 from k3.utils.misc.printing import *
 from k3.utils.misc.have_using import *
+import subprocess
 
 try:
     import pyperclip

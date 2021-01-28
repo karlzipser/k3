@@ -54,6 +54,7 @@ def beep():
     print('\007')
 
 def dp(f,n=2):
+    import numpy as np
     """
     get floats to the right number of decimal places, for display purposes
     """
