@@ -76,10 +76,10 @@ if 'utility functions':
             return a
 
     def _act():
-        l = fname(paths_)
+        l = name_#fname(A['paths'][0])
         l = re.sub("^.+\.--\.",'',l)
-        if action_ == 'links':
-            a = 'links.'
+        if action_ == 'ln':
+            a = 'ln.'
         else:
             a = ''
         l = d2n(a,time_str('FileSafe'),'.--.',l )
