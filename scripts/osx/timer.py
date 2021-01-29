@@ -3,9 +3,9 @@ from k3.utils import *
 
 A = get_Arguments(
     {
-    	't':30,
-        's':3,
-        'l':True,
+    	('t','time'):30,
+        ('s','short time'):3,
+        ('l','left'):False,
     },
     file=__file__,
     r=True,
