@@ -12,9 +12,8 @@ if 'set up arguments and automatically named variables':
 
     A = get_Arguments(
         {
-        	('paths',"image search paths. if [], then select interactively"):[],
-            ('path','single path instead of paths') : '',
-            ('name','name for new folder'):'no_name',
+        	('path',"image search paths. if [], then select interactively") : [],
+            ('name','name for new folder') : 'no_name',
             ('action','action to take on selected images') : 'ln',
             ('r','recursive image file search') : True,
             ('max','max number of images to permit') : 100,
@@ -22,7 +21,9 @@ if 'set up arguments and automatically named variables':
             ('ignore','folders to ignore') : ['Photos Library','Photo Booth'],
             ('start','start location for selecting') : opjh(),
             ('extent','image extent, less than one indicates no change') : 400,
-            ('notable','use list of notable images') : False,
+            ('topic','map to topic') : '',
+            ('filter','filter topics') : [],
+            ('logic',"'and', 'or', or 'xor' for filters") : 'or',
             key_for+'quit' : 'q',
             key_for+'back' : ',',
             key_for+'forward' : '/',
@@ -33,6 +34,7 @@ if 'set up arguments and automatically named variables':
             key_for+'not notable' : ';',
             key_for+'get action' : 'A',
             key_for+'get name' : 'N',
+            key_for+'get topic' : 'T',
             key_for+'1 step' : '1',
             key_for+'2 step' : '2',
             key_for+'3 step' : '3',
@@ -44,8 +46,8 @@ if 'set up arguments and automatically named variables':
             key_for+'9 step' : '9',
         },
         file=__file__,
-        r=False,
-    ); exec(A_to_vars_exec_str)
+        r=True,
+    ); exec(A_to_vars_exec_str); del topic_
 
 
 
@@ -58,11 +60,9 @@ if 'utility functions':
         print('\nHit <return> to continue...')
         getch()
 
-    def _get_name():
+    def _get_name(s='name'):
         _ready()
-        name = get_safe_name(input('Enter name => '))
-        if name != '_':
-            name = '_' + name
+        name = get_safe_name(input('Enter '+s+' => '))
         print(qtd(name))
         return name
 
@@ -106,17 +106,24 @@ if 'utility functions':
 
 
 if 'find image files':
+    Topics = {}
     selected = []
-    notable = load_text_list(opjb(fnamene(__file__),'notable.txt'))
-    if notable_:
-        fs = notable
+    ts = sggo(opjb(fnamene(__file__),'*.topic.txt'))
+    for t in ts:
+        topic = fnamene(t)
+        Topics[topic] = load_text_list(t,unique=True)
+
+    if len(filter_) > 0:
+        cm(filter_)
+        kprint(Topics)
+        fs = []
+        for t in Topics:
+
+            if t in filter_:
+                fs += Topics[t]
+        cm(fs)
     else:
-        if path_ != '':
-            assert paths_ == []
-            paths_ = [path_]
-            path_ = ''
-        #fs = find_images_from_paths(paths_)
-        fs = find_images_from_paths(paths_,start=start_,recursive=r_)
+        fs = find_images_from_paths(path_,start=start_,recursive=r_)
     fs = sorted(fs,key=natural_keys)
     m = min(offset_+max_,len(fs))
     fs = fs[offset_:offset_+m]
@@ -183,13 +190,20 @@ if 'main loop':
                 i,
                 minus,
                 plus,
-                {'N':notable,'S':selected,},
+                {'N':Topics['notable'],'S':selected,},
             )
             do_print = False
+            topics = ['#']
+            for k in Topics:
+                if list_of_paths[i] in Topics[k]:
+                    topics.append(k)
+            if len(topics) > 2 and 'notable' in topics:
+                topics.remove('notable')
+            print(' '.join(topics))
 
         f = list_of_paths[i]
 
-        k = display(f,Images=Images,extent=extent_,selected=selected,notable=notable)
+        k = display(f,Images=Images,extent=extent_,selected=selected,notable=Topics['notable'])
 
         h = handle_k(k,A)
 
@@ -218,6 +232,9 @@ if 'main loop':
             if f not in selected:
                 selected.append(f)
                 selected = sorted(selected,key=natural_keys)
+                if A['topic'] not in Topics:
+                    Topics[A['topic']] = []
+                Topics[A['topic']].append(f)
             else:
                 pass
             i += stp
@@ -230,12 +247,14 @@ if 'main loop':
                 pass
             else:
                 selected.remove(f)
+                if A['topic'] in Topics:
+                    Topics[A['topic']].remove(f)
             do_print = True
 
         elif h == key_for+'notable':
-            if f not in notable:
-                notable.append(f)
-                notable = sorted(notable,key=natural_keys)
+            if f not in Topics['notable']:
+                Topics['notable'].append(f)
+                Topics['notable'] = sorted(Topics['notable'],key=natural_keys)
             else:
                 pass
             i += stp
@@ -245,17 +264,23 @@ if 'main loop':
 
         elif h == key_for+'not notable':
             cm('here')
-            if f not in notable:
+            if f not in Topics['notable']:
                 cm(0)
                 pass
             else:
                 cm(1)
-                notable.remove(f)
+                Topics['notable'].remove(f)
             do_print = True
 
         elif h == key_for+'get name':
-            A['name'] = _get_name()
-            name_ = A['name']
+            name_ = _get_name()
+            if name != '_':
+                name = '_' + name
+            A['name'] = name_
+
+        elif h == key_for+'get topic':
+            A['topic'] = _get_name('topic')
+            
 
         elif h == key_for+'get action':
             a = _get_action()
@@ -278,13 +303,14 @@ if 'save notable paths':
     try:
         p = opjb(fnamene(__file__))
         os_system('mkdir -p',p)
-        ps = [
-            opj(p,d2p('notable',time_str('FileSafe'),'txt')),
-            opj(p,'notable.txt'),
-        ]
-        for q in ps:
-            print('saved',q)
-            list_of_strings_to_txt_file(q,notable)
+        for k in Topics:
+            ps = [
+                opj(p,d2p('.'+k,time_str('FileSafe'),'.topic.txt')),
+                opj(p,k+'.topic.txt'),
+            ]
+            for q in ps:
+                print('saved',q)
+                list_of_strings_to_txt_file(q,sorted(list(set(Topics[k])),key=natural_keys))
     except:
         cE('notable not saved')
 

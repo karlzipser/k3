@@ -2,13 +2,15 @@ from k3.utils.misc.printing import *
 from k3.utils.misc.sys import *
 
 
-def load_text_list(path):
+def load_text_list(path,unique=False):
     try:
         lst = txt_file_to_list_of_strings(path)
         print('loaded',path)
     except:
         cE(path,'not loaded')
         lst = []
+    if unique:
+        lst = sorted(list(set(lst)),key=natural_keys)
     return lst
 
 

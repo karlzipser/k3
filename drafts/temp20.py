@@ -1,6 +1,10 @@
 
 
-
+t = 30
+os_system('say',qtd(d2s(t,'seconds')))
+os_system('say "ready set go!"')
+time.sleep(t)
+os_system('say "stop!"')
 
 
 

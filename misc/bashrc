@@ -31,6 +31,7 @@ export HISTSIZE=100000
 export PYTHONUNBUFFERED=1 
 # needed for time.sleep() to work properly
 
+alias timer="python3 k3/scripts/osx/timer.py"
 alias kt="python3 k3/scripts/osx/kill_Terminal.py"
 alias warn='python3 k3/scripts/osx/warn.py'
 alias tf='python3 k3/scripts/osx/tofolder.py'

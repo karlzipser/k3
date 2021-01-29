@@ -222,10 +222,13 @@ def set_Defaults(Defaults,Dst,file='',verbose=True,r=True):
                 b = type(Defaults[k])
 
             if type(Dst[k]) is not b:
-                print("!*** Warning,",file,"argument '"+k+"' is not of the right type",
-                    "should be",b)
-                if r:
-                    raw_enter()
+                if type(Dst[k]) is str and b is list:
+                    Dst[k] = [Dst[k]]
+                else:
+                    print("!*** Warning,",file,"argument '"+k+"' is not of the right type",
+                        "should be",b)
+                    if r:
+                        raw_enter()
                 
 
     
@@ -334,7 +337,7 @@ def args_to_dict(s):
     #print_dic_simple(U)
     return U
 
-a2d = args_to_dict
+#a2d = args_to_dict
 
 
 def __tuple_to_multi_keys(A):
