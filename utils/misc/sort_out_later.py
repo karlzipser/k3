@@ -22,7 +22,7 @@ def find_images_from_paths(paths,start=opjh(),recursive=True):
         fs += find_files(
             start=p,
             patterns=['*.jpeg','*.jpg','*.png','*.JPG','*.JPEG','*.JPG','*.PNG'],
-            ignore=[],
+            #ignore=[],
             recursive=recursive
         )
     return fs
@@ -35,7 +35,12 @@ def display(f,Images={},extent=-1,selected=[],notable=[]):
     from k3.utils.vis import zimread,mci,cv2,resize_to_extent
     if f not in Images:
         Images[f] = 'temp'
-        tmp = zimread(f)
+        try:
+            tmp = zimread(f)
+        except:
+            cE(f,'could not be loaded')
+            from k3.utils.core.arrays import z55,rndn
+            tmp = z55(rndn(300,300,3))
 
         if extent > 0:
             #cE('resizeing')
@@ -79,11 +84,12 @@ def image_loader_thread(D={'Images':{},'done':False,'fs':{},'extent':400}):
             return
         if f not in Images:
             tmp = zimread(f)
+            print('read',f)
             if D['extent'] > 0:
                 tmp = resize_to_extent(tmp,D['extent'])
             if f not in Images:
                 Images[f] = tmp
-        time.sleep(0.1)
+        time.sleep(0.01)
     cg('loader_thread() finished')
 
 

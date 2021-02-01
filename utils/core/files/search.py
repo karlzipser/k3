@@ -177,7 +177,10 @@ def find_files(
     file_list=[],
     __top=True,
     recursive=True,
+    timer=Timer(1)
 ):
+    if timer.rcheck():
+        print('find_files found',len(file_list),'files')
     if __top:
         file_list = []
     if type(patterns) == str:
@@ -210,7 +213,7 @@ def find_files(
         for d in ds:
             find_files(
                 start=d,patterns=patterns,ignore=ignore,file_list=file_list,__top=False,
-                recursive=True)
+                recursive=True,timer=timer)
     
     if __top:
         return sorted(list(set(file_list)),key=natural_keys)

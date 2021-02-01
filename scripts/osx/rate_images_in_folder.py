@@ -16,14 +16,15 @@ if 'set up arguments and automatically named variables':
             ('name','name for new folder') : 'no_name',
             ('action','action to take on selected images') : 'ln',
             ('r','recursive image file search') : True,
-            ('max','max number of images to permit') : 100,
+            ('max','max number of images to permit') : 10**10,
             ('offset','offset within image list') : 0,
             ('ignore','folders to ignore') : ['Photos Library','Photo Booth'],
             ('start','start location for selecting') : opjh(),
-            ('extent','image extent, less than one indicates no change') : 400,
+            ('extent','image extent, less than one indicates no change') : 500,
             ('topic','map to topic') : '',
             ('filter','filter topics') : [],
             ('logic',"'and', 'or', or 'xor' for filters") : 'or',
+            'act on folder' : False,
             key_for+'quit' : 'q',
             key_for+'to beginning' : 'b',
             key_for+'to end' : 'e',
@@ -40,15 +41,18 @@ if 'set up arguments and automatically named variables':
             key_for+'get name' : 'n',
             key_for+'get topic' : 't',
             key_for+'topic toggle' : 'x',
-            key_for+'1 step' : '1',
-            key_for+'2 step' : '2',
-            key_for+'3 step' : '3',
-            key_for+'4 step' : '4',
-            key_for+'5 step' : '5',
-            key_for+'6 step' : '6',
-            key_for+'7 step' : '7',
-            key_for+'8 step' : '8',
-            key_for+'9 step' : '9',
+            key_for+'folder toggle' : 'f',
+            key_for+'load folder': 'l',
+            key_for+'0 rating' : '0',
+            key_for+'1 rating' : '1',
+            key_for+'2 rating' : '2',
+            key_for+'3 rating' : '3',
+            key_for+'4 rating' : '4',
+            key_for+'5 rating' : '5',
+            key_for+'6 rating' : '6',
+            key_for+'7 rating' : '7',
+            key_for+'8 rating' : '8',
+            key_for+'9 rating' : '9',
         },
         file=__file__,
         r=True,
@@ -117,7 +121,7 @@ if 'find image files':
     for t in ts:
         topic = fnamene(t)
         Topics[topic] = load_text_list(t,unique=True)
-
+    Topics_first = Topics.copy()
     if len(filter_) > 0:
         #cm(filter_)
         #kprint(Topics)
@@ -129,7 +133,7 @@ if 'find image files':
         #cm(fs)
     else:
         fs = find_images_from_paths(path_,start=start_,recursive=r_)
-        cm(fs)
+        #cm(fs)
 
 
 
@@ -148,7 +152,8 @@ if 'more setup':
 
 
 fs, _ = get_lists_of_paths(fs)
-fs = list(set(fs)-set(Topics['ignore']))
+if 'rating_0' in Topics:
+    fs = list(set(fs)-set(Topics['rating_0']))
 fs = sorted(fs,key=natural_keys)
 m = min(offset_+max_,len(fs))
 fs = fs[offset_:offset_+m]
@@ -156,6 +161,8 @@ nimgs = len(fs)
 
 
 list_of_paths, blanked_list_of_paths = get_lists_of_paths(fs)
+
+
 
 
 if 'set up loader thread':
@@ -166,10 +173,13 @@ if 'set up loader thread':
         'fs':list_of_paths,
         'extent':extent_,
     }
+    """
     threading.Thread(
         target=image_loader_thread,
         args=(Threader_state,),
     ).start()
+    """
+    
 
 
 
@@ -255,8 +265,34 @@ if 'main loop':
             i = find_different_path(list_of_paths,i,positive=False)
             do_print = True
 
-        elif key_for in h and 'step' in h:
-            stp = int(A[h])
+
+
+
+
+
+        elif key_for in h and 'rating' in h:
+            if True:
+                for _i in range(10):
+                    if 'rating_'+str(_i) in Topics and f in Topics['rating_'+str(_i)]:
+                        Topics['rating_'+str(_i)].remove(f)
+            if 'rating_'+A[h] not in Topics:
+                Topics['rating_'+A[h]] = []
+
+            if A['act on folder']:
+                cm(0)
+                for ff in list_of_paths:
+                    #print(pname(ff),pname(f),pname(ff) == pname(f))
+                    if pname(ff) == pname(f):
+                        Topics['rating_'+A[h]].append(ff)
+                Topics['rating_'+A[h]] = list(set(Topics['rating_'+A[h]]))
+            else:
+                cm(1)
+                Topics['rating_'+A[h]].append(f)
+
+            i += stp
+            if i >= nimgs:
+                i = nimgs-1
+            do_print = True
 
         elif h == key_for+'select':
             if f not in selected:
@@ -264,7 +300,9 @@ if 'main loop':
                 selected = sorted(selected,key=natural_keys)
                 if A['topic'] not in Topics:
                     Topics[A['topic']] = []
+
                 Topics[A['topic']].append(f)
+
             else:
                 pass
             i += stp
@@ -273,12 +311,12 @@ if 'main loop':
             do_print = True
             
         elif h == key_for+'un-select':
+            if A['topic'] in Topics:
+                Topics[A['topic']].remove(f)
             if f not in selected:
                 pass
             else:
                 selected.remove(f)
-                if A['topic'] in Topics:
-                    Topics[A['topic']].remove(f)
             do_print = True
 
         elif h == key_for+'notable':
@@ -293,14 +331,16 @@ if 'main loop':
             do_print = True
 
         elif h == key_for+'not notable':
-            #cm('here')
             if f not in Topics['notable']:
-                #cm(0)
                 pass
             else:
-                #cm(1)
                 Topics['notable'].remove(f)
             do_print = True
+
+
+
+
+
 
         elif h == key_for+'get name':
             name_ = _get_name()
@@ -313,7 +353,6 @@ if 'main loop':
                 selected.pop()
             A['topic'] = _get_name('topic')
 
-            
         elif h == key_for+'topic toggle':
             while len(selected):
                 selected.pop()
@@ -330,6 +369,10 @@ if 'main loop':
                         break
             print('topic =',A['topic'])
 
+        elif h == key_for+'folder toggle':
+            A['act on folder'] = not A['act on folder']
+            print("A['act on folder'] is",A['act on folder'])
+
         elif h == key_for+'get action':
             a = _get_action()
             if len(a) > 0:
@@ -340,6 +383,17 @@ if 'main loop':
             _act()
             break
 
+        elif h == key_for+'load folder':
+            Threader_state['fs'] = []
+            for _f in list_of_paths:
+                if pname(_f) == pname(list_of_paths[i]):
+                    Threader_state['fs'].append(_f)
+            threading.Thread(
+                target=image_loader_thread,
+                args=(Threader_state,),
+            ).start()
+
+
     'end while'
 
 
@@ -347,19 +401,31 @@ if 'main loop':
 
 
 
-if 'save notable paths':
+if 'save paths':
+    for k in Topics:
+        if k == 'notable':
+            continue
+        for f in Topics[k]:
+            #print(k,f)
+            if f in Topics['notable']:
+                Topics['notable'].remove(f)
+                print(f,f in Topics['notable'])
+
     try:
         p = opjb(fnamene(__file__))
         os_system('mkdir -p',p)
         for k in Topics:
-            print('saving',k)
-            ps = [
-                opj(p,d2p('.'+k,time_str('FileSafe'),'topic.txt')),
-                opj(p,k+'.topic.txt'),
-            ]
-            for q in ps:
-                #print('saved',q)
-                list_of_strings_to_txt_file(q,sorted(list(set(Topics[k])),key=natural_keys))
+            #print(k,Topics_first[k] != Topics[k])
+            if True:#k not in Topics_first or Topics_first[k] != Topics[k]:
+                if len(Topics[k]) > 0:
+                    print('saving',k)
+                    ps = [
+                        opj(p,d2p('.'+k,time_str('FileSafe'),'topic.txt')),
+                        opj(p,k+'.topic.txt'),
+                    ]
+                    for q in ps:
+                        #print('saved',q)
+                        list_of_strings_to_txt_file(q,sorted(list(set(Topics[k])),key=natural_keys))
     except:
         cE('notable not saved')
 
