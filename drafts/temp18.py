@@ -489,6 +489,25 @@ for f in fs:
             #break
 
 #, b
+#, a
+
+path  = opjD("A")#opjD("_2008 one -- Editing version 12-27-2020")
+newp = opjD("A_new")
+fs = sggo(path,'*.rtf')
+
+
+os_system('mkdir -p',newp)
+
+for f in fs:
+    if fname(f)[0] != '_':
+        if True:#'40' in fname(f)[:2]:
+            print(f)
+            number = fnamene(f).split(' ')[0]
+            g = number+'.rtf'
+            os_system('python3 k3/misc/bk_rtf4.py --number',number,'--in',qtd(f),'--out',qtd(opj(newp,g)),e=1)
+            #break
+
+#, b
 
 if False:
     fs = sggo(opjD('a','*.rtf'))

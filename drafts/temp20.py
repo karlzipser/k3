@@ -129,5 +129,6 @@ for i in range(len(blanked_list_of_paths)):
     raw_enter() 
 
 
+glob.glob('mobile-documents/**/*∆ƒ*',recursive=True) 
 
 #EOF

@@ -53,14 +53,14 @@ try:
         mcia(array(l),delay=delay,title=title,scale=scale,color_mode=cv2.COLOR_RGB2BGR)
 
 
-    def resize_to_extent(img,extent):
+    def resize_to_extent(img,extent,interpolation=cv2.INTER_AREA): #INTER_LINEAR):
         if extent != max(shape(img)):
             q = extent / max(shape(img))
             scale_percent = 60 # percent of original size
             width = int(img.shape[1] * q)
             height = int(img.shape[0] * q)
             dim = (width, height)
-            return cv2.resize(img, dim, interpolation = cv2.INTER_LINEAR)
+            return cv2.resize(img, dim, interpolation=interpolation)
         else:
             print('resize_to_extent(): no resizing')
             return img

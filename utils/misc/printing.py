@@ -316,7 +316,7 @@ def percent(i,n,timer=None,title=''):
 
 
 
-
+#,a
 def print_list_segment(
     list_of_paths,
     blanked_list_of_paths,
@@ -324,6 +324,7 @@ def print_list_segment(
     minus=0,
     plus=1,
     Extra={},
+    colorize=False,
 ):
     
     import numpy as np
@@ -339,6 +340,8 @@ def print_list_segment(
 
     clear_screen()
 
+    if start == 0:
+        print("┏"+ (len(list_of_paths[0])+8)*'━')
     for j in range(start,stop):
 
         if j == i:
@@ -358,16 +361,23 @@ def print_list_segment(
             l = min(5,l)
         
         offset = ' ' * (5-l)
-        extra = ['   ']
+        extra = []
         for k in sorted(kys(Extra)):
             #print(k)
             if list_of_paths[j] in Extra[k]:
                 extra.append(k)
-        clp(d2n(offset,j,') ',s,''.join(extra)),fmt)
-        #print(list_of_paths[j])
-        #print(blanked_list_of_paths[j])
+        u = d2n(offset,j,') ',s,'    ',','.join(extra))
+        if colorize:
+            clp('┃'+u,fmt)
+        else:
+            print('┃'+u)
+    if stop == len(list_of_paths):
+        print("┗"+ (len(list_of_paths[j])+8)*'━')
 
-
+def print_paths(path_list):
+    b,c = get_lists_of_paths(path_list) 
+    print_list_segment(b,c,0,0,10**10,colorize=False) 
+#,b
 
 def get_lists_of_paths(path_list):
     fs = path_list

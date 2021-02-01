@@ -25,16 +25,21 @@ if 'set up arguments and automatically named variables':
             ('filter','filter topics') : [],
             ('logic',"'and', 'or', or 'xor' for filters") : 'or',
             key_for+'quit' : 'q',
+            key_for+'to beginning' : 'b',
+            key_for+'to end' : 'e',
             key_for+'back' : ',',
             key_for+'forward' : '/',
+            key_for+'to previous' : '<',
+            key_for+'to next' : '?',
             key_for+'_act' : 'a',
             key_for+'select' : ' ',
             key_for+'un-select' : 'u',
             key_for+'notable' : '.',
             key_for+'not notable' : ';',
-            key_for+'get action' : 'A',
-            key_for+'get name' : 'N',
-            key_for+'get topic' : 'T',
+            key_for+'get action' : 'c',
+            key_for+'get name' : 'n',
+            key_for+'get topic' : 't',
+            key_for+'topic toggle' : 'x',
             key_for+'1 step' : '1',
             key_for+'2 step' : '2',
             key_for+'3 step' : '3',
@@ -106,7 +111,7 @@ if 'utility functions':
 
 
 if 'find image files':
-    Topics = {}
+    Topics = {'notable':[],'ignore':[]}
     selected = []
     ts = sggo(opjb(fnamene(__file__),'*.topic.txt'))
     for t in ts:
@@ -114,25 +119,17 @@ if 'find image files':
         Topics[topic] = load_text_list(t,unique=True)
 
     if len(filter_) > 0:
-        cm(filter_)
-        kprint(Topics)
+        #cm(filter_)
+        #kprint(Topics)
         fs = []
         for t in Topics:
 
             if t in filter_:
                 fs += Topics[t]
-        cm(fs)
+        #cm(fs)
     else:
         fs = find_images_from_paths(path_,start=start_,recursive=r_)
-    fs = sorted(fs,key=natural_keys)
-    m = min(offset_+max_,len(fs))
-    fs = fs[offset_:offset_+m]
-    nimgs = len(fs)
-
-
-
-
-
+        cm(fs)
 
 
 
@@ -150,8 +147,12 @@ if 'more setup':
     del _1
 
 
-
-
+fs, _ = get_lists_of_paths(fs)
+fs = list(set(fs)-set(Topics['ignore']))
+fs = sorted(fs,key=natural_keys)
+m = min(offset_+max_,len(fs))
+fs = fs[offset_:offset_+m]
+nimgs = len(fs)
 
 
 list_of_paths, blanked_list_of_paths = get_lists_of_paths(fs)
@@ -174,6 +175,21 @@ if 'set up loader thread':
 
 #print_list_segment(list_of_paths,blanked_list_of_paths,i,minus,plus)
 
+def find_different_path(paths,i,positive=True):
+    if i < 0 or i > len(paths):
+        return 0
+    p = pname(paths[i])
+
+    if positive:
+        rng = range(i,len(paths))
+    else:
+        rng = range(i,-1,-1)
+
+    for j in rng:
+        if pname(paths[j]) != p:
+            return j
+
+    return i
 
 
 do_print = True
@@ -190,7 +206,8 @@ if 'main loop':
                 i,
                 minus,
                 plus,
-                {'N':Topics['notable'],'S':selected,},
+                Topics,#{'N':Topics['notable'],'S':selected,},
+                colorize=True,
             )
             do_print = False
             topics = ['#']
@@ -214,15 +231,28 @@ if 'main loop':
             i += stp
             if i >= nimgs:
                 i = nimgs-1
-            #clear_screen()
             do_print = True
 
         elif h == key_for+'back':
             i -= stp
             if i < 0:
                 i = 0
-            #clear_screen()
-            #print_list_segment(list_of_paths,blanked_list_of_paths,i,minus,plus)
+            do_print = True
+
+        elif h == key_for+'to beginning':
+            i = 0
+            do_print = True
+
+        elif h == key_for+'to end':
+            i = nimgs-1
+            do_print = True
+
+        elif h == key_for+'to next':
+            i = find_different_path(list_of_paths,i,positive=True)
+            do_print = True
+
+        elif h == key_for+'to previous':
+            i = find_different_path(list_of_paths,i,positive=False)
             do_print = True
 
         elif key_for in h and 'step' in h:
@@ -263,12 +293,12 @@ if 'main loop':
             do_print = True
 
         elif h == key_for+'not notable':
-            cm('here')
+            #cm('here')
             if f not in Topics['notable']:
-                cm(0)
+                #cm(0)
                 pass
             else:
-                cm(1)
+                #cm(1)
                 Topics['notable'].remove(f)
             do_print = True
 
@@ -279,8 +309,26 @@ if 'main loop':
             A['name'] = name_
 
         elif h == key_for+'get topic':
+            while len(selected):
+                selected.pop()
             A['topic'] = _get_name('topic')
+
             
+        elif h == key_for+'topic toggle':
+            while len(selected):
+                selected.pop()
+            topics = sorted(kys(Topics),key=natural_keys)
+            if not A['topic']:
+                A['topic'] = topics[0]
+            else:
+                for ii in rlen(topics):
+                    if topics[ii] == A['topic']:
+                        jj = ii+1
+                        if jj >= len(topics):
+                            jj = 0
+                        A['topic'] = topics[jj]
+                        break
+            print('topic =',A['topic'])
 
         elif h == key_for+'get action':
             a = _get_action()
@@ -304,12 +352,13 @@ if 'save notable paths':
         p = opjb(fnamene(__file__))
         os_system('mkdir -p',p)
         for k in Topics:
+            print('saving',k)
             ps = [
-                opj(p,d2p('.'+k,time_str('FileSafe'),'.topic.txt')),
+                opj(p,d2p('.'+k,time_str('FileSafe'),'topic.txt')),
                 opj(p,k+'.topic.txt'),
             ]
             for q in ps:
-                print('saved',q)
+                #print('saved',q)
                 list_of_strings_to_txt_file(q,sorted(list(set(Topics[k])),key=natural_keys))
     except:
         cE('notable not saved')

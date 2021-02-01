@@ -55,8 +55,8 @@ def display(f,Images={},extent=-1,selected=[],notable=[]):
     if f in selected:
         img[:,:10,:] = (255,0,0)
 
-    k = mci(img)
-    cv2.moveWindow('rif', 20, 20)
+    k = mci(img,title='rif')
+    cv2.moveWindow('rif', 0, 0)
     #k = cv2.waitKey(1)
     return k
 

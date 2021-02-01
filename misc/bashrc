@@ -15,6 +15,8 @@ alias ipy="ipython --no-banner --no-confirm-exit"
 
 export PYTHONPATH=~:$PYTHONPATH
 
+# mogrify -format jpg *.HEIC
+
 export PATH=~/k3:$PATH
 export PATH=~/k3/scripts:$PATH
 export PATH=~/k3/scripts/gen:$PATH

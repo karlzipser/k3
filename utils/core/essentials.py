@@ -55,7 +55,11 @@ def print_dic_simple(D,title='<title>',html=False,print_=True):
                 longest = len(str(k))
         for k in sorted(D):
             sk = ' '*(longest-len(str(k)))+str(k)
-            s += '   '+sk+':  '+str(D[k])+el;
+            if k[0] is not '-' and type(D[k]) is str:
+                q = qtd(D[k],s=True)
+            else:
+                q = str(D[k])
+            s += '   '+sk+':  '+q+el;
     if print_:
         print(s)
     return s
@@ -78,13 +82,16 @@ def intr(n):
     return np.int(np.round(n))
 
 
-def qtd(a):
+def qtd(a,s=False):
     if a == '':
         return "''"
     if type(a) == str and ((a[0] == '\'' and a[-1] == '\'') or (a[0] == '\"' and a[-1] == '\"')):
         print('*** qtd(): Warning, '+a+' seems to be quoted already ***')
-    return '\"'+str(a)+'\"'
-    
+    if not s:
+        return '\"'+str(a)+'\"'
+    else:
+        return '\''+str(a)+'\''
+
 
 def raw_enter(optional_str=''):
     return input(optional_str+'   Hit enter to continue > ')

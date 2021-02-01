@@ -4,8 +4,9 @@ from k3.utils import *
 A = get_Arguments(
     {
     	('t','time'):30,
-        ('s','short time'):3,
+        ('s','short time'):5,
         ('l','left'):False,
+        ('r','right'):False,
     },
     file=__file__,
     r=True,
@@ -14,9 +15,12 @@ A = get_Arguments(
 
 if l_:
     s = 'left'
-else:
+elif r_:
     s = 'right'
-os_system('say',s)
+else:
+    s = ''
+if s:
+    os_system('say',s)
 os_system('say',qtd(d2s(t_,'seconds')))
 os_system('say "ready set go!"')
 

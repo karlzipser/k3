@@ -3,12 +3,12 @@ from k3.utils.core.files.files import *
 
 os.environ['GLOG_minloglevel'] = '2'
 
-def sgg(d):
-    return sorted(gg(d),key=natural_keys)
+def sgg(d,r=0):
+    return sorted(gg(d,recursive=r),key=natural_keys)
 
-def sggo(d,*args):
+def sggo(d,*args,r=0):
     a = opj(d,*args)
-    return sgg(a)
+    return sgg(a,r=r)
 
 def sorted_by_cmtime(list_of_files):#,c=True):
     Mtimes = {}
@@ -173,13 +173,15 @@ def find_list_of_files_recursively(path,pattern,verbose=True,ignore=[]):
 def find_files(
     start=opjD(),
     patterns=["*"],
-    ignore=['Photos Library','Photo Booth'],
+    ignore=['Photos Library','Photo Booth','Library'],
     file_list=[],
     __top=True,
     recursive=True,
 ):
     if __top:
         file_list = []
+    if type(patterns) == str:
+        patterns = [patterns]
     for pattern in patterns:
         #print('start:',start,'len(file_list):',len(file_list))
         _fs= sggo(start,pattern)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from k3.utils import *
+import threading
 
 Arguments = get_Arguments({
 	('x', 'add prefix and suffix to clipboard') : True,

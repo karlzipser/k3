@@ -12,6 +12,7 @@ def main(**A):
     
     
 def save_obj(obj, name,noisy=False,show_time=False,use_real_path=False):
+    import pickle
     assert_disk_locations([pname(name)])
     name = name.replace('.pkl','')
     if use_real_path:
@@ -33,6 +34,7 @@ def save_obj(obj, name,noisy=False,show_time=False,use_real_path=False):
 
 
 def load_obj(name,noisy=False,time=False,use_real_path=False):
+    import pickle
     assert_disk_locations([pname(name)])
     if noisy:
         timer = Timer()
